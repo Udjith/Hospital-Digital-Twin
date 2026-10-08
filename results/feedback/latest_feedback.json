@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-09-30T10:16:11",
+  "decision": "Needs Modification",
+  "rating": 4,
+  "comments": "",
+  "constraints": {
+    "max_icu_beds": 147,
+    "max_general_beds": 169,
+    "max_doctors": 17,
+    "max_nurses": 17
+  },
+  "targets": {
+    "mean_wait_min": 20.0,
+    "high_risk_wait_min": 10.0
+  }
+}

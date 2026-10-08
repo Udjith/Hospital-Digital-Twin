@@ -1,0 +1,38 @@
+**Recommended Resource Policy**  
+- ICU beds: 80  
+- General beds: 94  
+- Doctors: 14  
+- Nurses: 14  
+- ICU risk threshold: 0.5  
+
+**Expected Operational Performance**  
+- Patients completed (simulation): 500  
+- Mean waiting time: 6.65 min  
+- Median waiting time: 0.00 min  
+- 95th-percentile waiting time: 35.38 min  
+- High-risk mean waiting time: 7.86 min  
+- Throughput: 23.54 patients per day  
+- ICU bed utilization: 37.6 %  
+- General bed utilization: 36.6 %  
+- Doctor utilization: 23.4 %  
+- Nurse utilization: 23.4 %  
+- GA fitness (relative, higher is better): -93.70  
+
+**Why the System Recommends It**  
+The decision-tree classifier returned *acceptable* with probability 1.0. The rule it applied is:  
+
+- "If doctors > 13.5 and nurses > 13.5 then the configuration is acceptable."  
+
+Both conditions are satisfied (doctors = 14, nurses = 14).  
+
+The threshold checks from the acceptability criteria are also true:  
+- mean_wait_within_target = true (mean waiting time <= 20.0 min)  
+- high_risk_wait_within_target = true (high-risk mean waiting time <= 10.0 min)  
+
+These results come from the Digital Twin simulation and the subsequent optimization that maximized the GA fitness for the current objective.
+
+**Interpretation and Caution**  
+- The numbers reflect simulated performance under the stated resource levels; real-world results may differ.  
+- The GA fitness is a relative measure; a less negative value indicates a better solution for the chosen objective, not an absolute quality score.  
+- The decision tree used only the two thresholds above; no additional resource-threshold paths were evaluated.  
+- This output is operational decision support only and is not clinically validated. Use it together with professional judgment and local constraints before implementation.

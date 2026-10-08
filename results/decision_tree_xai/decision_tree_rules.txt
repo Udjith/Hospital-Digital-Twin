@@ -1,0 +1,7 @@
+|--- doctors <= 13.50
+|   |--- class: 0
+|--- doctors >  13.50
+|   |--- nurses <= 13.50
+|   |   |--- class: 0
+|   |--- nurses >  13.50
+|   |   |--- class: 1

@@ -1,0 +1,11 @@
+{
+  "rows_used": 120,
+  "acceptable_policies": 55,
+  "unacceptable_policies": 65,
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "tree_depth": 2,
+  "leaf_count": 3
+}

@@ -1,0 +1,5 @@
+{
+  "provider": "Groq",
+  "model": "openai/gpt-oss-120b",
+  "dynamic_api_call": true
+}

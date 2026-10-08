@@ -1,0 +1,10 @@
+pandas
+numpy
+scikit-learn
+simpy
+matplotlib
+streamlit
+altair
+joblib
+groq
+python-dotenv

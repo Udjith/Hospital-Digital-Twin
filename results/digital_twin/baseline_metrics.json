@@ -1,0 +1,131 @@
+{
+  "patients_completed": 500,
+  "mean_waiting_time_min": 10.689,
+  "median_waiting_time_min": 0.0,
+  "p95_waiting_time_min": 59.67,
+  "high_risk_mean_waiting_time_min": 11.897,
+  "throughput_patients_per_day": 23.543,
+  "icu_bed_utilization": 0.2663,
+  "general_bed_utilization": 0.2647,
+  "doctor_utilization": 0.2522,
+  "nurse_utilization": 0.2522,
+  "simulation_duration_days": 21.238,
+  "policy": {
+    "icu_beds": 113,
+    "general_beds": 130,
+    "doctors": 13,
+    "nurses": 13,
+    "icu_risk_threshold": 0.5
+  },
+  "baseline_metadata": {
+    "schema_version": 3,
+    "simulator_version": "2026.09-large-hospital-v3",
+    "generated_at_utc": "2026-09-29T12:50:19+00:00",
+    "random_seed": 42,
+    "hospital_scale_multiplier": 3.0,
+    "capacity_mode": "derived",
+    "capacity_methodology": {
+      "method": "offered_load_target_utilization",
+      "formula": "capacity = ceil(offered_concurrent_load / target_utilization)",
+      "target_utilization": 0.75,
+      "target_utilization_range": [
+        0.75,
+        0.8
+      ],
+      "rounding": "ceiling",
+      "workload_scaling": {
+        "method": "deterministic_arrival_time_compression",
+        "hospital_scale_multiplier": 3.0,
+        "formula": "scaled_arrival_offset = original_arrival_offset / hospital_scale_multiplier",
+        "records_duplicated": false,
+        "preserved_attributes": [
+          "patient characteristics",
+          "Random Forest predictions",
+          "treatment durations",
+          "length-of-stay durations",
+          "arrival ordering"
+        ]
+      },
+      "unscaled_arrival_span_minutes": 32578.0,
+      "arrival_span_minutes": 10859.333,
+      "arrival_span_days": 7.541,
+      "offered_concurrent_load": {
+        "icu_beds": 84.742219,
+        "general_beds": 96.904448,
+        "doctors": 9.234996,
+        "nurses": 9.234996
+      },
+      "derived_capacity": {
+        "icu_beds": 113,
+        "general_beds": 130,
+        "doctors": 13,
+        "nurses": 13
+      },
+      "ga_search_envelope": {
+        "minimum_factor": 0.7,
+        "maximum_factor": 1.3,
+        "rounding": "floor minimum; ceiling maximum",
+        "bounds": {
+          "icu_beds": [
+            79,
+            147
+          ],
+          "general_beds": [
+            91,
+            169
+          ],
+          "doctors": [
+            9,
+            17
+          ],
+          "nurses": [
+            9,
+            17
+          ]
+        }
+      },
+      "implied_target_utilization": {
+        "icu_beds": 0.749931,
+        "general_beds": 0.745419,
+        "doctors": 0.710384,
+        "nurses": 0.710384
+      },
+      "assumptions": {
+        "icu_beds": "RF probability >= 0.50; occupied for full length of stay",
+        "general_beds": "RF probability < 0.50; occupied for full length of stay",
+        "doctors": "one doctor per patient during treatment duration",
+        "nurses": "one nurse per patient during treatment duration"
+      },
+      "patient_counts": {
+        "icu": 199,
+        "general": 301
+      }
+    },
+    "cohort": {
+      "selection": "earliest_arrivals",
+      "max_patients": 500,
+      "source_rows": 7500,
+      "selected_patients": 500,
+      "arrival_span_days": 7.541
+    },
+    "simulation": {
+      "patient_count": 500,
+      "arrival_span_minutes": 10859.33,
+      "simulation_duration_days": 21.238
+    },
+    "load_profile": {
+      "icu_patients": 199,
+      "general_patients": 301,
+      "average_icu_beds_required_during_arrivals": 84.742,
+      "average_general_beds_required_during_arrivals": 96.904,
+      "average_doctors_required_during_arrivals": 9.235,
+      "average_nurses_required_during_arrivals": 9.235
+    },
+    "data_path": "data/synthetic/synthetic_hospital.csv",
+    "data_sha256": "6119a9c3c3f4cea3c18eeed93134f0448a92695b2770c6b827804e77e826b7e9",
+    "model_path": "models/random_forest_pipeline.joblib",
+    "model_sha256": "fb62b5004bdd4c16df69b60ca401b2b02f95b5a79aac42b6a7c0126062a34471",
+    "simulator_path": "src/digital_twin.py",
+    "simulator_sha256": "c98df75425b201b684ebfd9c17d015425d238230ec20820b8bcb147e65f070fc"
+  }
+}

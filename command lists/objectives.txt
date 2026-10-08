@@ -1,0 +1,6 @@
+Resource constraints
+It can change minimum/maximum values for:
+icu_beds
+general_beds
+doctors
+nurses

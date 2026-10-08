@@ -1,0 +1,81 @@
+{
+  "best_policy": {
+    "icu_beds": 80,
+    "general_beds": 94,
+    "doctors": 14,
+    "nurses": 14,
+    "icu_risk_threshold": 0.5
+  },
+  "best_fitness": -93.70210000000002,
+  "best_metrics": {
+    "patients_completed": 500,
+    "mean_waiting_time_min": 6.645,
+    "median_waiting_time_min": 0.0,
+    "p95_waiting_time_min": 35.381,
+    "high_risk_mean_waiting_time_min": 7.855,
+    "throughput_patients_per_day": 23.543,
+    "icu_bed_utilization": 0.3761,
+    "general_bed_utilization": 0.3661,
+    "doctor_utilization": 0.2342,
+    "nurse_utilization": 0.2342,
+    "simulation_duration_days": 21.238
+  },
+  "applied_bounds": {
+    "icu_beds": [
+      79,
+      147
+    ],
+    "general_beds": [
+      91,
+      169
+    ],
+    "doctors": [
+      9,
+      17
+    ],
+    "nurses": [
+      9,
+      17
+    ]
+  },
+  "applied_objectives": {
+    "acceptable_mean_wait_min": 20.0,
+    "acceptable_high_risk_wait_min": 10.0,
+    "mean_wait_weight": 1.0,
+    "high_risk_wait_weight": 3.0,
+    "utilization_weight_scale": 1.0,
+    "resource_cost_weight_scale": 1.35,
+    "throughput_reward_weight": 0.1
+  },
+  "feedback_summary": "Structured dashboard controls supplied by the clinician/administrator.",
+  "baseline_provenance": {
+    "simulator_version": "2026.09-large-hospital-v3",
+    "hospital_scale_multiplier": 3.0,
+    "baseline_generated_at_utc": "2026-09-29T12:50:19+00:00",
+    "baseline_policy": {
+      "icu_beds": 113,
+      "general_beds": 130,
+      "doctors": 13,
+      "nurses": 13
+    },
+    "ga_search_bounds": {
+      "icu_beds": [
+        79,
+        147
+      ],
+      "general_beds": [
+        91,
+        169
+      ],
+      "doctors": [
+        9,
+        17
+      ],
+      "nurses": [
+        9,
+        17
+      ]
+    },
+    "workload_scale_matches_canonical": true
+  }
+}
