@@ -1,0 +1,1282 @@
+{
+  "resource_defaults": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 100
+  },
+  "configuration": {
+    "simulation_duration_hours": 24.0,
+    "best_case_arrival_rate": 12.0,
+    "average_case_arrival_rate": 22.0,
+    "worst_case_arrival_rate": 35.0,
+    "replications_per_scenario": 10,
+    "mean_wait_target_minutes": 20.0,
+    "high_risk_wait_target_minutes": 10.0,
+    "max_utilization_target": 0.9,
+    "robustness_threshold": 90.0,
+    "random_seed": 42
+  },
+  "selected_result": {
+    "schema_version": 2,
+    "simulator_version": "2.0-time-window",
+    "configuration": {
+      "simulation_duration_hours": 24.0,
+      "best_case_arrival_rate": 12.0,
+      "average_case_arrival_rate": 22.0,
+      "worst_case_arrival_rate": 35.0,
+      "replications_per_scenario": 10,
+      "mean_wait_target_minutes": 20.0,
+      "high_risk_wait_target_minutes": 10.0,
+      "max_utilization_target": 0.9,
+      "robustness_threshold": 90.0,
+      "random_seed": 42
+    },
+    "resource_configuration": {
+      "icu_beds": 210,
+      "general_beds": 280,
+      "doctors": 85,
+      "nurses": 100,
+      "icu_risk_threshold": 0.5
+    },
+    "scenarios": {
+      "best": {
+        "arrival_rate": 12.0,
+        "total_runs": 10,
+        "acceptable_run_count": 10,
+        "acceptable_run_percentage": 100.0,
+        "scenario_robustness": 100.0,
+        "scenario_verdict": "ACCEPTABLE",
+        "metrics": {
+          "patients_arrived": {
+            "mean": 292.4,
+            "min": 251.0,
+            "max": 324.0
+          },
+          "patients_completed": {
+            "mean": 25.6,
+            "min": 18.0,
+            "max": 41.0
+          },
+          "patients_waiting_at_end": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "patients_in_treatment_at_end": {
+            "mean": 266.8,
+            "min": 228.0,
+            "max": 297.0
+          },
+          "unfinished_patients": {
+            "mean": 266.8,
+            "min": 228.0,
+            "max": 297.0
+          },
+          "mean_wait": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "median_wait": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "p95_wait": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "high_risk_mean_wait": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "throughput": {
+            "mean": 1.0666666666666667,
+            "min": 0.75,
+            "max": 1.7083333333333333
+          },
+          "simulation_duration_hours": {
+            "mean": 24.0,
+            "min": 24.0,
+            "max": 24.0
+          },
+          "arrival_rate": {
+            "mean": 12.0,
+            "min": 12.0,
+            "max": 12.0
+          },
+          "high_risk_patients": {
+            "mean": 126.4,
+            "min": 103.0,
+            "max": 144.0
+          },
+          "wait_censored_count": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "icu_utilization": {
+            "mean": 0.2933086496514024,
+            "min": 0.24727817682265643,
+            "max": 0.3520551134222812
+          },
+          "general_utilization": {
+            "mean": 0.27628354312576997,
+            "min": 0.2268005395134673,
+            "max": 0.30015299186933725
+          },
+          "doctor_utilization": {
+            "mean": 0.4309459307115106,
+            "min": 0.35836673346193465,
+            "max": 0.5024591256816064
+          },
+          "nurse_utilization": {
+            "mean": 0.366304041104784,
+            "min": 0.3046117234426444,
+            "max": 0.42709025682936547
+          }
+        },
+        "runs": [
+          {
+            "patients_arrived": 270,
+            "patients_completed": 29,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 241,
+            "unfinished_patients": 241,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 1.2083333333333333,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42000,
+            "high_risk_patients": 122,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.26939607689993245,
+            "general_utilization": 0.2462768324029646,
+            "doctor_utilization": 0.40806210603684184,
+            "nurse_utilization": 0.3468527901313156,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 311,
+            "patients_completed": 41,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 270,
+            "unfinished_patients": 270,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 1.7083333333333333,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42001,
+            "high_risk_patients": 129,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.3006971576074735,
+            "general_utilization": 0.28690950236565355,
+            "doctor_utilization": 0.4385657726954726,
+            "nurse_utilization": 0.3727809067911517,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 302,
+            "patients_completed": 26,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 276,
+            "unfinished_patients": 276,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 1.0833333333333333,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42002,
+            "high_risk_patients": 128,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.2881836170531839,
+            "general_utilization": 0.2932587548720867,
+            "doctor_utilization": 0.42578320795272345,
+            "nurse_utilization": 0.3619157267598149,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 324,
+            "patients_completed": 30,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 294,
+            "unfinished_patients": 294,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 1.25,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42003,
+            "high_risk_patients": 144,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.3520551134222812,
+            "general_utilization": 0.30015299186933725,
+            "doctor_utilization": 0.5024591256816064,
+            "nurse_utilization": 0.42709025682936547,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 277,
+            "patients_completed": 20,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 257,
+            "unfinished_patients": 257,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 0.8333333333333334,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42004,
+            "high_risk_patients": 119,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.2858105673087543,
+            "general_utilization": 0.28963042663580424,
+            "doctor_utilization": 0.4260560332668793,
+            "nurse_utilization": 0.36214762827684743,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 302,
+            "patients_completed": 23,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 279,
+            "unfinished_patients": 279,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 0.9583333333333334,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42005,
+            "high_risk_patients": 130,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.3069565224048799,
+            "general_utilization": 0.2885246274644732,
+            "doctor_utilization": 0.44859459369196897,
+            "nurse_utilization": 0.38130540463817364,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 289,
+            "patients_completed": 27,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 262,
+            "unfinished_patients": 262,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 1.125,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42006,
+            "high_risk_patients": 127,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.2786717506125592,
+            "general_utilization": 0.2821195888536342,
+            "doctor_utilization": 0.43076391726443,
+            "nurse_utilization": 0.3661493296747655,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 283,
+            "patients_completed": 19,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 264,
+            "unfinished_patients": 264,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 0.7916666666666666,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42007,
+            "high_risk_patients": 120,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.2770413973044067,
+            "general_utilization": 0.270904553880521,
+            "doctor_utilization": 0.4096340056486771,
+            "nurse_utilization": 0.34818890480137554,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 251,
+            "patients_completed": 23,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 228,
+            "unfinished_patients": 228,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 0.9583333333333334,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42008,
+            "high_risk_patients": 103,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.24727817682265643,
+            "general_utilization": 0.2268005395134673,
+            "doctor_utilization": 0.35836673346193465,
+            "nurse_utilization": 0.3046117234426444,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 315,
+            "patients_completed": 18,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 297,
+            "unfinished_patients": 297,
+            "mean_wait": 0.0,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.0,
+            "throughput": 0.75,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 12.0,
+            "seed": 42009,
+            "high_risk_patients": 142,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.326996117077896,
+            "general_utilization": 0.2782576133997579,
+            "doctor_utilization": 0.46117381141457187,
+            "nurse_utilization": 0.3919977397023861,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          }
+        ]
+      },
+      "average": {
+        "arrival_rate": 22.0,
+        "total_runs": 10,
+        "acceptable_run_count": 10,
+        "acceptable_run_percentage": 100.0,
+        "scenario_robustness": 100.0,
+        "scenario_verdict": "ACCEPTABLE",
+        "metrics": {
+          "patients_arrived": {
+            "mean": 528.6,
+            "min": 510.0,
+            "max": 554.0
+          },
+          "patients_completed": {
+            "mean": 49.8,
+            "min": 45.0,
+            "max": 58.0
+          },
+          "patients_waiting_at_end": {
+            "mean": 9.9,
+            "min": 0.0,
+            "max": 22.0
+          },
+          "patients_in_treatment_at_end": {
+            "mean": 468.9,
+            "min": 454.0,
+            "max": 490.0
+          },
+          "unfinished_patients": {
+            "mean": 478.8,
+            "min": 457.0,
+            "max": 506.0
+          },
+          "mean_wait": {
+            "mean": 1.5116219255700687,
+            "min": 0.003942811194865146,
+            "max": 4.505175373932406
+          },
+          "median_wait": {
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "p95_wait": {
+            "mean": 4.9133594913225025,
+            "min": 0.0,
+            "max": 26.807854552488845
+          },
+          "high_risk_mean_wait": {
+            "mean": 2.398639965979176,
+            "min": 0.003946056095286993,
+            "max": 8.397050719801715
+          },
+          "throughput": {
+            "mean": 2.075,
+            "min": 1.875,
+            "max": 2.4166666666666665
+          },
+          "simulation_duration_hours": {
+            "mean": 24.0,
+            "min": 24.0,
+            "max": 24.0
+          },
+          "arrival_rate": {
+            "mean": 22.0,
+            "min": 22.0,
+            "max": 22.0
+          },
+          "high_risk_patients": {
+            "mean": 221.6,
+            "min": 200.0,
+            "max": 239.0
+          },
+          "wait_censored_count": {
+            "mean": 9.9,
+            "min": 0.0,
+            "max": 22.0
+          },
+          "icu_utilization": {
+            "mean": 0.5223709445315641,
+            "min": 0.4949480238339001,
+            "max": 0.5533281287130584
+          },
+          "general_utilization": {
+            "mean": 0.4974166779849408,
+            "min": 0.445132170726399,
+            "max": 0.5532440938531108
+          },
+          "doctor_utilization": {
+            "mean": 0.7698557041932063,
+            "min": 0.7351259694552144,
+            "max": 0.8035954634864138
+          },
+          "nurse_utilization": {
+            "mean": 0.6543773485642252,
+            "min": 0.6248570740369322,
+            "max": 0.6830561439634517
+          }
+        },
+        "runs": [
+          {
+            "patients_arrived": 511,
+            "patients_completed": 50,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 461,
+            "unfinished_patients": 461,
+            "mean_wait": 0.014066516904234463,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.028617319411022777,
+            "throughput": 2.0833333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42100,
+            "high_risk_patients": 200,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.4949480238339001,
+            "general_utilization": 0.48379285302194985,
+            "doctor_utilization": 0.7451007178745331,
+            "nurse_utilization": 0.6333356101933532,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 554,
+            "patients_completed": 49,
+            "patients_waiting_at_end": 15,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 505,
+            "mean_wait": 1.2484038981702026,
+            "median_wait": 0.0,
+            "p95_wait": 4.3089532065685,
+            "high_risk_mean_wait": 2.453721228711036,
+            "throughput": 2.0416666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42101,
+            "high_risk_patients": 227,
+            "wait_censored_count": 15,
+            "icu_utilization": 0.5219667895277598,
+            "general_utilization": 0.5490100208127717,
+            "doctor_utilization": 0.7863116886051439,
+            "nurse_utilization": 0.6683649353143724,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 515,
+            "patients_completed": 52,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 463,
+            "unfinished_patients": 463,
+            "mean_wait": 0.003942811194865146,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.010002698351505171,
+            "throughput": 2.1666666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42102,
+            "high_risk_patients": 203,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.4993491196599441,
+            "general_utilization": 0.5207975499839713,
+            "doctor_utilization": 0.7643409947406615,
+            "nurse_utilization": 0.6496898455295622,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 510,
+            "patients_completed": 45,
+            "patients_waiting_at_end": 11,
+            "patients_in_treatment_at_end": 454,
+            "unfinished_patients": 465,
+            "mean_wait": 0.7019648888970337,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 1.5911204148332763,
+            "throughput": 1.875,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42103,
+            "high_risk_patients": 225,
+            "wait_censored_count": 11,
+            "icu_utilization": 0.521630502360344,
+            "general_utilization": 0.445132170726399,
+            "doctor_utilization": 0.740939554295343,
+            "nurse_utilization": 0.6297986211510416,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 515,
+            "patients_completed": 45,
+            "patients_waiting_at_end": 11,
+            "patients_in_treatment_at_end": 459,
+            "unfinished_patients": 470,
+            "mean_wait": 1.4976294137583748,
+            "median_wait": 0.0,
+            "p95_wait": 2.2830702859028325,
+            "high_risk_mean_wait": 2.595538395523189,
+            "throughput": 1.875,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42104,
+            "high_risk_patients": 232,
+            "wait_censored_count": 11,
+            "icu_utilization": 0.5533281287130584,
+            "general_utilization": 0.4580478195256127,
+            "doctor_utilization": 0.7351259694552144,
+            "nurse_utilization": 0.6248570740369322,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 552,
+            "patients_completed": 46,
+            "patients_waiting_at_end": 21,
+            "patients_in_treatment_at_end": 485,
+            "unfinished_patients": 506,
+            "mean_wait": 4.505175373932406,
+            "median_wait": 0.0,
+            "p95_wait": 26.807854552488845,
+            "high_risk_mean_wait": 8.397050719801715,
+            "throughput": 1.9166666666666667,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42105,
+            "high_risk_patients": 235,
+            "wait_censored_count": 21,
+            "icu_utilization": 0.5478382360686268,
+            "general_utilization": 0.5047347893284648,
+            "doctor_utilization": 0.8010721638387963,
+            "nurse_utilization": 0.6809113392629769,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 533,
+            "patients_completed": 50,
+            "patients_waiting_at_end": 22,
+            "patients_in_treatment_at_end": 461,
+            "unfinished_patients": 483,
+            "mean_wait": 2.5817035217361632,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 5.757522916675208,
+            "throughput": 2.0833333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42106,
+            "high_risk_patients": 239,
+            "wait_censored_count": 22,
+            "icu_utilization": 0.5414556062563594,
+            "general_utilization": 0.47301330478514964,
+            "doctor_utilization": 0.7785041023204238,
+            "nurse_utilization": 0.6617284869723602,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 549,
+            "patients_completed": 51,
+            "patients_waiting_at_end": 9,
+            "patients_in_treatment_at_end": 489,
+            "unfinished_patients": 498,
+            "mean_wait": 3.7302663457362875,
+            "median_wait": 0.0,
+            "p95_wait": 15.733716868264839,
+            "high_risk_mean_wait": 1.2214718908724675,
+            "throughput": 2.125,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42107,
+            "high_risk_patients": 216,
+            "wait_censored_count": 9,
+            "icu_utilization": 0.5104916639604039,
+            "general_utilization": 0.5532440938531108,
+            "doctor_utilization": 0.8035954634864138,
+            "nurse_utilization": 0.6830561439634517,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 515,
+            "patients_completed": 58,
+            "patients_waiting_at_end": 0,
+            "patients_in_treatment_at_end": 457,
+            "unfinished_patients": 457,
+            "mean_wait": 0.007034477006665785,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 0.003946056095286993,
+            "throughput": 2.4166666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42108,
+            "high_risk_patients": 211,
+            "wait_censored_count": 0,
+            "icu_utilization": 0.49543536081610773,
+            "general_utilization": 0.49606843476633145,
+            "doctor_utilization": 0.7755880803728409,
+            "nurse_utilization": 0.6592498683169147,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 532,
+            "patients_completed": 52,
+            "patients_waiting_at_end": 10,
+            "patients_in_treatment_at_end": 470,
+            "unfinished_patients": 480,
+            "mean_wait": 0.8260320083644527,
+            "median_wait": 0.0,
+            "p95_wait": 0.0,
+            "high_risk_mean_wait": 1.9274080195170562,
+            "throughput": 2.1666666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 22.0,
+            "seed": 42109,
+            "high_risk_patients": 228,
+            "wait_censored_count": 10,
+            "icu_utilization": 0.5372660141191359,
+            "general_utilization": 0.49032574304564713,
+            "doctor_utilization": 0.7679783069426919,
+            "nurse_utilization": 0.652781560901288,
+            "policy_verdict": "ACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": true,
+              "high_risk_wait_pass": true,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          }
+        ]
+      },
+      "worst": {
+        "arrival_rate": 35.0,
+        "total_runs": 10,
+        "acceptable_run_count": 0,
+        "acceptable_run_percentage": 0.0,
+        "scenario_robustness": 0.0,
+        "scenario_verdict": "UNACCEPTABLE",
+        "metrics": {
+          "patients_arrived": {
+            "mean": 838.7,
+            "min": 807.0,
+            "max": 872.0
+          },
+          "patients_completed": {
+            "mean": 61.9,
+            "min": 53.0,
+            "max": 73.0
+          },
+          "patients_waiting_at_end": {
+            "mean": 286.8,
+            "min": 261.0,
+            "max": 328.0
+          },
+          "patients_in_treatment_at_end": {
+            "mean": 490.0,
+            "min": 490.0,
+            "max": 490.0
+          },
+          "unfinished_patients": {
+            "mean": 776.8,
+            "min": 751.0,
+            "max": 818.0
+          },
+          "mean_wait": {
+            "mean": 167.8940778737877,
+            "min": 135.03385510518703,
+            "max": 195.84032471988846
+          },
+          "median_wait": {
+            "mean": 44.36614827570868,
+            "min": 11.849266331203864,
+            "max": 86.66267571632454
+          },
+          "p95_wait": {
+            "mean": 837.7417912212875,
+            "min": 716.472028585318,
+            "max": 955.6625617610428
+          },
+          "high_risk_mean_wait": {
+            "mean": 149.16592821448,
+            "min": 112.54251040926714,
+            "max": 176.95557050576025
+          },
+          "throughput": {
+            "mean": 2.5791666666666666,
+            "min": 2.2083333333333335,
+            "max": 3.0416666666666665
+          },
+          "simulation_duration_hours": {
+            "mean": 24.0,
+            "min": 24.0,
+            "max": 24.0
+          },
+          "arrival_rate": {
+            "mean": 35.0,
+            "min": 35.0,
+            "max": 35.0
+          },
+          "high_risk_patients": {
+            "mean": 350.5,
+            "min": 307.0,
+            "max": 388.0
+          },
+          "wait_censored_count": {
+            "mean": 286.8,
+            "min": 261.0,
+            "max": 328.0
+          },
+          "icu_utilization": {
+            "mean": 0.6355361927416483,
+            "min": 0.6015993429982948,
+            "max": 0.6911550374354255
+          },
+          "general_utilization": {
+            "mean": 0.5733584951782194,
+            "min": 0.5110785708774161,
+            "max": 0.6285756321415249
+          },
+          "doctor_utilization": {
+            "mean": 0.8817135047108234,
+            "min": 0.856220796723438,
+            "max": 0.9131784515611716
+          },
+          "nurse_utilization": {
+            "mean": 0.7494564790041998,
+            "min": 0.7277876772149222,
+            "max": 0.7762016838269958
+          }
+        },
+        "runs": [
+          {
+            "patients_arrived": 840,
+            "patients_completed": 73,
+            "patients_waiting_at_end": 277,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 767,
+            "mean_wait": 135.03385510518703,
+            "median_wait": 11.849266331203864,
+            "p95_wait": 716.472028585318,
+            "high_risk_mean_wait": 130.17502294679676,
+            "throughput": 3.0416666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42200,
+            "high_risk_patients": 342,
+            "wait_censored_count": 277,
+            "icu_utilization": 0.608451770331069,
+            "general_utilization": 0.6285756321415249,
+            "doctor_utilization": 0.8891914896498858,
+            "nurse_utilization": 0.7558127662024029,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 838,
+            "patients_completed": 59,
+            "patients_waiting_at_end": 289,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 779,
+            "mean_wait": 195.84032471988846,
+            "median_wait": 65.03809956708523,
+            "p95_wait": 955.6625617610428,
+            "high_risk_mean_wait": 173.4803391527082,
+            "throughput": 2.4583333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42201,
+            "high_risk_patients": 368,
+            "wait_censored_count": 289,
+            "icu_utilization": 0.6383041600167928,
+            "general_utilization": 0.5498696602944404,
+            "doctor_utilization": 0.8800261596247166,
+            "nurse_utilization": 0.7480222356810092,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 844,
+            "patients_completed": 73,
+            "patients_waiting_at_end": 281,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 771,
+            "mean_wait": 143.8625232672562,
+            "median_wait": 22.576618377663294,
+            "p95_wait": 778.8432458477993,
+            "high_risk_mean_wait": 119.39514612876314,
+            "throughput": 3.0416666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42202,
+            "high_risk_patients": 337,
+            "wait_censored_count": 281,
+            "icu_utilization": 0.6514417008535061,
+            "general_utilization": 0.5810536075288179,
+            "doctor_utilization": 0.8943328566046749,
+            "nurse_utilization": 0.7601829281139736,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 807,
+            "patients_completed": 56,
+            "patients_waiting_at_end": 261,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 751,
+            "mean_wait": 147.8674050219707,
+            "median_wait": 20.87817948819429,
+            "p95_wait": 831.2411900418906,
+            "high_risk_mean_wait": 112.54251040926714,
+            "throughput": 2.3333333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42203,
+            "high_risk_patients": 307,
+            "wait_censored_count": 261,
+            "icu_utilization": 0.6015993429982948,
+            "general_utilization": 0.6069939481018936,
+            "doctor_utilization": 0.8567007328665401,
+            "nurse_utilization": 0.7281956229365592,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 854,
+            "patients_completed": 62,
+            "patients_waiting_at_end": 302,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 792,
+            "mean_wait": 185.21832871597297,
+            "median_wait": 86.66267571632454,
+            "p95_wait": 900.485177638413,
+            "high_risk_mean_wait": 173.95341440918114,
+            "throughput": 2.5833333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42204,
+            "high_risk_patients": 371,
+            "wait_censored_count": 302,
+            "icu_utilization": 0.6344997279093065,
+            "general_utilization": 0.5452196355723953,
+            "doctor_utilization": 0.8689370907236542,
+            "nurse_utilization": 0.738596527115106,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 829,
+            "patients_completed": 63,
+            "patients_waiting_at_end": 276,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 766,
+            "mean_wait": 149.29575723030297,
+            "median_wait": 21.935067266829265,
+            "p95_wait": 756.75462689006,
+            "high_risk_mean_wait": 130.89998470933983,
+            "throughput": 2.625,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42205,
+            "high_risk_patients": 338,
+            "wait_censored_count": 276,
+            "icu_utilization": 0.6457038402671038,
+            "general_utilization": 0.5846286353410791,
+            "doctor_utilization": 0.8731861629231932,
+            "nurse_utilization": 0.7422082384847142,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 839,
+            "patients_completed": 53,
+            "patients_waiting_at_end": 296,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 786,
+            "mean_wait": 173.3352757516581,
+            "median_wait": 40.26973889621945,
+            "p95_wait": 922.4944621678895,
+            "high_risk_mean_wait": 129.97813491840165,
+            "throughput": 2.2083333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42206,
+            "high_risk_patients": 340,
+            "wait_censored_count": 296,
+            "icu_utilization": 0.6247087630832064,
+            "general_utilization": 0.5990126437126292,
+            "doctor_utilization": 0.8933911783865953,
+            "nurse_utilization": 0.759382501628606,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 872,
+            "patients_completed": 54,
+            "patients_waiting_at_end": 328,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 818,
+            "mean_wait": 195.07471873830582,
+            "median_wait": 71.91131328654605,
+            "p95_wait": 905.7723390312107,
+            "high_risk_mean_wait": 176.95557050576025,
+            "throughput": 2.25,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42207,
+            "high_risk_patients": 365,
+            "wait_censored_count": 328,
+            "icu_utilization": 0.6302955539030664,
+            "general_utilization": 0.5801064413679823,
+            "doctor_utilization": 0.8919701280443638,
+            "nurse_utilization": 0.7581746088377093,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 816,
+            "patients_completed": 64,
+            "patients_waiting_at_end": 262,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 752,
+            "mean_wait": 179.03880232099596,
+            "median_wait": 29.44734626468926,
+            "p95_wait": 879.4308457523405,
+            "high_risk_mean_wait": 168.89536605584127,
+            "throughput": 2.6666666666666665,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42208,
+            "high_risk_patients": 349,
+            "wait_censored_count": 262,
+            "icu_utilization": 0.6292020306187123,
+            "general_utilization": 0.5470461768440157,
+            "doctor_utilization": 0.9131784515611716,
+            "nurse_utilization": 0.7762016838269958,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": false,
+              "nurse_util_pass": true
+            }
+          },
+          {
+            "patients_arrived": 848,
+            "patients_completed": 62,
+            "patients_waiting_at_end": 296,
+            "patients_in_treatment_at_end": 490,
+            "unfinished_patients": 786,
+            "mean_wait": 174.37378786633863,
+            "median_wait": 73.09317756233156,
+            "p95_wait": 730.2614344969115,
+            "high_risk_mean_wait": 175.3837929087405,
+            "throughput": 2.5833333333333335,
+            "simulation_duration_hours": 24.0,
+            "arrival_rate": 35.0,
+            "seed": 42209,
+            "high_risk_patients": 388,
+            "wait_censored_count": 296,
+            "icu_utilization": 0.6911550374354255,
+            "general_utilization": 0.5110785708774161,
+            "doctor_utilization": 0.856220796723438,
+            "nurse_utilization": 0.7277876772149222,
+            "policy_verdict": "UNACCEPTABLE",
+            "condition_breakdown": {
+              "mean_wait_pass": false,
+              "high_risk_wait_pass": false,
+              "icu_util_pass": true,
+              "general_util_pass": true,
+              "doctor_util_pass": true,
+              "nurse_util_pass": true
+            }
+          }
+        ]
+      }
+    },
+    "overall_robustness": 66.66666666666666,
+    "overall_policy_status": "CONDITIONALLY ACCEPTABLE",
+    "metric_definitions": {
+      "seeds": "base_seed * 1000 + scenario_index * 100 + run_index; scenario_index Best=0, Average=1, Worst=2.",
+      "wait": "Observed wait for every arrival: service_start - arrival, or window_end - arrival if still waiting (right censored). Empty groups use zero.",
+      "in_treatment": "Holding a bed, including post-treatment stay; waiting patients hold no resources.",
+      "throughput": "Completed hospital flows per hour of observation.",
+      "utilization": "Occupied resource minutes inside [0, window_end) / (capacity * window_minutes).",
+      "allocation": "Priority then arrival order among feasible patients; bed, doctor and nurse acquired together. Staff held during treatment, bed during full LOS.",
+      "percentiles": "Scenario wait metrics are means of per-run statistics, not pooled patient percentiles."
+    }
+  },
+  "distinct_seed_count": 30,
+  "first_three_best_arrival_streams": [
+    [
+      8.636471201181836,
+      10.67288782627863,
+      13.264059438818965
+    ],
+    [
+      14.192796405014821,
+      16.580907444253313,
+      17.540397774383592
+    ],
+    [
+      1.6171148800101267,
+      9.741106901426893,
+      10.180538121757593
+    ]
+  ],
+  "exact_reproducibility": true,
+  "dashboard_validation": true
+}

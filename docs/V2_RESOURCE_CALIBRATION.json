@@ -1,0 +1,914 @@
+{
+  "fixed_experiment": {
+    "simulation_duration_hours": 24,
+    "arrival_rates": [
+      12,
+      22,
+      35
+    ],
+    "replications_per_scenario": 10,
+    "mean_wait_target_minutes": 20,
+    "high_risk_wait_target_minutes": 10,
+    "max_utilization_target": 0.9,
+    "robustness_threshold": 90,
+    "random_seed": 42
+  },
+  "resource_order": [
+    "icu_beds",
+    "general_beds",
+    "doctors",
+    "nurses"
+  ],
+  "selected_resources": [
+    210,
+    280,
+    85,
+    100
+  ],
+  "configurations": [
+    {
+      "resources": [
+        70,
+        90,
+        14,
+        20
+      ],
+      "seconds": 2.057,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 7.1,
+          "mean_wait": 468.043,
+          "p95_wait": 1230.667,
+          "high_risk_mean_wait": 403.224,
+          "icu_utilization": 0.38,
+          "general_utilization": 0.249,
+          "doctor_utilization": 0.974,
+          "nurse_utilization": 0.682
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 7.1,
+          "mean_wait": 578.99,
+          "p95_wait": 1304.628,
+          "high_risk_mean_wait": 522.606,
+          "icu_utilization": 0.441,
+          "general_utilization": 0.199,
+          "doctor_utilization": 0.985,
+          "nurse_utilization": 0.69
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 7.7,
+          "mean_wait": 617.479,
+          "p95_wait": 1327.143,
+          "high_risk_mean_wait": 582.386,
+          "icu_utilization": 0.429,
+          "general_utilization": 0.206,
+          "doctor_utilization": 0.991,
+          "nurse_utilization": 0.694
+        }
+      }
+    },
+    {
+      "resources": [
+        90,
+        120,
+        20,
+        25
+      ],
+      "seconds": 2.045,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 10.6,
+          "mean_wait": 362.355,
+          "p95_wait": 1137.642,
+          "high_risk_mean_wait": 292.95,
+          "icu_utilization": 0.401,
+          "general_utilization": 0.274,
+          "doctor_utilization": 0.963,
+          "nurse_utilization": 0.77
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 10.6,
+          "mean_wait": 521.084,
+          "p95_wait": 1258.99,
+          "high_risk_mean_wait": 453.337,
+          "icu_utilization": 0.46,
+          "general_utilization": 0.23,
+          "doctor_utilization": 0.979,
+          "nurse_utilization": 0.783
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 10.5,
+          "mean_wait": 580.487,
+          "p95_wait": 1313.726,
+          "high_risk_mean_wait": 530.742,
+          "icu_utilization": 0.472,
+          "general_utilization": 0.221,
+          "doctor_utilization": 0.988,
+          "nurse_utilization": 0.79
+        }
+      }
+    },
+    {
+      "resources": [
+        110,
+        140,
+        25,
+        35
+      ],
+      "seconds": 2.062,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 14.0,
+          "mean_wait": 272.134,
+          "p95_wait": 999.861,
+          "high_risk_mean_wait": 208.693,
+          "icu_utilization": 0.394,
+          "general_utilization": 0.305,
+          "doctor_utilization": 0.951,
+          "nurse_utilization": 0.68
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 13.3,
+          "mean_wait": 470.122,
+          "p95_wait": 1233.624,
+          "high_risk_mean_wait": 395.374,
+          "icu_utilization": 0.457,
+          "general_utilization": 0.26,
+          "doctor_utilization": 0.974,
+          "nurse_utilization": 0.695
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 13.0,
+          "mean_wait": 549.473,
+          "p95_wait": 1298.262,
+          "high_risk_mean_wait": 488.407,
+          "icu_utilization": 0.479,
+          "general_utilization": 0.24,
+          "doctor_utilization": 0.985,
+          "nurse_utilization": 0.704
+        }
+      }
+    },
+    {
+      "resources": [
+        130,
+        160,
+        30,
+        40
+      ],
+      "seconds": 1.899,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 17.5,
+          "mean_wait": 180.511,
+          "p95_wait": 871.312,
+          "high_risk_mean_wait": 135.882,
+          "icu_utilization": 0.382,
+          "general_utilization": 0.338,
+          "doctor_utilization": 0.94,
+          "nurse_utilization": 0.705
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 16.1,
+          "mean_wait": 418.168,
+          "p95_wait": 1210.798,
+          "high_risk_mean_wait": 334.375,
+          "icu_utilization": 0.458,
+          "general_utilization": 0.283,
+          "doctor_utilization": 0.968,
+          "nurse_utilization": 0.726
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 15.5,
+          "mean_wait": 517.955,
+          "p95_wait": 1258.755,
+          "high_risk_mean_wait": 449.829,
+          "icu_utilization": 0.477,
+          "general_utilization": 0.26,
+          "doctor_utilization": 0.982,
+          "nurse_utilization": 0.736
+        }
+      }
+    },
+    {
+      "resources": [
+        150,
+        180,
+        35,
+        50
+      ],
+      "seconds": 1.792,
+      "overall_robustness": 3.3333333333333335,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 10.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 21.1,
+          "mean_wait": 96.856,
+          "p95_wait": 509.777,
+          "high_risk_mean_wait": 67.482,
+          "icu_utilization": 0.371,
+          "general_utilization": 0.357,
+          "doctor_utilization": 0.922,
+          "nurse_utilization": 0.646
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 20.0,
+          "mean_wait": 367.605,
+          "p95_wait": 1174.992,
+          "high_risk_mean_wait": 285.965,
+          "icu_utilization": 0.446,
+          "general_utilization": 0.307,
+          "doctor_utilization": 0.963,
+          "nurse_utilization": 0.674
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 18.9,
+          "mean_wait": 486.113,
+          "p95_wait": 1238.121,
+          "high_risk_mean_wait": 412.435,
+          "icu_utilization": 0.474,
+          "general_utilization": 0.278,
+          "doctor_utilization": 0.979,
+          "nurse_utilization": 0.685
+        }
+      }
+    },
+    {
+      "resources": [
+        150,
+        180,
+        25,
+        35
+      ],
+      "seconds": 1.949,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 14.0,
+          "mean_wait": 272.134,
+          "p95_wait": 999.861,
+          "high_risk_mean_wait": 208.693,
+          "icu_utilization": 0.289,
+          "general_utilization": 0.237,
+          "doctor_utilization": 0.951,
+          "nurse_utilization": 0.68
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 13.3,
+          "mean_wait": 470.122,
+          "p95_wait": 1233.624,
+          "high_risk_mean_wait": 395.374,
+          "icu_utilization": 0.335,
+          "general_utilization": 0.202,
+          "doctor_utilization": 0.974,
+          "nurse_utilization": 0.695
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 13.0,
+          "mean_wait": 549.473,
+          "p95_wait": 1298.262,
+          "high_risk_mean_wait": 488.407,
+          "icu_utilization": 0.351,
+          "general_utilization": 0.187,
+          "doctor_utilization": 0.985,
+          "nurse_utilization": 0.704
+        }
+      }
+    },
+    {
+      "resources": [
+        150,
+        180,
+        30,
+        40
+      ],
+      "seconds": 1.94,
+      "overall_robustness": 0.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 17.5,
+          "mean_wait": 180.511,
+          "p95_wait": 871.312,
+          "high_risk_mean_wait": 135.882,
+          "icu_utilization": 0.331,
+          "general_utilization": 0.301,
+          "doctor_utilization": 0.94,
+          "nurse_utilization": 0.705
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 16.1,
+          "mean_wait": 418.168,
+          "p95_wait": 1210.798,
+          "high_risk_mean_wait": 334.375,
+          "icu_utilization": 0.397,
+          "general_utilization": 0.251,
+          "doctor_utilization": 0.968,
+          "nurse_utilization": 0.726
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 15.5,
+          "mean_wait": 517.955,
+          "p95_wait": 1258.755,
+          "high_risk_mean_wait": 449.827,
+          "icu_utilization": 0.413,
+          "general_utilization": 0.231,
+          "doctor_utilization": 0.982,
+          "nurse_utilization": 0.736
+        }
+      }
+    },
+    {
+      "resources": [
+        130,
+        160,
+        35,
+        50
+      ],
+      "seconds": 1.805,
+      "overall_robustness": 3.3333333333333335,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 10.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 21.1,
+          "mean_wait": 96.856,
+          "p95_wait": 509.777,
+          "high_risk_mean_wait": 67.482,
+          "icu_utilization": 0.428,
+          "general_utilization": 0.401,
+          "doctor_utilization": 0.922,
+          "nurse_utilization": 0.646
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 20.0,
+          "mean_wait": 367.598,
+          "p95_wait": 1174.992,
+          "high_risk_mean_wait": 286.27,
+          "icu_utilization": 0.515,
+          "general_utilization": 0.346,
+          "doctor_utilization": 0.963,
+          "nurse_utilization": 0.674
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 18.9,
+          "mean_wait": 486.101,
+          "p95_wait": 1237.635,
+          "high_risk_mean_wait": 413.414,
+          "icu_utilization": 0.544,
+          "general_utilization": 0.314,
+          "doctor_utilization": 0.979,
+          "nurse_utilization": 0.685
+        }
+      }
+    },
+    {
+      "resources": [
+        150,
+        180,
+        50,
+        50
+      ],
+      "seconds": 1.469,
+      "overall_robustness": 33.33333333333333,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.5,
+          "mean_wait": 0.816,
+          "p95_wait": 3.496,
+          "high_risk_mean_wait": 0.658,
+          "icu_utilization": 0.41,
+          "general_utilization": 0.429,
+          "doctor_utilization": 0.732,
+          "nurse_utilization": 0.732
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 30.5,
+          "mean_wait": 214.196,
+          "p95_wait": 965.055,
+          "high_risk_mean_wait": 153.413,
+          "icu_utilization": 0.58,
+          "general_utilization": 0.492,
+          "doctor_utilization": 0.946,
+          "nurse_utilization": 0.946
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 31.6,
+          "mean_wait": 388.548,
+          "p95_wait": 1184.927,
+          "high_risk_mean_wait": 324.224,
+          "icu_utilization": 0.613,
+          "general_utilization": 0.455,
+          "doctor_utilization": 0.969,
+          "nurse_utilization": 0.969
+        }
+      }
+    },
+    {
+      "resources": [
+        150,
+        180,
+        75,
+        90
+      ],
+      "seconds": 1.025,
+      "overall_robustness": 33.33333333333333,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.411,
+          "general_utilization": 0.43,
+          "doctor_utilization": 0.488,
+          "nurse_utilization": 0.407
+        },
+        "average": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 45.3,
+          "mean_wait": 77.325,
+          "p95_wait": 390.828,
+          "high_risk_mean_wait": 72.521,
+          "icu_utilization": 0.659,
+          "general_utilization": 0.681,
+          "doctor_utilization": 0.664,
+          "nurse_utilization": 0.554
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 49.3,
+          "mean_wait": 273.375,
+          "p95_wait": 961.732,
+          "high_risk_mean_wait": 252.354,
+          "icu_utilization": 0.724,
+          "general_utilization": 0.703,
+          "doctor_utilization": 0.706,
+          "nurse_utilization": 0.588
+        }
+      }
+    },
+    {
+      "resources": [
+        180,
+        240,
+        80,
+        100
+      ],
+      "seconds": 0.929,
+      "overall_robustness": 36.666666666666664,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.342,
+          "general_utilization": 0.322,
+          "doctor_utilization": 0.458,
+          "nurse_utilization": 0.366
+        },
+        "average": {
+          "robustness": 10.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.6,
+          "mean_wait": 15.417,
+          "p95_wait": 118.783,
+          "high_risk_mean_wait": 22.456,
+          "icu_utilization": 0.592,
+          "general_utilization": 0.572,
+          "doctor_utilization": 0.767,
+          "nurse_utilization": 0.613
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 57.8,
+          "mean_wait": 210.322,
+          "p95_wait": 895.936,
+          "high_risk_mean_wait": 196.656,
+          "icu_utilization": 0.678,
+          "general_utilization": 0.618,
+          "doctor_utilization": 0.819,
+          "nurse_utilization": 0.656
+        }
+      }
+    },
+    {
+      "resources": [
+        200,
+        280,
+        85,
+        100
+      ],
+      "seconds": 0.925,
+      "overall_robustness": 60.0,
+      "status": "UNACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.308,
+          "general_utilization": 0.276,
+          "doctor_utilization": 0.431,
+          "nurse_utilization": 0.366
+        },
+        "average": {
+          "robustness": 80.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 2.922,
+          "p95_wait": 10.748,
+          "high_risk_mean_wait": 5.786,
+          "icu_utilization": 0.546,
+          "general_utilization": 0.497,
+          "doctor_utilization": 0.764,
+          "nurse_utilization": 0.649
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 62.3,
+          "mean_wait": 170.128,
+          "p95_wait": 816.202,
+          "high_risk_mean_wait": 160.187,
+          "icu_utilization": 0.654,
+          "general_utilization": 0.578,
+          "doctor_utilization": 0.863,
+          "nurse_utilization": 0.734
+        }
+      }
+    },
+    {
+      "resources": [
+        220,
+        300,
+        90,
+        110
+      ],
+      "seconds": 0.808,
+      "overall_robustness": 66.66666666666666,
+      "status": "CONDITIONALLY ACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.28,
+          "general_utilization": 0.258,
+          "doctor_utilization": 0.407,
+          "nurse_utilization": 0.333
+        },
+        "average": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 0.278,
+          "p95_wait": 0.551,
+          "high_risk_mean_wait": 0.413,
+          "icu_utilization": 0.5,
+          "general_utilization": 0.465,
+          "doctor_utilization": 0.731,
+          "nurse_utilization": 0.598
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 65.8,
+          "mean_wait": 138.173,
+          "p95_wait": 718.884,
+          "high_risk_mean_wait": 126.547,
+          "icu_utilization": 0.631,
+          "general_utilization": 0.571,
+          "doctor_utilization": 0.878,
+          "nurse_utilization": 0.718
+        }
+      }
+    },
+    {
+      "resources": [
+        210,
+        280,
+        85,
+        100
+      ],
+      "seconds": 0.849,
+      "overall_robustness": 66.66666666666666,
+      "status": "CONDITIONALLY ACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.293,
+          "general_utilization": 0.276,
+          "doctor_utilization": 0.431,
+          "nurse_utilization": 0.366
+        },
+        "average": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 1.512,
+          "p95_wait": 4.913,
+          "high_risk_mean_wait": 2.399,
+          "icu_utilization": 0.522,
+          "general_utilization": 0.497,
+          "doctor_utilization": 0.77,
+          "nurse_utilization": 0.654
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 61.9,
+          "mean_wait": 167.894,
+          "p95_wait": 837.742,
+          "high_risk_mean_wait": 149.166,
+          "icu_utilization": 0.636,
+          "general_utilization": 0.573,
+          "doctor_utilization": 0.882,
+          "nurse_utilization": 0.749
+        }
+      }
+    },
+    {
+      "resources": [
+        210,
+        290,
+        85,
+        100
+      ],
+      "seconds": 0.863,
+      "overall_robustness": 66.66666666666666,
+      "status": "CONDITIONALLY ACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.293,
+          "general_utilization": 0.267,
+          "doctor_utilization": 0.431,
+          "nurse_utilization": 0.366
+        },
+        "average": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 1.485,
+          "p95_wait": 4.701,
+          "high_risk_mean_wait": 2.399,
+          "icu_utilization": 0.522,
+          "general_utilization": 0.48,
+          "doctor_utilization": 0.77,
+          "nurse_utilization": 0.654
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 61.9,
+          "mean_wait": 165.581,
+          "p95_wait": 830.823,
+          "high_risk_mean_wait": 149.172,
+          "icu_utilization": 0.636,
+          "general_utilization": 0.558,
+          "doctor_utilization": 0.893,
+          "nurse_utilization": 0.759
+        }
+      }
+    },
+    {
+      "resources": [
+        220,
+        300,
+        85,
+        100
+      ],
+      "seconds": 0.92,
+      "overall_robustness": 66.66666666666666,
+      "status": "CONDITIONALLY ACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.28,
+          "general_utilization": 0.258,
+          "doctor_utilization": 0.431,
+          "nurse_utilization": 0.366
+        },
+        "average": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 0.783,
+          "p95_wait": 3.719,
+          "high_risk_mean_wait": 0.731,
+          "icu_utilization": 0.5,
+          "general_utilization": 0.464,
+          "doctor_utilization": 0.773,
+          "nurse_utilization": 0.657
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 61.7,
+          "mean_wait": 162.46,
+          "p95_wait": 835.322,
+          "high_risk_mean_wait": 139.98,
+          "icu_utilization": 0.617,
+          "general_utilization": 0.538,
+          "doctor_utilization": 0.918,
+          "nurse_utilization": 0.781
+        }
+      }
+    },
+    {
+      "resources": [
+        210,
+        280,
+        90,
+        110
+      ],
+      "seconds": 0.805,
+      "overall_robustness": 66.66666666666666,
+      "status": "CONDITIONALLY ACCEPTABLE",
+      "scenarios": {
+        "best": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 292.4,
+          "patients_completed": 25.6,
+          "mean_wait": 0.0,
+          "p95_wait": 0.0,
+          "high_risk_mean_wait": 0.0,
+          "icu_utilization": 0.293,
+          "general_utilization": 0.276,
+          "doctor_utilization": 0.407,
+          "nurse_utilization": 0.333
+        },
+        "average": {
+          "robustness": 100.0,
+          "verdict": "ACCEPTABLE",
+          "patients_arrived": 528.6,
+          "patients_completed": 49.8,
+          "mean_wait": 1.033,
+          "p95_wait": 1.204,
+          "high_risk_mean_wait": 2.108,
+          "icu_utilization": 0.523,
+          "general_utilization": 0.498,
+          "doctor_utilization": 0.727,
+          "nurse_utilization": 0.595
+        },
+        "worst": {
+          "robustness": 0.0,
+          "verdict": "UNACCEPTABLE",
+          "patients_arrived": 838.7,
+          "patients_completed": 65.6,
+          "mean_wait": 146.56,
+          "p95_wait": 719.506,
+          "high_risk_mean_wait": 137.283,
+          "icu_utilization": 0.648,
+          "general_utilization": 0.604,
+          "doctor_utilization": 0.837,
+          "nurse_utilization": 0.685
+        }
+      }
+    }
+  ]
+}

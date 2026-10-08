@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "provenance": {
+    "version": "3.2-grounded-prose",
+    "provider": "Groq",
+    "model": "openai/gpt-oss-120b",
+    "ga_run_id": "daa0282a1fac63a98ac54040f992b67076c53120357c851dac318b65d20ffc3c",
+    "ga_provenance": {
+      "bounds": {
+        "doctors": [
+          59,
+          128
+        ],
+        "general_beds": [
+          196,
+          420
+        ],
+        "icu_beds": [
+          147,
+          315
+        ],
+        "nurses": [
+          70,
+          150
+        ]
+      },
+      "current_policy": {
+        "doctors": 85,
+        "general_beds": 280,
+        "icu_beds": 210,
+        "icu_risk_threshold": 0.5,
+        "nurses": 100
+      },
+      "dependencies": {
+        "automatic_bounds": {
+          "doctors": [
+            59,
+            128
+          ],
+          "general_beds": [
+            196,
+            420
+          ],
+          "icu_beds": [
+            147,
+            315
+          ],
+          "nurses": [
+            70,
+            150
+          ]
+        },
+        "bound_strategy": "floor(0.70*current), ceil(1.50*current), minimum 1",
+        "decision_tree_xai_v2.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\decision_tree_xai_v2.py",
+          "sha256": "dc5973396d7af79212f500b716dea9a030e9b00a64fdf8c27104f54b142776c8"
+        },
+        "digital_twin.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\digital_twin.py",
+          "sha256": "3b561fcf7fc52ca551a63520c2f0d055c41cca06e159c862ab9f7af272113c3a"
+        },
+        "feedback": {
+          "available": null,
+          "enabled": false,
+          "instruction": "",
+          "interpretation": {}
+        },
+        "feedback_interpreter.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\feedback_interpreter.py",
+          "sha256": "5d845d91d76939adf65d10e20396f7db78e0250a5882e6eb651e52bd0d2faa59"
+        },
+        "genetic_algorithm.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\genetic_algorithm.py",
+          "sha256": "196619e9bfa641df8e5e78d96621237e131b04e0b5ad138da29f2ad1c60197ca"
+        },
+        "genetic_algorithm_v2.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\genetic_algorithm_v2.py",
+          "sha256": "aae00ebbc30b0e0468cfc6baa0b142abe640b5724e4b22cc8caf3f88b3085168"
+        },
+        "llm_explanation.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\llm_explanation.py",
+          "sha256": "8d2bbb62dc3117c1283a6566d321074382f8ad4b68e08b5707f5af590490b935"
+        },
+        "patient_data": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\data\\synthetic\\synthetic_hospital.csv",
+          "sha256": "6119a9c3c3f4cea3c18eeed93134f0448a92695b2770c6b827804e77e826b7e9"
+        },
+        "rf_model": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\models\\random_forest_pipeline.joblib",
+          "sha256": "fb62b5004bdd4c16df69b60ca401b2b02f95b5a79aac42b6a7c0126062a34471"
+        },
+        "scenario_evaluation.py": {
+          "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\scenario_evaluation.py",
+          "sha256": "34c1bbc698254d5596a9e4a842a31b0d4c332f0eef8673a63ef6b7f32241f02e"
+        }
+      },
+      "ga_configuration": {
+        "elite_count": 2,
+        "ga_replications_per_scenario": 3,
+        "generations": 10,
+        "improvement_tolerance": 0.01,
+        "mutation_rate": 0.25,
+        "patience": 5,
+        "population_size": 12,
+        "prioritize_efficiency": true,
+        "prioritize_high_risk": true,
+        "scenario_weights": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "seed": 42
+      },
+      "scenario_configuration": {
+        "average_case_arrival_rate": 22.0,
+        "best_case_arrival_rate": 12.0,
+        "high_risk_wait_target_minutes": 10.0,
+        "max_utilization_target": 0.9,
+        "mean_wait_target_minutes": 20.0,
+        "random_seed": 42,
+        "replications_per_scenario": 10,
+        "robustness_threshold": 90.0,
+        "simulation_duration_hours": 24.0,
+        "worst_case_arrival_rate": 35.0
+      },
+      "seed_strategy": "base_seed * 1000 + scenario_index * 100 + run_index; fixed across all candidates and generations",
+      "version": "2.0-scenario-ga"
+    },
+    "xai_sha256": "db74713dc9193c51d3ab6b44cfb7394c08d35fed58d4b2f181c85528f965dc12"
+  },
+  "available": false,
+  "message": "AI explanation unavailable. Simulation and optimization results remain valid. A deterministic explanation is shown.",
+  "summary": [
+    "Current status: CONDITIONALLY ACCEPTABLE.",
+    "Main issue: Worst demand was below the robustness threshold.",
+    "GA change: icu beds 210 -> 284; general beds 280 -> 394; doctors 85 -> 122; nurses 100 -> 138.",
+    "Result: overall robustness 66.7% -> 70.0%; verified policy CONDITIONALLY ACCEPTABLE.",
+    "Remaining concern: Worst remains below the robustness threshold."
+  ],
+  "detail": "The simulation suggests the following resource configuration: icu beds 210 -> 284; general beds 280 -> 394; doctors 85 -> 122; nurses 100 -> 138.\n\nAuthoritative final policy status: CONDITIONALLY ACCEPTABLE. Remaining concern: Worst remains below the robustness threshold.\n\nBest: robustness 100.0% -> 100.0%, ACCEPTABLE; mean wait 0.00 -> 0.00 min; high-risk wait 0.00 -> 0.00 min; verified P95 0.00 min.\n\nAverage: robustness 100.0% -> 100.0%, ACCEPTABLE; mean wait 1.51 -> 0.00 min; high-risk wait 2.40 -> 0.00 min; verified P95 0.00 min.\n\nWorst: robustness 0.0% -> 10.0%, UNACCEPTABLE; mean wait 167.89 -> 13.02 min; high-risk wait 149.17 -> 22.85 min; verified P95 107.28 min.\n\nThe recommendation increases modeled resource capacity to address demand. This carries a resource-cost tradeoff; the simulation does not establish real-world staffing or budget feasibility.\n\nBest learned pattern: arrival_rate <= 28.50 (actual 12) AND icu_beds > 192.00 (actual 284) AND general_beds > 353.00 (actual 394) -> surrogate ACCEPTABLE.\n\nAverage learned pattern: arrival_rate <= 28.50 (actual 22) AND icu_beds > 192.00 (actual 284) AND general_beds > 353.00 (actual 394) -> surrogate ACCEPTABLE.\n\nWorst learned pattern: arrival_rate > 28.50 (actual 35) -> surrogate UNACCEPTABLE.\n\nDecision Tree rules are learned explanatory patterns, not the authoritative acceptance criteria. Limited replications and sampled clinical profiles restrict generalization. Concurrent staff capacities are not total employee counts. The recommendation should be reviewed before operational use.",
+  "authoritative_status": "CONDITIONALLY ACCEPTABLE"
+}

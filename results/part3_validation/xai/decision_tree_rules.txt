@@ -1,0 +1,19 @@
+|--- arrival_rate <= 28.50
+|   |--- icu_beds <= 192.00
+|   |   |--- arrival_rate <= 17.00
+|   |   |   |--- class: 1
+|   |   |--- arrival_rate >  17.00
+|   |   |   |--- icu_beds <= 176.50
+|   |   |   |   |--- class: 0
+|   |   |   |--- icu_beds >  176.50
+|   |   |   |   |--- class: 0
+|   |--- icu_beds >  192.00
+|   |   |--- general_beds <= 354.00
+|   |   |   |--- arrival_rate <= 17.00
+|   |   |   |   |--- class: 1
+|   |   |   |--- arrival_rate >  17.00
+|   |   |   |   |--- class: 0
+|   |   |--- general_beds >  354.00
+|   |   |   |--- class: 1
+|--- arrival_rate >  28.50
+|   |--- class: 0

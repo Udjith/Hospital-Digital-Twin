@@ -1,0 +1,202 @@
+{
+  "configuration": {
+    "simulation_duration_hours": 24.0,
+    "best_case_arrival_rate": 12.0,
+    "average_case_arrival_rate": 22.0,
+    "worst_case_arrival_rate": 35.0,
+    "replications_per_scenario": 10,
+    "mean_wait_target_minutes": 20.0,
+    "high_risk_wait_target_minutes": 10.0,
+    "max_utilization_target": 0.9,
+    "robustness_threshold": 90.0,
+    "random_seed": 42
+  },
+  "automatic_bounds": {
+    "icu_beds": [
+      147,
+      315
+    ],
+    "general_beds": [
+      196,
+      420
+    ],
+    "doctors": [
+      59,
+      128
+    ],
+    "nurses": [
+      70,
+      150
+    ]
+  },
+  "ga_configuration": {
+    "population_size": 6,
+    "generations": 3,
+    "ga_replications_per_scenario": 3,
+    "seed": 42,
+    "mutation_rate": 0.25,
+    "elite_count": 2,
+    "patience": 5,
+    "improvement_tolerance": 0.01,
+    "prioritize_high_risk": true,
+    "prioritize_efficiency": true,
+    "scenario_weights": [
+      1.0,
+      2.0,
+      3.0
+    ]
+  },
+  "current_policy": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 100,
+    "icu_risk_threshold": 0.5
+  },
+  "recommended_policy": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 100,
+    "icu_risk_threshold": 0.5
+  },
+  "current_robustness": 66.66666666666666,
+  "recommended_robustness": 66.66666666666666,
+  "status": "CONDITIONALLY ACCEPTABLE",
+  "scenarios": {
+    "best": {
+      "current": 100.0,
+      "recommended": 100.0,
+      "verdict": "ACCEPTABLE"
+    },
+    "average": {
+      "current": 100.0,
+      "recommended": 100.0,
+      "verdict": "ACCEPTABLE"
+    },
+    "worst": {
+      "current": 0.0,
+      "recommended": 0.0,
+      "verdict": "UNACCEPTABLE"
+    }
+  },
+  "ga_runtime_seconds": 7.986002600053325,
+  "total_runtime_seconds": 10.738522099796683,
+  "xai_status": "available",
+  "feedback": {
+    "available": true,
+    "interpretation": {
+      "status": "applied",
+      "summary": "Applied doctor upper bound of 110, set high_risk_priority and worst_case_priority to true, other targets left unchanged.",
+      "resource_constraints": {
+        "doctors": {
+          "min": null,
+          "max": 110
+        },
+        "general_beds": {
+          "min": null,
+          "max": null
+        },
+        "icu_beds": {
+          "min": null,
+          "max": null
+        },
+        "nurses": {
+          "min": null,
+          "max": null
+        }
+      },
+      "priorities": {
+        "high_risk_priority": true,
+        "resource_efficiency_priority": null,
+        "worst_case_priority": true
+      },
+      "target_adjustments": {
+        "mean_wait_target": null,
+        "high_risk_wait_target": null,
+        "robustness_threshold": null
+      }
+    }
+  },
+  "explanation": {
+    "schema_version": 2,
+    "provenance": {
+      "version": "3.1-grounded-prose",
+      "provider": "Groq",
+      "model": "openai/gpt-oss-120b",
+      "ga_run_id": "e1def53ad641f273e28a3287030fc87f36e0741a504643d31124b156e29c6108",
+      "ga_provenance": {
+        "bounds": {
+          "doctors": [
+            59,
+            128
+          ],
+          "general_beds": [
+            196,
+            420
+          ],
+          "icu_beds": [
+            147,
+            315
+          ],
+          "nurses": [
+            70,
+            150
+          ]
+        },
+        "current_policy": {
+          "doctors": 85,
+          "general_beds": 280,
+          "icu_beds": 210,
+          "icu_risk_threshold": 0.5,
+          "nurses": 100
+        },
+        "dependencies": {},
+        "ga_configuration": {
+          "elite_count": 2,
+          "ga_replications_per_scenario": 3,
+          "generations": 3,
+          "improvement_tolerance": 0.01,
+          "mutation_rate": 0.25,
+          "patience": 5,
+          "population_size": 6,
+          "prioritize_efficiency": true,
+          "prioritize_high_risk": true,
+          "scenario_weights": [
+            1.0,
+            2.0,
+            3.0
+          ],
+          "seed": 42
+        },
+        "scenario_configuration": {
+          "average_case_arrival_rate": 22.0,
+          "best_case_arrival_rate": 12.0,
+          "high_risk_wait_target_minutes": 10.0,
+          "max_utilization_target": 0.9,
+          "mean_wait_target_minutes": 20.0,
+          "random_seed": 42,
+          "replications_per_scenario": 10,
+          "robustness_threshold": 90.0,
+          "simulation_duration_hours": 24.0,
+          "worst_case_arrival_rate": 35.0
+        },
+        "seed_strategy": "base_seed * 1000 + scenario_index * 100 + run_index; fixed across all candidates and generations",
+        "version": "2.0-scenario-ga"
+      },
+      "xai_sha256": "5470d5378b8c182ec2ea755fbceaa6624995e25f80c6a3e3f965642ec74a4329"
+    },
+    "available": true,
+    "message": "AI explanation from Groq; authoritative results remain the Digital Twin outputs.",
+    "summary": [
+      "Current status: CONDITIONALLY ACCEPTABLE.",
+      "Main issue: Worst demand was below the robustness threshold.",
+      "GA change: icu beds 210 -> 210; general beds 280 -> 280; doctors 85 -> 85; nurses 100 -> 100.",
+      "Result: overall robustness 66.7% -> 66.7%; verified policy CONDITIONALLY ACCEPTABLE.",
+      "Remaining concern: Worst remains below the robustness threshold."
+    ],
+    "detail": "The simulation suggests the following resource configuration: icu beds 210 -> 210; general beds 280 -> 280; doctors 85 -> 85; nurses 100 -> 100.\n\nAuthoritative final policy status: CONDITIONALLY ACCEPTABLE. Remaining concern: Worst remains below the robustness threshold.\n\nBest: robustness 100.0% -> 100.0%, ACCEPTABLE; mean wait 0.00 -> 0.00 min; high-risk wait 0.00 -> 0.00 min; verified P95 0.00 min.\n\nAverage: robustness 100.0% -> 100.0%, ACCEPTABLE; mean wait 1.51 -> 1.51 min; high-risk wait 2.40 -> 2.40 min; verified P95 4.91 min.\n\nWorst: robustness 0.0% -> 0.0%, UNACCEPTABLE; mean wait 167.89 -> 167.89 min; high-risk wait 149.17 -> 149.17 min; verified P95 837.74 min.\n\nResource savings must be balanced against operational performance and real-world feasibility.\n\nBest learned pattern: arrival_rate <= 17.00 (actual 12) -> surrogate ACCEPTABLE.\n\nAverage learned pattern: arrival_rate > 17.00 (actual 22) AND arrival_rate <= 28.50 (actual 22) AND icu_beds <= 243.00 (actual 210) AND icu_beds > 200.50 (actual 210) -> surrogate ACCEPTABLE.\n\nWorst learned pattern: arrival_rate > 17.00 (actual 35) AND arrival_rate > 28.50 (actual 35) -> surrogate UNACCEPTABLE.\n\nDecision Tree rules are learned explanatory patterns, not the authoritative acceptance criteria. Limited replications and sampled clinical profiles restrict generalization. Concurrent staff capacities are not total employee counts. The recommendation should be reviewed before operational use.\n\nAI interpretation:\nThe simulation suggests that the combined policy of the current staffing and bed allocation meets acceptability criteria for low and average demand scenarios, but fails under high demand. No resource quantities changed; the policy remains unchanged. The primary concern is the inability to sustain performance when arrival rates rise to the worst-case level, leading to excessive waits and utilization that breach targets. XAI surrogate models capture simple arrival-rate thresholds and bed limits, but their predictive reliability is limited to the sampled configurations and does not guarantee broader applicability. Consequently, while the policy is conditionally acceptable overall, human clinicians and administrators should review the high-demand failure, consider potential capacity expansions, and assess the trade\u2011off between added resources and the soft fitness penalty associated with larger configurations.",
+    "authoritative_status": "CONDITIONALLY ACCEPTABLE"
+  },
+  "groq_key_configured": true
+}

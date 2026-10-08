@@ -1,0 +1,186 @@
+{
+  "version": "2.0-scenario-xai",
+  "ga_run_id": "daa0282a1fac63a98ac54040f992b67076c53120357c851dac318b65d20ffc3c",
+  "ga_provenance": {
+    "bounds": {
+      "doctors": [
+        59,
+        128
+      ],
+      "general_beds": [
+        196,
+        420
+      ],
+      "icu_beds": [
+        147,
+        315
+      ],
+      "nurses": [
+        70,
+        150
+      ]
+    },
+    "current_policy": {
+      "doctors": 85,
+      "general_beds": 280,
+      "icu_beds": 210,
+      "icu_risk_threshold": 0.5,
+      "nurses": 100
+    },
+    "dependencies": {
+      "automatic_bounds": {
+        "doctors": [
+          59,
+          128
+        ],
+        "general_beds": [
+          196,
+          420
+        ],
+        "icu_beds": [
+          147,
+          315
+        ],
+        "nurses": [
+          70,
+          150
+        ]
+      },
+      "bound_strategy": "floor(0.70*current), ceil(1.50*current), minimum 1",
+      "decision_tree_xai_v2.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\decision_tree_xai_v2.py",
+        "sha256": "dc5973396d7af79212f500b716dea9a030e9b00a64fdf8c27104f54b142776c8"
+      },
+      "digital_twin.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\digital_twin.py",
+        "sha256": "3b561fcf7fc52ca551a63520c2f0d055c41cca06e159c862ab9f7af272113c3a"
+      },
+      "feedback": {
+        "available": null,
+        "enabled": false,
+        "instruction": "",
+        "interpretation": {}
+      },
+      "feedback_interpreter.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\feedback_interpreter.py",
+        "sha256": "5d845d91d76939adf65d10e20396f7db78e0250a5882e6eb651e52bd0d2faa59"
+      },
+      "genetic_algorithm.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\genetic_algorithm.py",
+        "sha256": "196619e9bfa641df8e5e78d96621237e131b04e0b5ad138da29f2ad1c60197ca"
+      },
+      "genetic_algorithm_v2.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\genetic_algorithm_v2.py",
+        "sha256": "aae00ebbc30b0e0468cfc6baa0b142abe640b5724e4b22cc8caf3f88b3085168"
+      },
+      "llm_explanation.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\llm_explanation.py",
+        "sha256": "8d2bbb62dc3117c1283a6566d321074382f8ad4b68e08b5707f5af590490b935"
+      },
+      "patient_data": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\data\\synthetic\\synthetic_hospital.csv",
+        "sha256": "6119a9c3c3f4cea3c18eeed93134f0448a92695b2770c6b827804e77e826b7e9"
+      },
+      "rf_model": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\models\\random_forest_pipeline.joblib",
+        "sha256": "fb62b5004bdd4c16df69b60ca401b2b02f95b5a79aac42b6a7c0126062a34471"
+      },
+      "scenario_evaluation.py": {
+        "path": "C:\\Users\\udjit\\OneDrive\\Desktop\\Personal\\MP\\hospital_digital_twin\\src\\scenario_evaluation.py",
+        "sha256": "34c1bbc698254d5596a9e4a842a31b0d4c332f0eef8673a63ef6b7f32241f02e"
+      }
+    },
+    "ga_configuration": {
+      "elite_count": 2,
+      "ga_replications_per_scenario": 3,
+      "generations": 10,
+      "improvement_tolerance": 0.01,
+      "mutation_rate": 0.25,
+      "patience": 5,
+      "population_size": 12,
+      "prioritize_efficiency": true,
+      "prioritize_high_risk": true,
+      "scenario_weights": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "seed": 42
+    },
+    "scenario_configuration": {
+      "average_case_arrival_rate": 22.0,
+      "best_case_arrival_rate": 12.0,
+      "high_risk_wait_target_minutes": 10.0,
+      "max_utilization_target": 0.9,
+      "mean_wait_target_minutes": 20.0,
+      "random_seed": 42,
+      "replications_per_scenario": 10,
+      "robustness_threshold": 90.0,
+      "simulation_duration_hours": 24.0,
+      "worst_case_arrival_rate": 35.0
+    },
+    "seed_strategy": "base_seed * 1000 + scenario_index * 100 + run_index; fixed across all candidates and generations",
+    "version": "2.0-scenario-ga"
+  },
+  "training_data_sha256": "54c8be2c5d1ed51ff7df7dd1b3804a8deddaaf5ab0b8da20c8a593f4af30b97e",
+  "features": [
+    "icu_beds",
+    "general_beds",
+    "doctors",
+    "nurses",
+    "simulation_duration_hours",
+    "arrival_rate"
+  ],
+  "label_source": "Actual GA-tested scenario verdict, validated against deterministic run conditions and robustness threshold",
+  "status": "available",
+  "message": "Learned explanatory patterns; Digital Twin operational rules remain the authoritative verdict.",
+  "metrics": {
+    "training_sample_count": 240,
+    "unique_policy_count": 80,
+    "class_distribution": {
+      "ACCEPTABLE": 144,
+      "UNACCEPTABLE": 96
+    },
+    "tree_depth": 4,
+    "leaf_count": 6,
+    "training_accuracy": 0.9833333333333333,
+    "validation_accuracy": 0.95,
+    "validation_train_samples": 180,
+    "validation_test_samples": 60,
+    "validation_note": "Held-out resource policies within this GA experiment; common demand seeds are shared. This is limited validation, not evidence of generalization to new hospitals or demand experiments."
+  },
+  "explanations": {
+    "best": {
+      "authoritative_verdict": "ACCEPTABLE",
+      "authoritative_robustness": 100.0,
+      "surrogate_class": "ACCEPTABLE",
+      "surrogate_probability_acceptable": 1.0,
+      "learned_rules": [
+        "arrival_rate <= 28.50 (actual 12)",
+        "icu_beds > 192.00 (actual 284)",
+        "general_beds > 353.00 (actual 394)"
+      ]
+    },
+    "average": {
+      "authoritative_verdict": "ACCEPTABLE",
+      "authoritative_robustness": 100.0,
+      "surrogate_class": "ACCEPTABLE",
+      "surrogate_probability_acceptable": 1.0,
+      "learned_rules": [
+        "arrival_rate <= 28.50 (actual 22)",
+        "icu_beds > 192.00 (actual 284)",
+        "general_beds > 353.00 (actual 394)"
+      ]
+    },
+    "worst": {
+      "authoritative_verdict": "UNACCEPTABLE",
+      "authoritative_robustness": 10.0,
+      "surrogate_class": "UNACCEPTABLE",
+      "surrogate_probability_acceptable": 0.0,
+      "learned_rules": [
+        "arrival_rate > 28.50 (actual 35)"
+      ]
+    }
+  },
+  "rules_text": "|--- arrival_rate <= 28.50\n|   |--- icu_beds <= 192.00\n|   |   |--- arrival_rate <= 17.00\n|   |   |   |--- class: 1\n|   |   |--- arrival_rate >  17.00\n|   |   |   |--- class: 0\n|   |--- icu_beds >  192.00\n|   |   |--- general_beds <= 353.00\n|   |   |   |--- arrival_rate <= 17.00\n|   |   |   |   |--- class: 1\n|   |   |   |--- arrival_rate >  17.00\n|   |   |   |   |--- class: 0\n|   |   |--- general_beds >  353.00\n|   |   |   |--- class: 1\n|--- arrival_rate >  28.50\n|   |--- class: 0\n"
+}

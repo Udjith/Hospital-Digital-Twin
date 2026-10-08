@@ -1,0 +1,261 @@
+{
+  "live_feedback": [
+    {
+      "instruction": "only 10 nurses are available",
+      "interpretation": {
+        "status": "applied",
+        "summary": "Set nurses.max to 10 as requested; all other resource constraints left unspecified. No priority flags or target adjustments were requested.",
+        "resource_constraints": {
+          "doctors": {
+            "min": null,
+            "max": null
+          },
+          "general_beds": {
+            "min": null,
+            "max": null
+          },
+          "icu_beds": {
+            "min": null,
+            "max": null
+          },
+          "nurses": {
+            "min": null,
+            "max": 10
+          }
+        },
+        "priorities": {
+          "high_risk_priority": null,
+          "resource_efficiency_priority": null,
+          "worst_case_priority": null
+        },
+        "target_adjustments": {
+          "mean_wait_target": null,
+          "high_risk_wait_target": null,
+          "robustness_threshold": null
+        }
+      },
+      "effective_bounds": {
+        "icu_beds": [
+          147,
+          315
+        ],
+        "general_beds": [
+          196,
+          420
+        ],
+        "doctors": [
+          59,
+          128
+        ],
+        "nurses": [
+          1,
+          10
+        ]
+      }
+    },
+    {
+      "instruction": "do not use more than 60 doctors",
+      "interpretation": {
+        "status": "applied",
+        "summary": "Applied maximum doctors constraint of 60; no other changes.",
+        "resource_constraints": {
+          "doctors": {
+            "min": null,
+            "max": 60
+          },
+          "nurses": {
+            "min": null,
+            "max": null
+          },
+          "general_beds": {
+            "min": null,
+            "max": null
+          },
+          "icu_beds": {
+            "min": null,
+            "max": null
+          }
+        },
+        "priorities": {
+          "high_risk_priority": null,
+          "resource_efficiency_priority": null,
+          "worst_case_priority": null
+        },
+        "target_adjustments": {
+          "mean_wait_target": null,
+          "high_risk_wait_target": null,
+          "robustness_threshold": null
+        }
+      },
+      "effective_bounds": {
+        "icu_beds": [
+          147,
+          315
+        ],
+        "general_beds": [
+          196,
+          420
+        ],
+        "doctors": [
+          59,
+          60
+        ],
+        "nurses": [
+          70,
+          150
+        ]
+      }
+    },
+    {
+      "instruction": "try to use fewer nurses",
+      "interpretation": {
+        "status": "applied",
+        "summary": "Set resource_efficiency_priority to true and left all resource bounds and targets null as per instruction to try to use fewer nurses.",
+        "resource_constraints": {
+          "doctors": {
+            "min": null,
+            "max": null
+          },
+          "general_beds": {
+            "min": null,
+            "max": null
+          },
+          "icu_beds": {
+            "min": null,
+            "max": null
+          },
+          "nurses": {
+            "min": null,
+            "max": null
+          }
+        },
+        "priorities": {
+          "high_risk_priority": null,
+          "resource_efficiency_priority": true,
+          "worst_case_priority": null
+        },
+        "target_adjustments": {
+          "mean_wait_target": null,
+          "high_risk_wait_target": null,
+          "robustness_threshold": null
+        }
+      },
+      "effective_bounds": {
+        "icu_beds": [
+          147,
+          315
+        ],
+        "general_beds": [
+          196,
+          420
+        ],
+        "doctors": [
+          59,
+          128
+        ],
+        "nurses": [
+          70,
+          150
+        ]
+      }
+    },
+    {
+      "instruction": "at least 120 doctors but no more than 100",
+      "interpretation": {
+        "status": "unsupported",
+        "summary": "The instruction contains contradictory constraints for doctors (minimum 120 and maximum 100), which cannot be satisfied.",
+        "priorities": {
+          "high_risk_priority": null,
+          "resource_efficiency_priority": null,
+          "worst_case_priority": null
+        },
+        "resource_constraints": {
+          "doctors": {
+            "min": null,
+            "max": null
+          },
+          "nurses": {
+            "min": null,
+            "max": null
+          },
+          "general_beds": {
+            "min": null,
+            "max": null
+          },
+          "icu_beds": {
+            "min": null,
+            "max": null
+          }
+        },
+        "target_adjustments": {
+          "mean_wait_target": null,
+          "high_risk_wait_target": null,
+          "robustness_threshold": null
+        }
+      },
+      "validation_error": "Feedback is unsupported or ambiguous. Clarify the instruction before optimizing."
+    }
+  ],
+  "automatic_bounds": {
+    "icu_beds": [
+      147,
+      315
+    ],
+    "general_beds": [
+      196,
+      420
+    ],
+    "doctors": [
+      59,
+      128
+    ],
+    "nurses": [
+      70,
+      150
+    ]
+  },
+  "effective_bounds": {
+    "icu_beds": [
+      147,
+      315
+    ],
+    "general_beds": [
+      196,
+      420
+    ],
+    "doctors": [
+      59,
+      128
+    ],
+    "nurses": [
+      1,
+      10
+    ]
+  },
+  "previous_current_policy": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 100,
+    "icu_risk_threshold": 0.5
+  },
+  "recommended_policy": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 10,
+    "icu_risk_threshold": 0.5
+  },
+  "generation_zero_first_policy": {
+    "icu_beds": 210,
+    "general_beds": 280,
+    "doctors": 85,
+    "nurses": 10
+  },
+  "current_policy_feasible": false,
+  "verified_status": "UNACCEPTABLE",
+  "ga_runtime_seconds": 2.082238000119105,
+  "total_runtime_seconds": 9.81419669999741,
+  "all_candidates_feasible": true,
+  "stale_detection": "PASS"
+}

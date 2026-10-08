@@ -2,6 +2,18 @@
 
 An intelligent hospital operations Digital Twin that combines Machine Learning, simulation, optimization, explainable AI, and Large Language Models to support hospital resource-allocation decisions.
 
+The active dashboard uses V2 Parts 1-3. Run `python main.py`, enter current resources, demand and targets, then **Evaluate Current Policy** or **Run Optimization**. The Genetic Algorithm performs simulation-based hospital process optimization; it never optimizes the Random Forest (threshold stays 0.50).
+
+GA bounds refresh from current resources: `min = max(1, floor(current * 0.70))`, `max = ceil(current * 1.50)`. They are hidden in collapsed informational expanders, with no eight manual bound controls. These are default search ranges, not real-world limits. Explicit numeric availability constraints may override them. Generation 0 includes the current policy when feasible; otherwise it starts from its clearly labeled nearest feasible version.
+
+Digital Twin operational criteria determine run verdicts. Scenario robustness is the percentage of replications passing all wait/utilization checks; overall robustness pools all three scenarios. The Decision Tree learns explanatory patterns from evaluated policies. Groq (`openai/gpt-oss-120b`) supplies optional prose and strict-schema feedback; neither AI component overrides the deterministic verdict.
+
+Use **Preview AI Interpretation** to inspect supported resource caps/minima, priorities and explicitly requested target adjustments. Turn **AI Interpretation** off to ignore natural-language instructions without calling Groq. Missing keys or failed/invalid responses leave simulation, GA and XAI usable with a deterministic explanation. Contradictory, zero or negative resource constraints block optimization. Explicit availability may exclude the old current policy: the preview explains this, historical results remain unchanged, and GA searches feasible candidates only. Preferences such as "try to use fewer nurses" adjust resource-efficiency priority without forcing a hard bound.
+
+Review a verified recommendation using **Accept**, **Needs Modification** or **Reject**, a rating and comments. **Save Review** creates a separate V2 record with the GA run ID and provenance. **Prepare Modification** transfers comments into the next instruction, enables interpretation and leaves historical results unchanged. Preview and rerun GA to evaluate the changes.
+
+See the [availability-constraint correction](docs/V2_AVAILABILITY_CONSTRAINTS.md), [Part 1](docs/V2_PART1.md), [Part 2](docs/V2_PART2.md), and [Part 3 implementation/schema/validation](docs/V2_PART3.md). Demonstration resources remain 210 ICU beds, 280 general beds, 85 concurrent doctors and 100 concurrent nurses ([calibration](docs/V2_RESOURCE_CALIBRATION.md)). Keep base seed 42 for reproducibility; replications automatically derive distinct seeds. Legacy V1 CLI functions and their artifacts remain separate.
+
 ## Project Overview
 
 The system creates a virtual model of hospital operations and uses it to test and optimize resource configurations such as:
@@ -86,42 +98,9 @@ It simulates:
 
 The Random Forest prediction is used to support patient resource assignment.
 
-The reproducible dashboard baseline uses the earliest 500 synthetic arrivals in
-a deterministic 3x large-hospital workload scenario. The implementation divides
-each arrival offset by 3 while retaining the same patients, arrival order,
-Random Forest predictions, treatment durations, and length-of-stay durations.
-This produces 3x arrival demand without duplicating records or increasing the
-SimPy event count.
+V2 observes only the selected 1-72 hour window (default 24). Arrivals are Poisson/exponential at Best/Average/Worst rates (12/22/35 patients/hour by default), with ten replications per scenario. Current resources are entered manually. Every patient holds exactly one bed type and requires both a doctor and a nurse for treatment. Utilization and censored waiting use only the observation window.
 
-Resource capacity is derived from the scaled cohort's offered concurrent load using:
-
-`capacity = ceil(offered concurrent load / 0.75)`
-
-The current scaled offered load and derived policy are:
-
-- 113 ICU beds from 84.742 offered beds
-- 130 general beds from 96.904 offered beds
-- 13 modeled concurrent doctors from 9.235 concurrent treatment demand
-- 13 modeled concurrent nurses from 9.235 concurrent treatment demand
-- fixed Random Forest threshold of 0.50
-
-The 75% target is the lower edge of the configured 75-80% utilization range.
-It provides an integer-capacity safety margin for long treatment durations while
-remaining entirely workload-derived. Doctor and nurse loads are equal because
-the current simulation assigns one of each to every patient for the same
-treatment duration.
-
-The baseline result records hashes for the dataset, Random Forest model, and
-Digital Twin implementation. The dashboard refuses to display it when those
-dependencies no longer match. The capacity formula, offered loads, rounding
-rule, assumptions, derived policy, and implied target utilization are retained
-in the baseline metadata for auditing.
-
-The Genetic Algorithm search envelope is derived independently for every
-resource from the current baseline: the minimum is floor(70% of baseline) and
-the maximum is ceil(130% of baseline). The dashboard reads these same dynamic
-bounds, so a stale small-hospital search space cannot silently constrain the
-large-hospital scenario.
+The original fixed-cohort/workload-derived baseline is available only through `python src/digital_twin.py --legacy-v1`; it is not the active V2 dashboard configuration.
 
 ### 5. Genetic Algorithm Optimization
 
@@ -144,14 +123,13 @@ The fitness function considers:
 - High-risk patient waiting time
 - Resource utilization
 - Resource cost
-- Patient throughput
+- Robustness and target violations (dominant); throughput is reported
 
 ### 6. Decision Tree Explainability
 
-A shallow Decision Tree is used as an interpretable model to explain why an optimized resource policy is considered acceptable or unacceptable.
+A shallow Decision Tree learns explanatory patterns from actually evaluated policy/scenario observations. It is a surrogate, not the authoritative verdict.
 
-Its acceptability labels use the mean-wait and high-risk-wait targets saved by
-the latest Genetic Algorithm run, including targets changed through feedback.
+Its labels are the deterministic scenario verdicts: the percentage of runs passing both waiting-time targets and all four utilization targets must meet the robustness threshold. Single-class observations produce a clear unavailable message instead of a tree.
 
 It generates simple rules such as:
 
@@ -179,7 +157,7 @@ The dashboard allows users to modify optimization constraints using:
 
 Example:
 
-`Do not use more than 10 nurses and prioritize high-risk patients.`
+`Do not use more than 110 doctors and prioritize high-risk patients.`
 
 The feedback interpreter converts this into structured Genetic Algorithm constraints and objectives.
 
@@ -267,7 +245,7 @@ Or run the Streamlit dashboard directly:
 python -m streamlit run src/dashboard.py
 
 Individual Module Execution
-The modules can also be run independently:
+The original GA/XAI/LLM/feedback CLI commands remain V1-compatible; the main dashboard uses the V2 Python entry points. V2 GA/XAI CLIs are `python src/genetic_algorithm_v2.py` and `python src/decision_tree_xai_v2.py`. The modules can also be run independently:
 python src/preprocessing.py
 python src/synthetic_data.py
 python src/random_forest.py

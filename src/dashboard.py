@@ -7,12 +7,26 @@ import os
 import subprocess
 import sys
 from datetime import datetime
+from dataclasses import asdict
 from pathlib import Path
 
 import altair as alt
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
+
+from scenario_evaluation import (
+    DEFAULT_V2_RESOURCES, ScenarioConfig, HospitalPolicy, load_patient_profiles, evaluate_current_policy,
+    save_current_policy_results,
+)
+
+from genetic_algorithm_v2 import (
+    automatic_bounds, canonical_hash, GENES, GAConfig, run_ga_v2, save_ga_v2,
+    validate_bounds, result_is_current, dependency_fingerprints,
+)
+from decision_tree_xai_v2 import train_xai_v2, save_xai_v2, xai_is_current
+from feedback_interpreter import interpret_feedback_v2, apply_feedback_v2, prepare_modification_v2, save_review_v2
+from llm_explanation import generate_explanation_v2, explanation_is_current_v2
 
 from digital_twin import (
     BASELINE_MAX_PATIENTS,
@@ -37,6 +51,8 @@ RF_MODEL = PROJECT_ROOT / "models" / "random_forest_pipeline.joblib"
 RF_DIR = PROJECT_ROOT / "results" / "random_forest"
 DT_DIR = PROJECT_ROOT / "results" / "digital_twin"
 GA_DIR = PROJECT_ROOT / "results" / "genetic_algorithm"
+GA_V2_DIR = PROJECT_ROOT / "results" / "genetic_algorithm_v2"
+XAI_V2_DIR = PROJECT_ROOT / "results" / "decision_tree_xai_v2"
 XAI_DIR = PROJECT_ROOT / "results" / "decision_tree_xai"
 LLM_DIR = PROJECT_ROOT / "results" / "llm"
 FEEDBACK_DIR = PROJECT_ROOT / "results" / "feedback"
@@ -522,7 +538,11 @@ baseline_metadata = (
 )
 if not baseline_valid:
     baseline_metrics = {}
-synthetic_df = load_csv(DATA_SYNTHETIC)
+@st.cache_data
+def load_source_data(path, modified):
+    return load_csv(path)
+
+synthetic_df = load_source_data(DATA_SYNTHETIC, DATA_SYNTHETIC.stat().st_mtime_ns if DATA_SYNTHETIC.exists() else 0)
 rf_metrics = load_json(RF_DIR / "metrics.json")
 rf_importance = load_csv(RF_DIR / "feature_importance.csv")
 
@@ -535,26 +555,42 @@ BASE_BOUNDS = derive_ga_bounds(baseline_policy)
 # ============================================================
 
 CONTROL_DEFAULTS = {
-    "icu_beds": BASE_BOUNDS["icu_beds"][1],
-    "general_beds": BASE_BOUNDS["general_beds"][1],
-    "doctors": BASE_BOUNDS["doctors"][1],
-    "nurses": BASE_BOUNDS["nurses"][1],
+    **DEFAULT_V2_RESOURCES,
     "mean_wait": 20.0,
     "high_risk_wait": 10.0,
 }
+
+RESOURCE_SLIDER_RANGES = {
+    "icu_beds": (1, 500),
+    "general_beds": (1, 1000),
+    "doctors": (1, 200),
+    "nurses": (1, 500),
+}
+
+# Migrate untouched initial Part 1 defaults once; preserve customized policies.
+if st.session_state.get("v2_resource_defaults_version") != 2:
+    initial_part1_values = (30, 40, 10, 20)
+    previous_values = tuple(st.session_state.get(f"{name}_number", old_value)
+                            for name, old_value in zip(DEFAULT_V2_RESOURCES, initial_part1_values))
+    if previous_values in (initial_part1_values, (1, 40, 10, 20)):
+        for name, value in DEFAULT_V2_RESOURCES.items():
+            st.session_state[f"{name}_number"] = value
+            st.session_state[f"{name}_slider"] = value
+    st.session_state.v2_resource_defaults_version = 2
 
 for control, default in CONTROL_DEFAULTS.items():
     st.session_state.setdefault(f"{control}_slider", default)
     st.session_state.setdefault(f"{control}_number", default)
 
 for resource in ["icu_beds", "general_beds", "doctors", "nurses"]:
-    low, high = BASE_BOUNDS[resource]
+    low, high = 1, 10000
     current = st.session_state.get(
         f"{resource}_number",
-        baseline_policy[resource],
+        CONTROL_DEFAULTS[resource],
     )
     bounded = max(low, min(high, int(current)))
-    st.session_state[f"{resource}_slider"] = bounded
+    slider_low, slider_high = RESOURCE_SLIDER_RANGES[resource]
+    st.session_state[f"{resource}_slider"] = max(slider_low, min(slider_high, bounded))
     st.session_state[f"{resource}_number"] = bounded
 
 st.session_state.setdefault("prioritize_high_risk", True)
@@ -569,37 +605,26 @@ st.session_state.setdefault("xai_refreshed", False)
 st.session_state.setdefault("llm_generated", False)
 st.session_state.setdefault("modification_prepared", False)
 
-saved_ga_result = (
-    load_json(GA_DIR / "best_policy.json")
-    if st.session_state.optimization_run
-    else {}
-)
-if st.session_state.optimization_run and not ga_result_matches_baseline(
-    saved_ga_result,
-    baseline_metrics,
-):
-    st.session_state.optimization_run = False
-    st.session_state.last_run_time = None
-    st.session_state.review_status = None
-    st.session_state.xai_refreshed = False
-    st.session_state.llm_generated = False
-    st.session_state.latest_warning = (
-        "A recommendation from an incompatible baseline was ignored. "
-        "Run optimization for the current large-hospital baseline."
-    )
-
-
 def sync_from_slider(name):
     st.session_state[f"{name}_number"] = st.session_state[f"{name}_slider"]
 
 
 def sync_from_number(name):
-    st.session_state[f"{name}_slider"] = st.session_state[f"{name}_number"]
+    value = st.session_state[f"{name}_number"]
+    if name in RESOURCE_SLIDER_RANGES:
+        low, high = RESOURCE_SLIDER_RANGES[name]
+        value = max(low, min(high, value))
+    st.session_state[f"{name}_slider"] = value
 
 
 def set_control(name, value):
     st.session_state[f"{name}_slider"] = value
     st.session_state[f"{name}_number"] = value
+
+
+def reset_hospital_resources():
+    for name, value in DEFAULT_V2_RESOURCES.items():
+        set_control(name, value)
 
 
 def preset_capacity(resource, factor=1.0):
@@ -718,7 +743,9 @@ def reset_to_baseline():
 
 
 def use_recommended_values():
-    result = load_json(GA_DIR / "best_policy.json")
+    if not st.session_state.get("v2_ga_current", False):
+        return
+    result = st.session_state.get("v2_ga_result", {})
     recommendation = result.get("best_policy", {})
     if not recommendation:
         return
@@ -1204,6 +1231,41 @@ st.markdown(
 # Sidebar
 # ============================================================
 
+def render_v2_comparison(result, details=False):
+    current, recommended = result["current_evaluation"], result["verified_evaluation"]
+    before, after = current["resource_configuration"], recommended["resource_configuration"]
+    st.dataframe(pd.DataFrame([{"Resource": key.replace("_", " ").title(),
+        "Current": before[key], "Recommended": after[key], "Change": after[key] - before[key]}
+        for key in GENES]), hide_index=True, width="stretch")
+    overall, worst = st.columns(2)
+    overall.metric("Overall Robustness: Current -> Recommended",
+        f"{current['overall_robustness']:.1f}% -> {recommended['overall_robustness']:.1f}%",
+        delta=f"{recommended['overall_robustness'] - current['overall_robustness']:+.1f} percentage points")
+    old_worst, new_worst = current["scenarios"]["worst"]["scenario_robustness"], recommended["scenarios"]["worst"]["scenario_robustness"]
+    worst.metric("Worst Robustness: Current -> Recommended", f"{old_worst:.1f}% -> {new_worst:.1f}%",
+        delta=f"{new_worst - old_worst:+.1f} percentage points")
+    st.write(f"Overall policy status: {current['overall_policy_status']} -> {recommended['overall_policy_status']}")
+    if details:
+        for col, name in zip(st.columns(3), ("best", "average", "worst")):
+            with col:
+                old, new = current["scenarios"][name], recommended["scenarios"][name]
+                st.subheader(f"{name.title()} Case")
+                st.write(f"Robustness: {old['scenario_robustness']:.1f}% -> {new['scenario_robustness']:.1f}%")
+                st.caption(f"Current: {old['scenario_verdict']}; Recommended: {new['scenario_verdict']}")
+                rows = []
+                for label, key in [("Mean wait (min)", "mean_wait"), ("High-risk wait (min)", "high_risk_mean_wait"),
+                    ("P95 (min)", "p95_wait"), ("Unfinished patients", "unfinished_patients"),
+                    ("ICU utilization", "icu_utilization"), ("General utilization", "general_utilization"),
+                    ("Doctor utilization", "doctor_utilization"), ("Nurse utilization", "nurse_utilization"),
+                    ("Throughput (/hour)", "throughput")]:
+                    a, b = old["metrics"][key]["mean"], new["metrics"][key]["mean"]
+                    rows.append({"Metric": label, "Current": f"{a:.1%}" if key.endswith("utilization") else f"{a:.2f}",
+                                 "Recommended": f"{b:.1%}" if key.endswith("utilization") else f"{b:.2f}"})
+                st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        with st.expander("Fully verified policy metrics and condition breakdowns"):
+            st.json({"current": current, "recommended": recommended})
+
+
 def sidebar_section(title):
     st.markdown(
         f'<div class="sidebar-section"><div class="sidebar-section-title">{title}</div></div>',
@@ -1227,13 +1289,15 @@ def int_control(label, name, low, high, help_text):
         st.number_input(
             "Direct entry",
             min_value=low,
-            max_value=high,
+            max_value=10000,
             step=1,
             key=f"{name}_number",
             on_change=sync_from_number,
             args=(name,),
-            help=f"Type the {label.lower()} value directly.",
+            help=help_text,
         )
+    if st.session_state[f"{name}_number"] > high:
+        st.caption(f"{label}: using direct entry {st.session_state[f'{name}_number']:,}; slider range is {low}–{high}.")
     return int(st.session_state[f"{name}_number"])
 
 
@@ -1260,51 +1324,36 @@ def float_control(label, name, low, high, step, help_text):
             key=f"{name}_number",
             on_change=sync_from_number,
             args=(name,),
-            help=f"Type the {label.lower()} directly.",
+            help=help_text,
         )
     return float(st.session_state[f"{name}_number"])
 
 
 with st.sidebar:
-    st.markdown("### Optimization Controls")
-    st.caption(
-        "Use the slider or type a value directly. Hover over the info icons for details."
-    )
+    st.markdown("### Hospital Simulation V2")
+    sidebar_section("DEMAND CONFIGURATION")
+    duration_hours = st.number_input("Simulation Duration (hours)", 1.0, 72.0, 24.0,
+        help="Number of simulated hospital hours. The Digital Twin evaluates arrivals, queues, treatment, and resource utilization only within this time window.")
+    best_rate = st.number_input("Best Arrival Rate (patients/hour)", 0.0, 1000.0, 12.0,
+        help="Average patient arrival rate for the low-demand scenario, measured in patients per hour. Actual arrival times vary stochastically.")
+    average_rate = st.number_input("Average Arrival Rate (patients/hour)", 0.0, 1000.0, 22.0,
+        help="Average patient arrival rate for the normal-demand scenario, measured in patients per hour. Actual arrival times vary stochastically.")
+    worst_rate = st.number_input("Worst Arrival Rate (patients/hour)", 0.0, 1000.0, 35.0,
+        help="Average patient arrival rate for the peak-demand scenario, measured in patients per hour. This should be greater than or equal to the average-case rate.")
+    replications = st.number_input("Replications Per Scenario", 3, 30, 10,
+        help="Number of independent stochastic simulation runs performed for each demand scenario. More replications give more reliable robustness estimates but increase runtime.")
 
-    st.selectbox(
-        "Scenario preset",
-        ["Custom", *PRESETS.keys()],
-        key="scenario_preset",
-        on_change=apply_preset,
-        help="Loads a complete example operating scenario. You can still edit every value afterward.",
-    )
-
-    sidebar_section("Resource Constraints")
-
-    max_icu = int_control(
-        "Maximum ICU beds",
-        "icu_beds",
-        *BASE_BOUNDS["icu_beds"],
-        "Highest ICU-bed capacity the optimizer may use.",
-    )
-    max_general = int_control(
-        "Maximum general beds",
-        "general_beds",
-        *BASE_BOUNDS["general_beds"],
-        "Highest general-bed capacity the optimizer may use.",
-    )
-    max_doctors = int_control(
-        "Maximum concurrent doctors",
-        "doctors",
-        *BASE_BOUNDS["doctors"],
-        "Highest simultaneous doctor capacity the optimizer may allocate; not total employees.",
-    )
-    max_nurses = int_control(
-        "Maximum concurrent nurses",
-        "nurses",
-        *BASE_BOUNDS["nurses"],
-        "Highest simultaneous nurse capacity the optimizer may allocate; not total employees.",
-    )
+    sidebar_section("HOSPITAL RESOURCES")
+    st.caption("Current available capacities; doctors and nurses are simultaneous modeled staff.")
+    max_icu = int_control("ICU Beds", "icu_beds", *RESOURCE_SLIDER_RANGES["icu_beds"],
+        "Number of ICU beds currently available to the simulated hospital.")
+    max_general = int_control("General Beds", "general_beds", *RESOURCE_SLIDER_RANGES["general_beds"],
+        "Number of general hospital beds currently available.")
+    max_doctors = int_control("Concurrent Doctors", "doctors", *RESOURCE_SLIDER_RANGES["doctors"],
+        "Maximum number of doctors that can be simultaneously represented as available resources in the simulation. This is not the total number of hospital employees.")
+    max_nurses = int_control("Concurrent Nurses", "nurses", *RESOURCE_SLIDER_RANGES["nurses"],
+        "Maximum number of nurses that can be simultaneously represented as available resources in the simulation. This is not the total number of hospital employees.")
+    st.button("Reset Hospital Resources", on_click=reset_hospital_resources, width="stretch")
 
     sidebar_section("Operational Targets")
 
@@ -1314,7 +1363,7 @@ with st.sidebar:
         1.0,
         120.0,
         1.0,
-        "Average waiting-time target. Exceeding it is penalized by the GA.",
+        "Maximum acceptable average patient waiting time. A simulation run fails this condition if its mean wait exceeds this value.",
     )
     high_risk_wait_target = float_control(
         "High-risk wait target (min)",
@@ -1322,85 +1371,52 @@ with st.sidebar:
         1.0,
         120.0,
         1.0,
-        "Waiting-time target for higher-risk patients.",
+        "Maximum acceptable average waiting time for patients classified as high risk by the Random Forest model.",
     )
 
-    st.checkbox(
-        "Prioritize high-risk patients",
-        key="prioritize_high_risk",
-        help="Places more weight on high-risk patient waiting time in the GA fitness function.",
-    )
-    st.checkbox(
-        "Prioritize resource efficiency",
-        key="prioritize_efficiency",
-        help="Places more penalty on unnecessary beds and staffing.",
-    )
-
-    sidebar_section("Natural-Language Feedback")
-    st.text_area(
-        "Natural-language instruction",
-        key="natural_feedback",
-        height=100,
-        placeholder="Example: We only have 10 nurses available this week.",
-        help=(
-            "Write a normal-language constraint or preference. Groq translates it "
-            "into supported GA constraints/objectives."
-        ),
-    )
-
-    use_llm_interpreter = st.checkbox(
-        "Interpret instruction with AI",
-        value=True,
-        disabled=not bool(st.session_state.natural_feedback.strip()),
-        help=(
-            "The LLM only translates your instruction. The Genetic Algorithm still "
-            "performs the actual optimization."
-        ),
-    )
-
-    sidebar_section("Simulation Settings")
-    ga_patients = st.select_slider(
-        "Simulation Patients",
-        options=[250, 500, 750, 1000],
-        value=500,
-        help="More patients improve scenario coverage but increase runtime.",
-    )
-
-    sidebar_section("GA Settings")
-    ga_population = st.select_slider(
-        "GA Population",
-        options=[8, 10, 12, 16, 20],
-        value=12,
-        help="Candidate policies tested in each GA generation.",
-    )
-    ga_generations = st.select_slider(
-        "GA Generations",
-        options=[5, 8, 10, 15, 20],
-        value=10,
-        help="Evolutionary improvement cycles performed by the GA.",
-    )
-
+    utilization_target = st.number_input("Maximum Utilization (%)", 0.0, 100.0, 90.0,
+        help="Maximum acceptable utilization percentage for critical simulated resources such as beds, doctors, and nurses.")
+    robustness_threshold = st.number_input("Robustness Threshold (%)", 0.0, 100.0, 90.0,
+        help="Minimum percentage of stochastic simulation runs that must satisfy all operational targets for a scenario to be classified as acceptable.")
+    resource_labels = {"icu_beds": "ICU Beds", "general_beds": "General Beds",
+                       "doctors": "Concurrent Doctors", "nurses": "Concurrent Nurses"}
+    ga_bounds = automatic_bounds(HospitalPolicy(max_icu, max_general, max_doctors, max_nurses))
+    sidebar_section("OPTIMIZATION")
+    ga_population = st.number_input("GA Population", 2, 100, 12, key="ga_population",
+        help="Number of candidate resource configurations evaluated in each Genetic Algorithm generation.")
+    ga_generations = st.number_input("GA Generations", 1, 200, 10, key="ga_generations",
+        help="Maximum number of evolutionary optimization cycles.")
+    ga_replications = st.number_input("GA Replications Per Scenario", 1, 10, 3,
+        help="Number of stochastic runs per demand scenario used during GA search. Final recommendations are verified using the full simulation replication count.")
+    st.checkbox("Prioritize high-risk patients", key="prioritize_high_risk",
+        help="Increases the optimization penalty for excessive waiting among patients classified as high risk.")
+    st.checkbox("Prioritize resource efficiency", key="prioritize_efficiency",
+        help="Increases the penalty for larger resource configurations when comparing otherwise similar policies.")
+    with st.expander("Scenario Fitness Weights"):
+        best_weight = st.number_input("Best Fitness Weight", .1, 10., 1.,
+            help="Relative contribution of Best demand to GA fitness; weights are normalized internally.")
+        average_weight = st.number_input("Average Fitness Weight", .1, 10., 2.,
+            help="Relative contribution of Average demand to GA fitness.")
+        worst_weight = st.number_input("Worst Fitness Weight", .1, 10., 3.,
+            help="Relative contribution of Worst demand to GA fitness. Higher values emphasize peak-demand performance.")
+    instruction = st.text_area("Natural-Language Instruction", key="natural_instruction",
+        help="Optional instruction that can be interpreted into supported GA constraints or optimization priorities.")
+    ai_interpretation = st.toggle("AI Interpretation", key="ai_interpretation",
+        help="When enabled, Groq interprets the natural-language instruction into validated optimization constraints. It does not change the authoritative simulation verdict.")
+    interpret_clicked = st.button("Preview AI Interpretation", width="stretch", disabled=not (ai_interpretation and instruction.strip()))
+    sidebar_section("ADVANCED")
+    random_seed = st.number_input("Random Seed", 0, 2147483647, 42,
+        help="Controls reproducibility of stochastic simulations. Each replication automatically uses a different derived seed, so the base seed does not need to be changed between runs. Keeping the same seed reproduces the same experiment; changing it creates a new set of random arrival patterns.")
+    ga_seed = st.number_input("GA Random Seed", 0, 2147483647, 42,
+        help="Controls reproducible population generation, selection, crossover and mutation. The Advanced Random Seed separately controls the shared stochastic demand experiment.")
+    with st.expander("Automatic GA Bounds"):
+        st.caption("Derived from current resources: floor(70%) to ceil(150%), minimum 1. Explicit availability constraints may override these default ranges.")
+        st.dataframe(pd.DataFrame([{"Resource": resource_labels[k], "Minimum": v[0], "Maximum": v[1]} for k, v in ga_bounds.items()]), hide_index=True)
+    evaluate_clicked = st.button("Evaluate Current Policy", type="primary", width="stretch")
     sidebar_section("Optimization Actions")
     with st.container(key="optimization_actions"):
-        st.button(
-            "Reset to Baseline",
-            type="secondary",
-            width="stretch",
-            on_click=reset_to_baseline,
-            disabled=not baseline_valid,
-        )
-        st.button(
-            "Use Recommended Values",
-            type="secondary",
-            width="stretch",
-            on_click=use_recommended_values,
-            disabled=not st.session_state.optimization_run,
-        )
-        run_clicked = st.button(
-            "Run Optimization",
-            type="primary",
-            width="stretch",
-        )
+        recommendation_action = st.empty()
+        run_clicked = st.button("Run Optimization", type="primary", width="stretch")
 
 
 # ============================================================
@@ -1422,26 +1438,214 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-if run_clicked:
-    system_status = "Optimizing"
-elif st.session_state.optimization_run:
-    if st.session_state.review_status:
-        system_status = st.session_state.review_status
-    else:
-        system_status = "Awaiting Review"
-else:
-    system_status = "Baseline" if baseline_valid else "Baseline Invalid"
+status_panel = st.empty()
 
-status_run = st.session_state.last_run_time or "Not run"
-status_scenario = st.session_state.get("scenario_preset", "Custom")
-status_data = (
-    f"{BASELINE_MAX_PATIENTS:,}-patient cohort / "
-    f"{HOSPITAL_SCALE_MULTIPLIER:.1f}x workload"
-    if not synthetic_df.empty
-    else "Data unavailable"
+if not baseline_valid:
+    with st.expander("Legacy GA baseline status"):
+        st.info("V1 optimization requires a valid legacy baseline. V2 current-policy evaluation is available independently. Use python src/digital_twin.py --legacy-v1 to regenerate the legacy baseline.")
+        for baseline_error in baseline_errors:
+            st.write(f"- {baseline_error}")
+
+current_config = ScenarioConfig(
+    simulation_duration_hours=float(duration_hours),
+    best_case_arrival_rate=float(best_rate), average_case_arrival_rate=float(average_rate),
+    worst_case_arrival_rate=float(worst_rate), replications_per_scenario=int(replications),
+    mean_wait_target_minutes=float(mean_wait_target), high_risk_wait_target_minutes=float(high_risk_wait_target),
+    max_utilization_target=float(utilization_target) / 100,
+    robustness_threshold=float(robustness_threshold), random_seed=int(random_seed),
 )
+current_policy = HospitalPolicy(max_icu, max_general, max_doctors, max_nurses)
+configuration_error = None
+try:
+    current_config.validate()
+except ValueError as exc:
+    configuration_error = str(exc)
+    st.error(configuration_error)
 
-st.markdown(
+if evaluate_clicked and configuration_error is None:
+    try:
+        with st.spinner("Evaluating Best, Average and Worst demand..."):
+            profiles = load_patient_profiles(DATA_SYNTHETIC, RF_MODEL)
+            evaluation = evaluate_current_policy(profiles, current_policy, current_config)
+            save_current_policy_results(evaluation, DT_DIR, DATA_SYNTHETIC, RF_MODEL)
+            st.session_state.current_policy_evaluation = evaluation
+    except (ValueError, OSError) as exc:
+        st.error(f"Current policy evaluation failed: {exc}")
+
+
+# V2 configuration validation, provenance and optimization.
+ga_options = GAConfig(population_size=int(ga_population), generations=int(ga_generations),
+    ga_replications_per_scenario=int(ga_replications), seed=int(ga_seed),
+    prioritize_high_risk=st.session_state.prioritize_high_risk,
+    prioritize_efficiency=st.session_state.prioritize_efficiency,
+    scenario_weights=(float(best_weight), float(average_weight), float(worst_weight)))
+
+base_config, base_options = current_config, ga_options
+auto_bounds = dict(ga_bounds)
+feedback_context = {"enabled": bool(ai_interpretation), "instruction": instruction if ai_interpretation else ""}
+feedback_key = canonical_hash({**feedback_context, "availability_semantics": 2, "bounds": auto_bounds,
+    "configuration": asdict(base_config), "ga_options": asdict(base_options)})
+feedback_record = st.session_state.get("v2_feedback_record", {})
+feedback_matches = feedback_record.get("key") == feedback_key
+if ai_interpretation and instruction.strip() and (interpret_clicked or (run_clicked and not feedback_matches)):
+    with st.spinner("Interpreting supported feedback constraints..."):
+        feedback_record = {"key": feedback_key, **interpret_feedback_v2(instruction, auto_bounds, base_config)}
+    st.session_state.v2_feedback_record = feedback_record
+    feedback_matches = True
+feedback_error = None
+interpreted_feedback = {}
+if ai_interpretation and instruction.strip():
+    if feedback_matches:
+        if feedback_record.get("available"):
+            interpreted_feedback = feedback_record["interpretation"]
+            try:
+                ga_bounds, current_config, ga_options = apply_feedback_v2(
+                    interpreted_feedback, auto_bounds, current_policy, base_config, base_options)
+            except ValueError as exc:
+                feedback_error = str(exc)
+        else:
+            st.info(feedback_record["message"])
+    else:
+        st.info("Preview AI Interpretation before optimizing, or Run Optimization to interpret and validate the instruction first.")
+availability_override = bool(interpreted_feedback and not feedback_error and any(
+    value is not None for limits in interpreted_feedback["resource_constraints"].values() for value in limits.values()))
+current_policy_feasible = all(ga_bounds[k][0] <= getattr(current_policy, k) <= ga_bounds[k][1] for k in GENES)
+if interpreted_feedback:
+    with st.container(border=True):
+        st.subheader("Applied AI Interpretation" if not feedback_error else "AI Interpretation - Validation Error")
+        st.write(interpreted_feedback["summary"])
+        for gene, limits in interpreted_feedback["resource_constraints"].items():
+            if any(value is not None for value in limits.values()):
+                st.write(resource_labels[gene])
+                st.write(f"Automatic range: {auto_bounds[gene][0]}–{auto_bounds[gene][1]}")
+                for edge, value in limits.items():
+                    if value is not None:
+                        st.write(f"User availability constraint: {edge}imum {value}")
+                if not feedback_error:
+                    st.write(f"Effective GA range: {ga_bounds[gene][0]}–{ga_bounds[gene][1]}")
+                st.write(f"Current/reference policy: {getattr(current_policy, gene)}")
+                if not feedback_error and ga_bounds[gene] != auto_bounds[gene]:
+                    st.caption("Explicit availability overrides the automatic default range.")
+        if not feedback_error and not current_policy_feasible:
+            st.warning("Current policy is outside the newly stated availability. It remains an unchanged historical/reference comparison, not a feasible operating recommendation. Optimization will search only feasible configurations, starting with the nearest feasible version of the current policy.")
+        for priority, value in interpreted_feedback["priorities"].items():
+            if value is not None:
+                st.write(f"{priority.replace('_', ' ').title()}: {'enabled' if value else 'disabled'}")
+        for target, value in interpreted_feedback["target_adjustments"].items():
+            if value is not None:
+                st.write(f"{target.replace('_', ' ').title()}: {value:g}")
+        if feedback_error:
+            st.error(feedback_error)
+        else:
+            st.caption("These effective constraints, priorities and any explicit target adjustments apply to the next GA run and its full verification.")
+feedback_context["interpretation"] = interpreted_feedback
+feedback_context["available"] = feedback_record.get("available") if feedback_matches and ai_interpretation and instruction.strip() else None
+
+@st.cache_data
+def cached_v2_dependencies(signatures):
+    return dependency_fingerprints(DATA_SYNTHETIC, RF_MODEL)
+
+optimization_error = configuration_error or feedback_error
+try:
+    ga_options.validate()
+    validate_bounds(ga_bounds, current_policy, require_current_feasible=not availability_override)
+except ValueError as exc:
+    optimization_error = str(exc)
+    st.error(f"GA configuration: {exc}")
+try:
+    dependency_paths = [DATA_SYNTHETIC, RF_MODEL] + [SRC_DIR / name for name in
+        ("digital_twin.py", "scenario_evaluation.py", "genetic_algorithm.py", "genetic_algorithm_v2.py", "decision_tree_xai_v2.py", "feedback_interpreter.py", "llm_explanation.py")]
+    dependency_signatures = tuple((str(path), path.stat().st_mtime_ns, path.stat().st_size) for path in dependency_paths)
+    v2_dependencies = cached_v2_dependencies(dependency_signatures)
+except OSError as exc:
+    v2_dependencies = {}
+    optimization_error = f"Required optimization dependency unavailable: {exc}"
+
+v2_dependencies = {**v2_dependencies, "automatic_bounds": auto_bounds, "bound_strategy": "floor(0.70*current), ceil(1.50*current), minimum 1", "feedback": feedback_context}
+
+stored_ga = st.session_state.get("v2_ga_result") or load_json(GA_V2_DIR / "best_policy.json")
+ga_stale = bool(stored_ga) and not result_is_current(stored_ga, current_policy, current_config, ga_bounds, ga_options, v2_dependencies, allow_infeasible_current=availability_override)
+ga_result = stored_ga if stored_ga and not ga_stale and not optimization_error else {}
+if ga_stale:
+    st.warning("Previous GA recommendation and XAI explanation are stale because the configuration or a dependency changed. Run optimization to refresh them.")
+st.session_state.optimization_run = bool(ga_result)
+st.session_state.v2_ga_current = bool(ga_result)
+if ga_result:
+    st.session_state.v2_ga_result = ga_result
+
+if run_clicked and optimization_error:
+    st.error(f"Optimization cannot run: {optimization_error}")
+elif run_clicked:
+    try:
+        with st.status("Running V2 optimization and full final verification...", expanded=True) as optimization_status:
+            progress = st.progress(0.)
+            def report_generation(record):
+                progress.progress((record["generation"] + 1) / ga_options.generations,
+                    text=f"Generation {record['generation']} | best fitness {record['best_fitness']:.2f} | search robustness {record['overall_robustness']:.1f}%")
+            profiles = load_patient_profiles(DATA_SYNTHETIC, RF_MODEL)
+            ga_result = run_ga_v2(profiles, current_policy, ga_bounds, current_config, ga_options,
+                progress_callback=report_generation, dependencies=v2_dependencies, allow_infeasible_current=availability_override)
+            save_ga_v2(ga_result, GA_V2_DIR)
+            st.session_state.v2_ga_result = ga_result
+            if current_policy_feasible:
+                st.session_state.current_policy_evaluation = ga_result["current_evaluation"]
+            st.session_state.optimization_run = True
+            st.session_state.v2_ga_current = True
+            st.session_state.review_status = None
+            st.session_state.modification_prepared = False
+            st.session_state.last_run_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            ga_stale = False
+            st.write("Training the Decision Tree explanation from evaluated policy/scenario observations")
+            try:
+                xai_report, tree, training_data = train_xai_v2(ga_result, seed=ga_options.seed)
+                save_xai_v2(xai_report, tree, training_data, XAI_V2_DIR)
+                st.session_state.v2_xai_report = xai_report
+            except (ValueError, OSError) as exc:
+                st.session_state.v2_xai_report = {}
+                st.warning(f"Verified recommendation is available, but XAI could not be refreshed: {exc}")
+            progress.progress(1., text="Search and full verification complete")
+            optimization_status.update(label="V2 optimization complete", state="complete")
+    except (ValueError, OSError) as exc:
+        st.error(f"Optimization failed: {exc}")
+
+best_policy = ga_result.get("best_policy", {})
+best_metrics = ga_result.get("verified_evaluation", {})
+best_fitness = ga_result.get("best_fitness")
+
+xai_report = st.session_state.get("v2_xai_report") or load_json(XAI_V2_DIR / "explanation.json")
+xai_current = bool(ga_result) and xai_is_current(xai_report, ga_result)
+st.session_state.xai_refreshed = bool(xai_current and xai_report.get("status") == "available")
+active_xai = xai_report if xai_current else {}
+llm_path = PROJECT_ROOT / "results" / "llm_v2" / "explanation.json"
+ai_result = st.session_state.get("v2_llm_result") or load_json(llm_path)
+ai_stale = bool(ai_result) and (not ga_result or not explanation_is_current_v2(ai_result, ga_result, active_xai))
+if ga_result and run_clicked:
+    with st.spinner("Preparing grounded explanation..."):
+        ai_result = generate_explanation_v2(ga_result, active_xai)
+    st.session_state.v2_llm_result = ai_result
+    llm_path.parent.mkdir(parents=True, exist_ok=True)
+    llm_path.write_text(json.dumps(ai_result, indent=2), encoding="utf-8")
+    ai_stale = False
+st.session_state.llm_generated = bool(ga_result and ai_result and not ai_stale and ai_result.get("available"))
+
+
+with recommendation_action.container():
+    st.button("Use Recommended Values", width="stretch", on_click=use_recommended_values,
+        disabled=not bool(ga_result))
+
+if ga_stale:
+    system_status = "Recommendation stale"
+elif ga_result:
+    system_status = st.session_state.review_status or "Verified recommendation ready"
+else:
+    status_evaluation = st.session_state.get("current_policy_evaluation", {})
+    status_evaluation_matches = (status_evaluation.get("configuration") == asdict(current_config)
+        and status_evaluation.get("resource_configuration") == asdict(current_policy))
+    system_status = status_evaluation.get("overall_policy_status", "Current policy not evaluated") if status_evaluation_matches else "Current policy not evaluated"
+status_run = st.session_state.last_run_time or ("Saved verified run" if ga_result else "Not run")
+status_scenario = "Best / Average / Worst"
+status_data = f"{duration_hours:g} hours / {replications} runs per scenario" if not synthetic_df.empty else "Data unavailable"
+status_panel.markdown(
     f"""
     <div class="status-strip">
         <div class="status-box">
@@ -1465,212 +1669,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-if not baseline_valid:
-    st.error(
-        "The saved Digital Twin baseline was not displayed because its "
-        "provenance check failed. Regenerate it with `python src/digital_twin.py`."
-    )
-    with st.expander("Baseline validation details"):
-        for baseline_error in baseline_errors:
-            st.write(f"- {baseline_error}")
-
-
-# ============================================================
-# Pre-run validation
-# ============================================================
-
-constraint_warnings = []
-
-if max_icu < BASE_BOUNDS["icu_beds"][0]:
-    constraint_warnings.append("ICU-bed maximum is below the GA search minimum.")
-if max_general < BASE_BOUNDS["general_beds"][0]:
-    constraint_warnings.append("General-bed maximum is below the GA search minimum.")
-if max_doctors < BASE_BOUNDS["doctors"][0]:
-    constraint_warnings.append("Doctor maximum is below the GA search minimum.")
-if max_nurses < BASE_BOUNDS["nurses"][0]:
-    constraint_warnings.append("Nurse maximum is below the GA search minimum.")
-
-if high_risk_wait_target > mean_wait_target and st.session_state.prioritize_high_risk:
-    constraint_warnings.append(
-        "High-risk priority is enabled, but the high-risk wait target is looser than the overall mean-wait target."
-    )
-
-if constraint_warnings:
-    with st.container(border=True):
-        st.warning("Please review these settings before optimization:")
-        for warning in constraint_warnings:
-            st.write(f"- {warning}")
-
-
-# ============================================================
-# Run optimization
-# ============================================================
-
-if run_clicked:
-    st.session_state.latest_warning = None
-    st.session_state.xai_refreshed = False
-    st.session_state.llm_generated = False
-
-    structured_feedback = {
-        "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "decision": "Needs Modification",
-        "rating": 4,
-        "comments": st.session_state.natural_feedback.strip(),
-        "constraints": {
-            "max_icu_beds": int(max_icu),
-            "max_general_beds": int(max_general),
-            "max_doctors": int(max_doctors),
-            "max_nurses": int(max_nurses),
-        },
-        "targets": {
-            "mean_wait_min": float(mean_wait_target),
-            "high_risk_wait_min": float(high_risk_wait_target),
-        },
-    }
-
-    (FEEDBACK_DIR / "latest_feedback.json").write_text(
-        json.dumps(structured_feedback, indent=2),
-        encoding="utf-8",
-    )
-
-    manual_interpretation = build_manual_interpretation(
-        BASE_BOUNDS,
-        max_icu,
-        max_general,
-        max_doctors,
-        max_nurses,
-        mean_wait_target,
-        high_risk_wait_target,
-        st.session_state.prioritize_high_risk,
-        st.session_state.prioritize_efficiency,
-    )
-
-    interpreted = manual_interpretation
-    logs = []
-    warnings = []
-    fatal_error = None
-
-    with st.status("Running optimization...", expanded=True) as status:
-        st.write("Preparing constraints")
-
-        if st.session_state.natural_feedback.strip() and use_llm_interpreter:
-            st.write("Interpreting feedback")
-
-            if not os.getenv("GROQ_API_KEY"):
-                warnings.append(
-                    "GROQ_API_KEY is unavailable to Streamlit. Explicit controls were used."
-                )
-            else:
-                ok, output = run_python("feedback_interpreter.py")
-                logs.append(output)
-
-                if ok:
-                    llm_interpretation = load_json(
-                        FEEDBACK_DIR / "interpreted_feedback.json"
-                    )
-                    try:
-                        interpreted = merge_llm_feedback(
-                            manual_interpretation,
-                            llm_interpretation,
-                        )
-                    except ValueError as exc:
-                        fatal_error = str(exc)
-                else:
-                    warnings.append(
-                        "Natural-language interpretation failed; explicit controls were used."
-                    )
-
-        if fatal_error is None:
-            (FEEDBACK_DIR / "interpreted_feedback.json").write_text(
-                json.dumps(interpreted, indent=2),
-                encoding="utf-8",
-            )
-
-            st.write("Running Digital Twin + Genetic Algorithm")
-            ok, output = run_python(
-                "genetic_algorithm.py",
-                [
-                    "--max-patients", str(ga_patients),
-                    "--population", str(ga_population),
-                    "--generations", str(ga_generations),
-                ],
-            )
-            logs.append(output)
-
-            if not ok:
-                fatal_error = "Genetic Algorithm / Digital Twin stage failed."
-
-        if fatal_error is None:
-            st.write("Refreshing explainability")
-            xai_ok, xai_output = run_python("decision_tree_xai.py")
-            logs.append(xai_output)
-
-            if not xai_ok:
-                warnings.append("Decision Tree XAI refresh failed.")
-            else:
-                st.session_state.xai_refreshed = True
-
-            st.write("Generating explanation")
-            if os.getenv("GROQ_API_KEY"):
-                llm_ok, llm_output = run_python("llm_explanation.py")
-                logs.append(llm_output)
-                if not llm_ok:
-                    warnings.append("LLM explanation generation failed.")
-                else:
-                    st.session_state.llm_generated = True
-            else:
-                warnings.append(
-                    "LLM explanation skipped because GROQ_API_KEY is unavailable."
-                )
-
-        if fatal_error:
-            status.update(label="Optimization failed", state="error")
-            st.error(fatal_error)
-        else:
-            st.session_state.optimization_run = True
-            st.session_state.last_run_time = datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-            st.session_state.review_status = None
-            st.session_state.modification_prepared = False
-            st.write("Complete")
-
-            if warnings:
-                status.update(
-                    label="Optimization completed with warnings",
-                    state="complete",
-                )
-                st.session_state.latest_warning = " ".join(warnings)
-            else:
-                status.update(
-                    label="Optimization completed",
-                    state="complete",
-                )
-
-    st.session_state.run_log = "\n\n".join(logs)
-
-    if not fatal_error:
-        st.success(
-            "Optimization complete. The latest recommendation is available in Optimize and Dashboard."
-        )
-
-
-# ============================================================
-# Load latest optimization after run
-# ============================================================
-
-ga_result = (
-    load_json(GA_DIR / "best_policy.json")
-    if st.session_state.optimization_run
-    else {}
-)
-if ga_result and not ga_result_matches_baseline(ga_result, baseline_metrics):
-    ga_result = {}
-best_policy = ga_result.get("best_policy", {})
-best_metrics = ga_result.get("best_metrics", {})
-best_fitness = ga_result.get("best_fitness")
-interpreted_feedback = load_json(FEEDBACK_DIR / "interpreted_feedback.json")
-
 
 # ============================================================
 # Main navigation
@@ -1686,239 +1684,46 @@ dashboard_tab, optimize_tab, review_tab = st.tabs(
 # ============================================================
 
 with dashboard_tab:
-    # Reserve the first Dashboard position for the session-scoped comparison.
-    # Its contents are rendered below without duplicating the existing metrics.
-    comparison_panel = st.container(border=True)
 
     with st.container(border=True):
-        st.header("Current Hospital State")
-        st.caption(
-            "This section is the baseline. Opening the dashboard does not run the optimizer."
-        )
-
-        b1, b2, b3, b4 = st.columns(4)
-        b1.metric(
-            "Current ICU Beds",
-            fmt_int(baseline_policy["icu_beds"] if baseline_valid else None),
-            help="ICU-bed capacity in the baseline simulated hospital.",
-        )
-        b2.metric(
-            "Current General Beds",
-            fmt_int(baseline_policy["general_beds"] if baseline_valid else None),
-            help="General-bed capacity in the baseline simulated hospital.",
-        )
-        b3.metric(
-            "Modeled Concurrent Doctors",
-            fmt_int(baseline_policy["doctors"] if baseline_valid else None),
-            help=(
-                "Number of doctors simultaneously available in the simulation. "
-                "This is not the hospital's total employed medical staff."
-            ),
-        )
-        b4.metric(
-            "Modeled Concurrent Nurses",
-            fmt_int(baseline_policy["nurses"] if baseline_valid else None),
-            help=(
-                "Number of nurses simultaneously available in the simulation. "
-                "This is not the hospital's total employed nursing staff."
-            ),
-        )
-
-        if baseline_metrics:
-            generated_at = baseline_metadata.get("generated_at_utc", "unknown")
-            methodology = baseline_metadata.get("capacity_methodology", {})
-            offered_load = methodology.get("offered_concurrent_load", {})
-            st.caption(
-                f"Validated baseline: earliest {BASELINE_MAX_PATIENTS:,} arrivals; "
-                f"{HOSPITAL_SCALE_MULTIPLIER:.1f}x deterministic workload scale; "
-                f"generated {generated_at}."
-            )
-            st.info(
-                "Demand-derived baseline at a 75% utilization target: "
-                f"ICU {fmt(offered_load.get('icu_beds'), 2)} -> "
-                f"{baseline_policy['icu_beds']} beds, general "
-                f"{fmt(offered_load.get('general_beds'), 2)} -> "
-                f"{baseline_policy['general_beds']} beds, doctors "
-                f"{fmt(offered_load.get('doctors'), 2)} -> "
-                f"{baseline_policy['doctors']}, and nurses "
-                f"{fmt(offered_load.get('nurses'), 2)} -> "
-                f"{baseline_policy['nurses']}."
-            )
-            st.subheader("Baseline Performance")
-            m1, m2, m3, m4, m5 = st.columns(5)
-            m1.metric(
-                "Mean Wait",
-                fmt_minutes(baseline_metrics.get("mean_waiting_time_min")),
-            )
-            m2.metric(
-                "Median Wait",
-                fmt_minutes(baseline_metrics.get("median_waiting_time_min")),
-            )
-            m3.metric(
-                "P95 Wait",
-                fmt_minutes(baseline_metrics.get("p95_waiting_time_min")),
-            )
-            m4.metric(
-                "High-Risk Mean Wait",
-                fmt_minutes(
-                    baseline_metrics.get("high_risk_mean_waiting_time_min")
-                ),
-            )
-            m5.metric(
-                "Throughput",
-                fmt_throughput(baseline_metrics.get("throughput_patients_per_day")),
-            )
-
-            if float(baseline_metrics.get("mean_waiting_time_min", 0)) > 1440:
-                load_profile = baseline_metadata.get("load_profile", {})
-                st.warning(
-                    "This baseline is a validated overload simulation, not a stale "
-                    "historical result. The cohort creates an average offered load "
-                    f"of {fmt(load_profile.get('average_icu_beds_required_during_arrivals'), 2)} "
-                    f"ICU beds during arrivals, versus {baseline_policy['icu_beds']} "
-                    "available. Beds remain occupied for each patient's full length "
-                    "of stay, so the ICU queue accumulates."
-                )
-
-            util_df = pd.DataFrame(
-                {
-                    "Resource": ["ICU Beds", "General Beds", "Doctors", "Nurses"],
-                    "Utilization (%)": [
-                        baseline_metrics.get("icu_bed_utilization", 0) * 100,
-                        baseline_metrics.get("general_bed_utilization", 0) * 100,
-                        baseline_metrics.get("doctor_utilization", 0) * 100,
-                        baseline_metrics.get("nurse_utilization", 0) * 100,
-                    ],
-                }
-            ).round(2)
-
-            st.altair_chart(
-                monochrome_bar_chart(
-                    util_df,
-                    "Resource",
-                    "Utilization (%)",
-                    "Baseline Resource Utilization",
-                    dark_mode,
-                ),
-                width="stretch",
-            )
-            st.caption(
-                "Sizing utilization uses the cohort's arrival window. The chart "
-                "uses the full simulation duration, including the discharge tail, "
-                "so its percentages are lower."
-            )
-
-            with st.expander("Baseline capacity methodology"):
-                st.json(methodology)
+        st.header("Current Hospital Policy")
+        cols = st.columns(4)
+        for col, label, value in zip(cols, ["ICU Beds", "General Beds", "Concurrent Doctors", "Concurrent Nurses"],
+                                     [max_icu, max_general, max_doctors, max_nurses]):
+            col.metric(label, value)
+        evaluation = st.session_state.get("current_policy_evaluation")
+        if evaluation:
+            from dataclasses import asdict
+            stale = (evaluation["configuration"] != asdict(current_config) or
+                     evaluation["resource_configuration"] != asdict(current_policy))
+            if stale:
+                st.warning("Settings changed. Results below belong to the previous configuration; evaluate again to refresh.")
+            overall, status = st.columns(2)
+            overall.metric("Overall Robustness", f"{evaluation['overall_robustness']:.1f}%")
+            status.metric("Overall Policy Status", evaluation["overall_policy_status"])
+            for col, (name, scenario) in zip(st.columns(3), evaluation["scenarios"].items()):
+                with col:
+                    st.subheader(f"{name.upper()} CASE")
+                    st.write(f"Arrival rate: {scenario['arrival_rate']:g}/hour")
+                    st.metric("Robustness", f"{scenario['scenario_robustness']:.1f}%")
+                    metrics = scenario["metrics"]
+                    for label, key in [("Mean wait", "mean_wait"), ("High-risk wait", "high_risk_mean_wait"), ("P95 wait", "p95_wait")]:
+                        st.write(f"{label}: {metrics[key]['mean']:.2f} min")
+                    st.write("Utilization: " + "; ".join(f"{resource.title()} {metrics[resource + '_utilization']['mean']:.1%}"
+                                                        for resource in ["icu", "general", "doctor", "nurse"]))
+                    st.write(scenario["scenario_verdict"])
+            st.caption("Wait includes elapsed waiting for patients still queued at window end. Utilization uses only the observation window. Scenario statistics average per-run metrics; throughput is completions/hour. No future waiting or discharge tail is counted.")
+            with st.expander("Per-run results and configuration"):
+                st.json(evaluation)
         else:
-            st.info(
-                "Baseline metrics are unavailable until a validated Digital Twin "
-                "baseline is generated."
-            )
+            st.info("Select Evaluate Current Policy to test the entered resources under all three demand scenarios. GA is not required.")
 
-    with comparison_panel:
-        st.header("Baseline vs Latest Recommendation")
-        if not st.session_state.optimization_run or not best_policy:
-            st.info(
-                "No optimized policy has been generated in this session. "
-                "Configure constraints in the sidebar and select Run Optimization."
-            )
+    with st.container(border=True):
+        st.header("Current Policy vs Recommended Policy")
+        if ga_result:
+            render_v2_comparison(ga_result, details=False)
         else:
-            st.caption(
-                "Values show validated baseline -> latest recommendation. "
-                "Deltas are recommendation minus baseline."
-            )
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric(
-                "ICU Beds",
-                f"{fmt_int(baseline_policy['icu_beds'])} -> "
-                f"{fmt_int(best_policy.get('icu_beds'))}",
-                delta=delta_number(
-                    best_policy.get("icu_beds"), baseline_policy["icu_beds"], 0
-                ),
-                delta_color="off",
-            )
-            c2.metric(
-                "General Beds",
-                f"{fmt_int(baseline_policy['general_beds'])} -> "
-                f"{fmt_int(best_policy.get('general_beds'))}",
-                delta=delta_number(
-                    best_policy.get("general_beds"),
-                    baseline_policy["general_beds"],
-                    0,
-                ),
-                delta_color="off",
-            )
-            c3.metric(
-                "Modeled Concurrent Doctors",
-                f"{fmt_int(baseline_policy['doctors'])} -> "
-                f"{fmt_int(best_policy.get('doctors'))}",
-                delta=delta_number(
-                    best_policy.get("doctors"), baseline_policy["doctors"], 0
-                ),
-                delta_color="off",
-                help="Simultaneous modeled capacity, not total employed doctors.",
-            )
-            c4.metric(
-                "Modeled Concurrent Nurses",
-                f"{fmt_int(baseline_policy['nurses'])} -> "
-                f"{fmt_int(best_policy.get('nurses'))}",
-                delta=delta_number(
-                    best_policy.get("nurses"), baseline_policy["nurses"], 0
-                ),
-                delta_color="off",
-                help="Simultaneous modeled capacity, not total employed nurses.",
-            )
-
-            w1, w2, w3, w4 = st.columns(4)
-            w1.metric(
-                "Mean Wait",
-                f"{fmt_minutes(baseline_metrics.get('mean_waiting_time_min'))} -> "
-                f"{fmt_minutes(best_metrics.get('mean_waiting_time_min'))}",
-                delta=delta_number(
-                    best_metrics.get("mean_waiting_time_min"),
-                    baseline_metrics.get("mean_waiting_time_min"),
-                    2,
-                    " min",
-                ),
-                delta_color="off",
-            )
-            w2.metric(
-                "High-Risk Mean Wait",
-                f"{fmt_minutes(baseline_metrics.get('high_risk_mean_waiting_time_min'))} -> "
-                f"{fmt_minutes(best_metrics.get('high_risk_mean_waiting_time_min'))}",
-                delta=delta_number(
-                    best_metrics.get("high_risk_mean_waiting_time_min"),
-                    baseline_metrics.get("high_risk_mean_waiting_time_min"),
-                    2,
-                    " min",
-                ),
-                delta_color="off",
-            )
-            w3.metric(
-                "P95 Wait",
-                f"{fmt_minutes(baseline_metrics.get('p95_waiting_time_min'))} -> "
-                f"{fmt_minutes(best_metrics.get('p95_waiting_time_min'))}",
-                delta=delta_number(
-                    best_metrics.get("p95_waiting_time_min"),
-                    baseline_metrics.get("p95_waiting_time_min"),
-                    2,
-                    " min",
-                ),
-                delta_color="off",
-            )
-            w4.metric(
-                "Throughput",
-                f"{fmt_throughput(baseline_metrics.get('throughput_patients_per_day'))} -> "
-                f"{fmt_throughput(best_metrics.get('throughput_patients_per_day'))}",
-                delta=delta_number(
-                    best_metrics.get("throughput_patients_per_day"),
-                    baseline_metrics.get("throughput_patients_per_day"),
-                    2,
-                    "/day",
-                ),
-                delta_color="off",
-            )
+            st.info("Run V2 optimization to compare the current hospital policy with a fully verified recommendation.")
 
     with st.container(border=True):
         st.header("Dataset & Prediction Model")
@@ -1995,337 +1800,86 @@ with dashboard_tab:
 
 with optimize_tab:
     with st.container(border=True):
-        st.header("Optimization")
-
-        if not st.session_state.optimization_run:
-            st.info(
-                "No optimized policy has been generated in this session. "
-                "Configure constraints in the sidebar and select Run Optimization."
-            )
-
-            s1, s2, s3, s4 = st.columns(4)
-            s1.metric("Max ICU Beds", fmt_int(max_icu))
-            s2.metric("Max General Beds", fmt_int(max_general))
-            s3.metric("Max Concurrent Doctors", fmt_int(max_doctors))
-            s4.metric("Max Concurrent Nurses", fmt_int(max_nurses))
-
-            t1, t2 = st.columns(2)
-            t1.metric("Mean Wait Target", fmt_minutes(mean_wait_target))
-            t2.metric(
-                "High-Risk Wait Target",
-                fmt_minutes(high_risk_wait_target),
-            )
-
+        st.header("V2 Optimization")
+        st.caption("GA optimizes hospital resource policies through the Digital Twin. It does not optimize the Random Forest; the RF threshold stays at 0.50.")
+        if not ga_result:
+            st.info("Enter current hospital resources and select Run Optimization. Search bounds update automatically. Generation 0 includes the current policy when feasible, or its nearest feasible version after an availability override.")
+            with st.expander("Effective GA Search Bounds"):
+                st.dataframe(pd.DataFrame([{"Resource": resource_labels[k], "Minimum": ga_bounds[k][0],
+                    "Current": getattr(current_policy, k), "Maximum": ga_bounds[k][1]} for k in GENES]), hide_index=True, width="stretch")
         else:
-            st.success(
-                f"Latest optimization completed at {st.session_state.last_run_time}."
-            )
+            fitness_col, generation_col, runtime_col = st.columns(3)
+            fitness_col.metric("GA Search Fitness", f"{best_fitness:.2f}",
+                help="Search fitness uses shared demand seeds and the smaller GA replication count. Performance below comes from full final verification.")
+            generation_col.metric("Generations Completed", ga_result["generations_completed"])
+            runtime_col.metric("Optimization Runtime", f"{ga_result['runtime_seconds']:.2f} s")
+            st.caption(f"Early stopping: {ga_result['early_stopping_occurred']}. Final verification: {ga_result['final_verification_replications']} replications per scenario. Unique candidates: {ga_result['unique_candidate_evaluations']}; cached comparisons: {ga_result['cache_hits']}.")
+            render_v2_comparison(ga_result, details=True)
+            generation_data = pd.DataFrame(ga_result["generations"])[["generation", "best_fitness"]].rename(columns={"best_fitness": "fitness"})
+            st.altair_chart(monochrome_line_chart(generation_data, "generation", "fitness", "Best Search Fitness by Generation", dark_mode), width="stretch")
+            with st.expander("Applied bounds, targets, weights and provenance"):
+                st.json(ga_result["provenance"])
 
-            st.subheader("Recommended Policy")
-            p1, p2, p3, p4, p5 = st.columns(5)
-            p1.metric("ICU Beds", fmt_int(best_policy.get("icu_beds")))
-            p2.metric("General Beds", fmt_int(best_policy.get("general_beds")))
-            p3.metric(
-                "Modeled Concurrent Doctors",
-                fmt_int(best_policy.get("doctors")),
-                help="Simultaneous modeled capacity, not total employed doctors.",
-            )
-            p4.metric(
-                "Modeled Concurrent Nurses",
-                fmt_int(best_policy.get("nurses")),
-                help="Simultaneous modeled capacity, not total employed nurses.",
-            )
-            p5.metric(
-                "Fitness",
-                fmt_fitness(best_fitness),
-                help="Higher (less negative) is better only within the current GA objective.",
-            )
-
-            st.subheader("Expected Digital Twin Performance")
-            d1, d2, d3, d4 = st.columns(4)
-            d1.metric(
-                "Mean Wait",
-                fmt_minutes(best_metrics.get("mean_waiting_time_min")),
-            )
-            d2.metric(
-                "High-Risk Wait",
-                fmt_minutes(best_metrics.get("high_risk_mean_waiting_time_min")),
-            )
-            d3.metric(
-                "P95 Wait",
-                fmt_minutes(best_metrics.get("p95_waiting_time_min")),
-            )
-            d4.metric(
-                "Throughput",
-                fmt_throughput(best_metrics.get("throughput_patients_per_day")),
-            )
-
-            resource_compare = pd.DataFrame(
-                {
-                    "Resource": ["ICU Beds", "General Beds", "Doctors", "Nurses"],
-                    "Baseline": [
-                        baseline_policy["icu_beds"],
-                        baseline_policy["general_beds"],
-                        baseline_policy["doctors"],
-                        baseline_policy["nurses"],
-                    ],
-                    "Recommended": [
-                        best_policy.get("icu_beds", 0),
-                        best_policy.get("general_beds", 0),
-                        best_policy.get("doctors", 0),
-                        best_policy.get("nurses", 0),
-                    ],
-                }
-            )
-
-            compare_long = resource_compare.melt(
-                id_vars="Resource",
-                var_name="Policy",
-                value_name="Count",
-            )
-            palette = ["#65727e", "#82c0ea"]
-
-            comparison_chart = style_chart((
-                alt.Chart(compare_long)
-                .mark_bar(cornerRadiusTopLeft=4, cornerRadiusTopRight=4)
-                .encode(
-                    x=alt.X("Resource:N", title=None),
-                    xOffset="Policy:N",
-                    y=alt.Y("Count:Q", title="Resource count"),
-                    color=alt.Color(
-                        "Policy:N",
-                        scale=alt.Scale(domain=["Baseline", "Recommended"], range=palette),
-                        legend=alt.Legend(title=None),
-                    ),
-                    tooltip=[
-                        alt.Tooltip("Resource:N"),
-                        alt.Tooltip("Policy:N"),
-                        alt.Tooltip("Count:Q", format=".0f"),
-                    ],
-                )
-                .properties(height=290, title="Baseline vs Recommended Resources")
-            ), dark_mode)
-            st.altair_chart(comparison_chart, width="stretch")
-
-            ga_history = load_csv(GA_DIR / "best_by_generation.csv")
-            if not ga_history.empty and {"generation", "fitness"}.issubset(
-                ga_history.columns
-            ):
-                ga_history = ga_history[["generation", "fitness"]].copy()
-                ga_history["generation"] = pd.to_numeric(
-                    ga_history["generation"],
-                    errors="coerce",
-                )
-                ga_history["fitness"] = pd.to_numeric(
-                    ga_history["fitness"],
-                    errors="coerce",
-                ).round(2)
-
-                st.altair_chart(
-                    monochrome_line_chart(
-                        ga_history,
-                        "generation",
-                        "fitness",
-                        "GA Improvement Across Generations",
-                        dark_mode,
-                    ),
-                    width="stretch",
-                )
-
-    if st.session_state.optimization_run:
+    if ga_result:
         with st.container(border=True):
             st.header("Why This Changed")
-            notes = build_change_notes(
-                baseline_policy,
-                best_policy,
-                baseline_metrics,
-                best_metrics,
-                interpreted_feedback,
-            )
+            st.caption("Deterministic before/after observations from full verification; no LLM interpretation is used.")
+            for note in ga_result["change_summary"]:
+                st.write(note)
 
-            if notes:
-                for note in notes:
-                    st.markdown(
-                        f'<div class="change-box">{html.escape(note)}</div>',
-                        unsafe_allow_html=True,
-                    )
-            else:
-                st.write(
-                    "The optimized recommendation did not produce a material change "
-                    "from the baseline values."
-                )
-
-        with st.container(border=True):
-            st.header("Applied Constraints")
-            constraints = interpreted_feedback.get("constraints", {}) or {}
-            objectives = interpreted_feedback.get("objectives", {}) or {}
-
-            labels = {
-                "icu_beds": "ICU Beds",
-                "general_beds": "General Beds",
-                "doctors": "Concurrent Doctors",
-                "nurses": "Concurrent Nurses",
-            }
-            constraint_columns = st.columns(4)
-            for column, key in zip(constraint_columns, labels):
-                limits = constraints.get(key, {}) or {}
-                low = fmt_int(limits.get("min"))
-                high = fmt_int(limits.get("max"))
-                column.metric(labels[key], f"{low}-{high}")
-
-            target1, target2, target3 = st.columns(3)
-            target1.metric(
-                "Mean Wait Target",
-                fmt_minutes(objectives.get("acceptable_mean_wait_min")),
-            )
-            target2.metric(
-                "High-Risk Wait Target",
-                fmt_minutes(objectives.get("acceptable_high_risk_wait_min")),
-            )
-            target3.metric(
-                "High-Risk Weighting",
-                fmt(objectives.get("high_risk_wait_weight"), 2),
-            )
-
-            summary = interpreted_feedback.get("summary")
-            if summary:
-                st.info(f"Natural-language interpretation: {summary}")
-
-            with st.expander("Detailed applied JSON"):
-                st.json(interpreted_feedback)
-
-
-# ============================================================
-# EXPLAINABILITY - INSIDE OPTIMIZE
-# ============================================================
-
-with optimize_tab:
     with st.container(border=True):
-        st.header("Explainability")
-
-        if not st.session_state.optimization_run:
-            st.info(
-                "Run an optimization first. The Decision Tree and LLM explanation "
-                "will be refreshed for that recommendation."
-            )
+        st.header("Decision Tree XAI Explanation")
+        st.caption("Learned explanatory patterns from GA-tested scenarios. Authoritative verdicts come from Digital Twin targets and robustness rules.")
+        if not ga_result:
+            st.info("Run optimization to generate a current explanation.")
+        elif not xai_current:
+            st.warning("The Decision Tree explanation is unavailable or stale for this recommendation.")
+        elif xai_report["status"] != "available":
+            st.info(xai_report["message"])
+            st.json(xai_report["metrics"])
         else:
-            st.caption(
-                "Decision Tree metrics describe this interpretable surrogate on "
-                "the latest GA policy history; they do not establish clinical validity."
-            )
-            if not st.session_state.xai_refreshed:
-                st.warning(
-                    "Explainability was not refreshed for this optimization run; "
-                    "saved XAI artifacts are not being treated as current."
-                )
-            xai_metrics = (
-                load_json(XAI_DIR / "tree_metrics.json")
-                if st.session_state.xai_refreshed
-                else {}
-            )
-            xai_summary = (
-                load_json(XAI_DIR / "best_policy_explanation.json")
-                if st.session_state.xai_refreshed
-                else {}
-            )
-
-            x1, x2, x3, x4 = st.columns(4)
-            x1.metric("Accuracy", fmt_pct(xai_metrics.get("accuracy"), 1))
-            x2.metric("Precision", fmt_pct(xai_metrics.get("precision"), 1))
-            x3.metric("Recall", fmt_pct(xai_metrics.get("recall"), 1))
-            x4.metric("F1", fmt_pct(xai_metrics.get("f1"), 1))
-
-            classification = xai_summary.get(
-                "decision_tree_class",
-                "unknown",
-            )
-            probability = xai_summary.get(
-                "decision_tree_probability_acceptable"
-            )
-
-            c1, c2 = st.columns(2)
-            c1.metric("Policy Classification", str(classification).upper())
-            c2.metric(
-                "Acceptable Probability",
-                fmt_pct(probability, 1),
-                help=(
-                    "Probability assigned by the shallow Decision Tree surrogate, "
-                    "not a clinical probability."
-                ),
-            )
-
-            limits = xai_summary.get("acceptability_definition", {})
-            st.caption(
-                "Current GA acceptability targets: mean wait <= "
-                f"{fmt_minutes(limits.get('mean_waiting_time_min_max'))} and "
-                "high-risk wait <= "
-                f"{fmt_minutes(limits.get('high_risk_mean_waiting_time_min_max'))}."
-            )
-
-            st.subheader("Decision Path")
-            rules = xai_summary.get("decision_path_rules", [])
-
-            if rules:
-                rule_html = '<div class="rule-flow">'
-                for idx, rule in enumerate(rules, 1):
-                    rule_html += (
-                        '<div class="rule-step">'
-                        f'<span class="rule-num">{idx}</span>'
-                        f'{html.escape(str(rule))}'
-                        '</div>'
-                    )
-                rule_html += (
-                    '<div class="rule-step">'
-                    '<span class="rule-num">OK</span>'
-                    f'{html.escape(str(classification).upper())}'
-                    '</div></div>'
-                )
-                st.markdown(rule_html, unsafe_allow_html=True)
+            metrics = xai_report["metrics"]
+            cols = st.columns(4)
+            cols[0].metric("Training Samples", metrics["training_sample_count"])
+            cols[1].metric("Tree Depth / Leaves", f"{metrics['tree_depth']} / {metrics['leaf_count']}")
+            cols[2].metric("Training Accuracy", f"{metrics['training_accuracy']:.1%}")
+            cols[3].metric("Policy-held-out Accuracy", f"{metrics['validation_accuracy']:.1%}" if metrics["validation_accuracy"] is not None else "Unavailable")
+            st.caption(f"Class distribution: {metrics['class_distribution']}. Training accuracy measures fit to the observed GA data and does not prove generalization. {metrics['validation_note']}")
+            for col, (name, explanation) in zip(st.columns(3), xai_report["explanations"].items()):
+                with col:
+                    st.subheader(f"{name.title()} Case")
+                    st.write(f"AUTHORITATIVE VERDICT: {explanation['authoritative_verdict']}")
+                    st.write(f"XAI learned classification: {explanation['surrogate_class']}")
+                    st.caption(f"Surrogate acceptable probability: {explanation['surrogate_probability_acceptable']:.1%}")
+                    st.code(" AND\n".join(explanation["learned_rules"]) or "Root leaf: no split rule")
+            with st.expander("Full learned tree rules"):
+                st.code(xai_report["rules_text"])
+    with st.container(border=True):
+        st.subheader("AI Summary")
+        st.caption("AUTHORITATIVE VERDICT: Digital Twin operational criteria. OPTIMIZATION: GA. XAI: learned Decision Tree surrogate. AI EXPLANATION: optional natural-language interpretation.")
+        if ai_stale:
+            st.warning("Previous AI explanation is stale. Run optimization or regenerate the explanation for the current verified recommendation.")
+        if ga_result:
+            if st.button("Generate / Refresh AI Explanation"):
+                with st.spinner("Preparing grounded explanation..."):
+                    ai_result = generate_explanation_v2(ga_result, active_xai)
+                st.session_state.v2_llm_result = ai_result
+                llm_path.parent.mkdir(parents=True, exist_ok=True)
+                llm_path.write_text(json.dumps(ai_result, indent=2), encoding="utf-8")
+                ai_stale = False
+            if not ai_result or ai_stale:
+                from llm_explanation import deterministic_explanation_v2
+                summary, detail, _ = deterministic_explanation_v2(ga_result, active_xai)
+                st.caption("Deterministic summary of the current verified recommendation.")
             else:
-                st.write("No decision path is available.")
-
-            with st.expander("Full Decision Tree rules"):
-                st.code(
-                    (
-                        load_text(
-                            XAI_DIR / "decision_tree_rules.txt",
-                            "No rules available.",
-                        )
-                        if st.session_state.xai_refreshed
-                        else "No current rules are available for this run."
-                    )
-                )
-
-    if st.session_state.optimization_run:
-        with st.container(border=True):
-            st.header("AI Explanation")
-            st.caption(
-                "Operational explanation generated from simulation and optimization "
-                "results. It is not medical advice."
-            )
-
-            st.subheader("AI Summary")
-            ai_summary = build_ai_summary(
-                best_policy,
-                best_metrics,
-                xai_summary,
-                interpreted_feedback,
-                BASE_BOUNDS,
-            )
-            st.markdown("\n".join(f"- {item}" for item in ai_summary))
-
+                summary, detail = ai_result["summary"], ai_result["detail"]
+                st.info(ai_result["message"])
+            for line in summary:
+                st.write(line)
             with st.expander("Detailed AI Explanation", expanded=False):
-                if st.session_state.llm_generated:
-                    llm_text = load_text(
-                        LLM_DIR / "llm_explanation.txt",
-                        "No LLM explanation was generated.",
-                    )
-                    st.markdown(llm_text)
-                else:
-                    st.info(
-                        "No current LLM explanation is available for this run. "
-                        "The saved explanation from an earlier run is not shown."
-                    )
+                st.write(detail)
+        else:
+            st.info("Run optimization to see a summary grounded in verified V2 results.")
 
 
 # ============================================================
@@ -2349,12 +1903,11 @@ with review_tab:
             )
             st.caption(
                 "Workflow: review the policy -> record a decision -> optionally "
-                "prepare modified values -> rerun optimization."
+                "prepare feedback constraints -> rerun optimization."
             )
             if st.session_state.modification_prepared:
                 st.info(
-                    "Recommended resource values are loaded in the sidebar. "
-                    "Adjust them or add an instruction, then select Run Optimization."
+                    "Review comments are loaded as the next optimization instruction. Preview AI Interpretation, then select Run Optimization."
                 )
 
             decision = st.radio(
@@ -2374,8 +1927,7 @@ with review_tab:
             review_comment = st.text_area(
                 "Reviewer comment",
                 placeholder=(
-                    "Example: Reduce nurses to 7 and keep high-risk waiting "
-                    "below 7 minutes."
+                    "Example: Do not use more than 120 doctors. Prioritize high-risk patients."
                 ),
                 key="review_comment",
             )
@@ -2392,10 +1944,10 @@ with review_tab:
                 st.button(
                     "Prepare Modification",
                     width="stretch",
-                    on_click=use_recommended_values,
+                    on_click=lambda: prepare_modification_v2(st.session_state),
+                    disabled=decision != "Needs Modification" or not review_comment.strip(),
                     help=(
-                        "Loads the recommended resource values into the sidebar. "
-                        "Edit them or add a new instruction, then rerun."
+                        "Transfers review comments into the next optimization instruction and enables AI interpretation. Historical results stay unchanged."
                     ),
                 )
 
@@ -2406,48 +1958,16 @@ with review_tab:
                     "Reject": "Rejected",
                 }[decision]
 
-                review = {
-                    "timestamp": datetime.now().isoformat(timespec="seconds"),
-                    "decision": decision,
-                    "rating": int(rating),
-                    "comments": review_comment,
-                    "current_policy": best_policy,
-                    "current_fitness": best_fitness,
-                }
+                try:
+                    save_review_v2(ga_result, decision, rating, review_comment, FEEDBACK_DIR / "v2_reviews")
+                except (ValueError, OSError):
+                    st.error("Review could not be saved. The verified recommendation remains available.")
+                else:
+                    st.success("Review saved.")
 
-                history_path = FEEDBACK_DIR / "feedback_history.csv"
-
-                row = pd.DataFrame(
-                    [
-                        {
-                            "timestamp": review["timestamp"],
-                            "decision": decision,
-                            "rating": int(rating),
-                            "comments": review_comment,
-                            "icu_beds": best_policy.get("icu_beds"),
-                            "general_beds": best_policy.get("general_beds"),
-                            "doctors": best_policy.get("doctors"),
-                            "nurses": best_policy.get("nurses"),
-                            "fitness": (
-                                round(float(best_fitness), 2)
-                                if best_fitness is not None
-                                else None
-                            ),
-                        }
-                    ]
-                )
-
-                if history_path.exists():
-                    previous = pd.read_csv(history_path)
-                    row = pd.concat(
-                        [previous, row],
-                        ignore_index=True,
-                    )
-
-                row.to_csv(history_path, index=False)
-                st.success("Review saved.")
-
-            history = load_csv(FEEDBACK_DIR / "feedback_history.csv")
+            history = pd.DataFrame([{key: record.get(key) for key in ("timestamp", "ga_run_id", "decision", "rating", "comments", "verified_status")}
+                for path in sorted((FEEDBACK_DIR / "v2_reviews").glob("review_*.json"))
+                if (record := load_json(path))])
             if not history.empty:
                 st.subheader("Previous Reviews")
                 numeric_cols = history.select_dtypes(include="number").columns

@@ -930,4 +930,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--legacy-v1" in sys.argv:
+        sys.argv.remove("--legacy-v1")
+        main()
+    else:
+        from scenario_evaluation import main as v2_main
+        v2_main()

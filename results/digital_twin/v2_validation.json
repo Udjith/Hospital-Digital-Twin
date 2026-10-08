@@ -1,0 +1,117 @@
+{
+  "profile_count": 7500,
+  "rf_load_seconds": 1.147,
+  "low_24h": {
+    "seconds": 0.434,
+    "overall_robustness": 0.0,
+    "status": "UNACCEPTABLE",
+    "scenarios": {
+      "best": {
+        "patients_arrived": 119.67,
+        "patients_completed": 0.0,
+        "mean_wait": 701.47,
+        "high_risk_mean_wait": 747.27,
+        "robustness": 0.0
+      },
+      "average": {
+        "patients_arrived": 242.33,
+        "patients_completed": 0.0,
+        "mean_wait": 687.66,
+        "high_risk_mean_wait": 699.87,
+        "robustness": 0.0
+      },
+      "worst": {
+        "patients_arrived": 468.67,
+        "patients_completed": 0.0,
+        "mean_wait": 695.05,
+        "high_risk_mean_wait": 703.13,
+        "robustness": 0.0
+      }
+    }
+  },
+  "high_24h": {
+    "seconds": 0.298,
+    "overall_robustness": 100.0,
+    "status": "ROBUST",
+    "scenarios": {
+      "best": {
+        "patients_arrived": 119.67,
+        "patients_completed": 9.33,
+        "mean_wait": 0.0,
+        "high_risk_mean_wait": 0.0,
+        "robustness": 100.0
+      },
+      "average": {
+        "patients_arrived": 242.33,
+        "patients_completed": 21.0,
+        "mean_wait": 0.0,
+        "high_risk_mean_wait": 0.0,
+        "robustness": 100.0
+      },
+      "worst": {
+        "patients_arrived": 468.67,
+        "patients_completed": 42.67,
+        "mean_wait": 0.0,
+        "high_risk_mean_wait": 0.0,
+        "robustness": 100.0
+      }
+    }
+  },
+  "manual_4h": {
+    "seconds": 0.285,
+    "overall_robustness": 11.11111111111111,
+    "status": "UNACCEPTABLE",
+    "scenarios": {
+      "best": {
+        "patients_arrived": 20.33,
+        "patients_completed": 0.0,
+        "mean_wait": 21.07,
+        "high_risk_mean_wait": 12.87,
+        "robustness": 33.33333333333333
+      },
+      "average": {
+        "patients_arrived": 38.0,
+        "patients_completed": 0.0,
+        "mean_wait": 42.19,
+        "high_risk_mean_wait": 34.95,
+        "robustness": 0.0
+      },
+      "worst": {
+        "patients_arrived": 82.33,
+        "patients_completed": 0.0,
+        "mean_wait": 87.65,
+        "high_risk_mean_wait": 90.01,
+        "robustness": 0.0
+      }
+    }
+  },
+  "default_24h": {
+    "seconds": 2.611,
+    "overall_robustness": 0.0,
+    "status": "UNACCEPTABLE",
+    "scenarios": {
+      "best": {
+        "patients_arrived": 292.4,
+        "patients_completed": 4.2,
+        "mean_wait": 540.44,
+        "high_risk_mean_wait": 492.38,
+        "robustness": 0.0
+      },
+      "average": {
+        "patients_arrived": 528.6,
+        "patients_completed": 5.6,
+        "mean_wait": 616.47,
+        "high_risk_mean_wait": 592.21,
+        "robustness": 0.0
+      },
+      "worst": {
+        "patients_arrived": 838.7,
+        "patients_completed": 5.8,
+        "mean_wait": 641.93,
+        "high_risk_mean_wait": 624.36,
+        "robustness": 0.0
+      }
+    }
+  },
+  "invalid_order": "Arrival rates must satisfy 0 <= Best <= Average <= Worst <= 1000 patients/hour."
+}

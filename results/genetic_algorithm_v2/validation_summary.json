@@ -1,0 +1,57 @@
+{
+  "best_policy": {
+    "icu_beds": 298,
+    "general_beds": 583,
+    "doctors": 136,
+    "nurses": 212,
+    "icu_risk_threshold": 0.5
+  },
+  "best_fitness": 6091.251062898262,
+  "current_robustness": 66.66666666666666,
+  "recommended_robustness": 83.33333333333334,
+  "current_status": "CONDITIONALLY ACCEPTABLE",
+  "recommended_status": "CONDITIONALLY ACCEPTABLE",
+  "scenarios": {
+    "best": {
+      "current": 100.0,
+      "recommended": 100.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0
+    },
+    "average": {
+      "current": 100.0,
+      "recommended": 100.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0
+    },
+    "worst": {
+      "current": 0.0,
+      "recommended": 50.0,
+      "mean_wait": 5.738758168862391,
+      "high_risk_mean_wait": 13.117463943931181
+    }
+  },
+  "rf_load_seconds": 0.3641920001246035,
+  "runtime_seconds": 29.98782300017774,
+  "generations_completed": 6,
+  "unique_candidates": 46,
+  "cache_hits": 26,
+  "xai_status": "available",
+  "xai_metrics": {
+    "training_sample_count": 138,
+    "unique_policy_count": 46,
+    "class_distribution": {
+      "ACCEPTABLE": 76,
+      "UNACCEPTABLE": 62
+    },
+    "tree_depth": 4,
+    "leaf_count": 6,
+    "training_accuracy": 0.9855072463768116,
+    "validation_accuracy": 0.9722222222222222,
+    "validation_train_samples": 102,
+    "validation_test_samples": 36,
+    "validation_note": "Held-out resource policies within this GA experiment; common demand seeds are shared. This is limited validation, not evidence of generalization to new hospitals or demand experiments."
+  },
+  "dashboard_validation": true,
+  "cli_validation": true
+}
