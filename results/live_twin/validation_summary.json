@@ -1,0 +1,156 @@
+{
+  "dashboard": "PASS",
+  "rf_inference_calls_across_two_starts": 1,
+  "network_calls": 0,
+  "runtime_seconds": 11.205720599973574,
+  "demo_profile": {
+    "risk_probability": 0.3932294066645887,
+    "treatment_minutes": 19.7,
+    "stay_minutes": 240.0
+  },
+  "demo_sim_time_minutes": 253.02104301982996,
+  "demo_metrics": {
+    "total_patients_arrived": 61,
+    "completed_patients": 1,
+    "currently_waiting": 59,
+    "currently_active": 60,
+    "in_treatment": 1,
+    "bed_stay": 0,
+    "mean_wait_so_far": 105.82950405218926,
+    "high_risk_mean_wait_so_far": 0.0,
+    "throughput_per_hour": 0.23713442678084934,
+    "cumulative_utilization": {
+      "icu_beds": 0.0,
+      "general_beds": 0.9524899475697448,
+      "doctors": 0.08181137723939301,
+      "nurses": 0.08181137723939301
+    },
+    "rolling_60_minutes": {
+      "observed_minutes": 60.0,
+      "arrivals": 16,
+      "completions": 1,
+      "queue_length_now": 59,
+      "mean_queue_length": 51.59441784177416,
+      "mean_wait": 28.541566906653053,
+      "utilization": {
+        "icu_beds": 0.0,
+        "general_beds": 1.0,
+        "doctors": 0.016666666666666666,
+        "nurses": 0.016666666666666666
+      }
+    }
+  },
+  "events": [
+    {
+      "sim_time_minutes": 12.021043019829973,
+      "event_type": "PATIENT_ARRIVED",
+      "patient_id": "P000001",
+      "resource_ids": [],
+      "description": "P000001 arrived.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 12.021043019829973,
+      "event_type": "RESOURCES_ASSIGNED",
+      "patient_id": "P000001",
+      "resource_ids": [
+        "GEN-001",
+        "DOC-001",
+        "NUR-001"
+      ],
+      "description": "P000001 assigned GEN-001, DOC-001, NUR-001.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 23.70199129895224,
+      "event_type": "PATIENT_ARRIVED",
+      "patient_id": "P000002",
+      "resource_ids": [],
+      "description": "P000002 arrived.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 23.70199129895224,
+      "event_type": "PATIENT_QUEUED",
+      "patient_id": "P000002",
+      "resource_ids": [],
+      "description": "P000002 waiting for bed, doctor and nurse availability.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 31.72104301982997,
+      "event_type": "RESOURCE_RELEASED",
+      "patient_id": "P000001",
+      "resource_ids": [
+        "DOC-001"
+      ],
+      "description": "DOC-001 released from P000001.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 31.72104301982997,
+      "event_type": "RESOURCE_RELEASED",
+      "patient_id": "P000001",
+      "resource_ids": [
+        "NUR-001"
+      ],
+      "description": "NUR-001 released from P000001.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 31.72104301982997,
+      "event_type": "TREATMENT_COMPLETED",
+      "patient_id": "P000001",
+      "resource_ids": [
+        "GEN-001"
+      ],
+      "description": "P000001 completed treatment; bed retained until discharge.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 35.625796298323515,
+      "event_type": "PATIENT_ARRIVED",
+      "patient_id": "P000003",
+      "resource_ids": [],
+      "description": "P000003 arrived.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 252.02104301982996,
+      "event_type": "RESOURCE_RELEASED",
+      "patient_id": "P000001",
+      "resource_ids": [
+        "GEN-001"
+      ],
+      "description": "GEN-001 released from P000001.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 252.02104301982996,
+      "event_type": "PATIENT_DISCHARGED",
+      "patient_id": "P000001",
+      "resource_ids": [],
+      "description": "P000001 discharged.",
+      "event_id": null
+    },
+    {
+      "sim_time_minutes": 252.02104301982996,
+      "event_type": "RESOURCES_ASSIGNED",
+      "patient_id": "P000002",
+      "resource_ids": [
+        "GEN-001",
+        "DOC-001",
+        "NUR-001"
+      ],
+      "description": "P000002 assigned GEN-001, DOC-001, NUR-001.",
+      "event_id": null
+    }
+  ],
+  "benchmark_24h": {
+    "runtime_seconds": 0.6325797000899911,
+    "arrivals": 530,
+    "completed": 51,
+    "active": 479,
+    "event_history_length": 1000
+  }
+}

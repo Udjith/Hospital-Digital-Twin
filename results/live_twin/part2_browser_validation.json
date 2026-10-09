@@ -1,0 +1,16 @@
+{
+  "browser": "PASS",
+  "playback_speed": 10,
+  "playback_before_minutes": 5,
+  "playback_after_minutes": 5.31,
+  "pause_minutes": 5.46,
+  "pause_freezes_clock": true,
+  "reset_clock_minutes": 0,
+  "capacity_lock": true,
+  "native_fragment_updates": true,
+  "screenshot_files_created": 0,
+  "event_default_count": 12,
+  "event_preview_read_only": true,
+  "explicit_event_apply": true,
+  "runtime_seconds": 17.93021719995886
+}

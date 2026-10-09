@@ -1,0 +1,176 @@
+{
+  "dashboard": "PASS",
+  "runtime_seconds": 6.316377899842337,
+  "lookahead_runtime_seconds": 0.016506600193679333,
+  "initial_sim_time": 60.0,
+  "capacity": {
+    "icu_beds": 8,
+    "general_beds": 12,
+    "doctors": 6,
+    "nurses": 6
+  },
+  "current_free_resources": {
+    "icu_beds": 8,
+    "general_beds": 6,
+    "doctors": 0,
+    "nurses": 0
+  },
+  "current_queue": 1,
+  "predicted": {
+    "additional_arrivals": 40.8,
+    "completed_patients": 0.0,
+    "queue_peak": 37.8,
+    "queue_at_horizon_end": 37.8,
+    "unfinished_patients": 47.8,
+    "mean_wait": 70.97959781523495,
+    "high_risk_mean_wait": 70.26338639445704,
+    "p95_wait": 116.86170440164517,
+    "icu_utilization": 0.35,
+    "general_utilization": 0.6,
+    "doctor_utilization": 1.0,
+    "nurse_utilization": 1.0,
+    "recovery_time_minutes": null,
+    "recovered_replications": 0,
+    "event_metrics": {
+      "surge_patients_introduced": 12.0,
+      "surge_patients_completed": 0.0,
+      "event_mean_wait": 98.00672516994156,
+      "event_high_risk_mean_wait": 87.02509253365064,
+      "event_unfinished_patients": 12.0,
+      "event_waiting_patients": 9.6
+    }
+  },
+  "robustness": 0.0,
+  "verdict": "CANNOT HANDLE",
+  "replication_seeds": [
+    2247199352,
+    3448645160,
+    4271638691,
+    1154413661,
+    2949546264
+  ],
+  "real_state_unchanged_by_preview": true,
+  "reproducible_prediction": true,
+  "event_patients_injected": 12,
+  "event_metrics": {
+    "surge_patients_introduced": 12,
+    "surge_patients_completed": 0,
+    "event_mean_wait": 230.89417902665295,
+    "event_high_risk_mean_wait": 208.77544744582602,
+    "event_unfinished_patients": 12,
+    "event_waiting_patients": 10
+  },
+  "during_shortage": {
+    "total": 6,
+    "occupied_or_busy": 6,
+    "available": 0,
+    "temporarily_unavailable": 0,
+    "pending_unavailable": 3,
+    "usable": 6,
+    "planned_usable": 3,
+    "current_utilization": 1.0
+  },
+  "shortage_restored": true,
+  "lifecycle": [
+    {
+      "sim_time_minutes": 60.0,
+      "event_type": "EVENT_CREATED",
+      "patient_id": null,
+      "resource_ids": [],
+      "description": "Traffic accident: +12 patients over 20 min",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 60.0,
+      "event_type": "EVENT_APPLIED",
+      "patient_id": null,
+      "resource_ids": [],
+      "description": "Traffic accident: +12 patients over 20 min",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 77.62579629832351,
+      "event_type": "RESOURCES_ASSIGNED",
+      "patient_id": "P000015",
+      "resource_ids": [
+        "ICU-001",
+        "DOC-003",
+        "NUR-003"
+      ],
+      "description": "P000015 assigned ICU-001, DOC-003, NUR-003.",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 80.0,
+      "event_type": "EVENT_ENDED",
+      "patient_id": null,
+      "resource_ids": [],
+      "description": "Traffic accident: +12 patients over 20 min; temporary effects restored.",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 80.0,
+      "event_type": "EVENT_CREATED",
+      "patient_id": null,
+      "resource_ids": [],
+      "description": "3 doctors unavailable for 30 min",
+      "event_id": "EVT-000002"
+    },
+    {
+      "sim_time_minutes": 80.0,
+      "event_type": "EVENT_APPLIED",
+      "patient_id": null,
+      "resource_ids": [
+        "DOC-001",
+        "DOC-002",
+        "DOC-003"
+      ],
+      "description": "3 doctors unavailable for 30 min",
+      "event_id": "EVT-000002"
+    },
+    {
+      "sim_time_minutes": 110.0,
+      "event_type": "EVENT_ENDED",
+      "patient_id": null,
+      "resource_ids": [
+        "DOC-001",
+        "DOC-002",
+        "DOC-003"
+      ],
+      "description": "3 doctors unavailable for 30 min; temporary effects restored.",
+      "event_id": "EVT-000002"
+    },
+    {
+      "sim_time_minutes": 117.02025732460407,
+      "event_type": "RESOURCES_ASSIGNED",
+      "patient_id": "P000019",
+      "resource_ids": [
+        "ICU-002",
+        "DOC-006",
+        "NUR-006"
+      ],
+      "description": "P000019 assigned ICU-002, DOC-006, NUR-006.",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 343.22579629832353,
+      "event_type": "RESOURCE_RELEASED",
+      "patient_id": "P000015",
+      "resource_ids": [
+        "DOC-003"
+      ],
+      "description": "DOC-003 released from P000015.",
+      "event_id": "EVT-000001"
+    },
+    {
+      "sim_time_minutes": 343.22579629832353,
+      "event_type": "RESOURCE_RELEASED",
+      "patient_id": "P000015",
+      "resource_ids": [
+        "NUR-003"
+      ],
+      "description": "NUR-003 released from P000015.",
+      "event_id": "EVT-000001"
+    }
+  ]
+}

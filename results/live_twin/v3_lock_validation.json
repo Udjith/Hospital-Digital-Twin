@@ -1,0 +1,103 @@
+{
+  "provider_translation": "Mocked strict Groq responses; no live API/network calls",
+  "baseline": {
+    "icu_beds": 220,
+    "general_beds": 550,
+    "doctors": 80,
+    "nurses": 140
+  },
+  "base_arrival_rate": 4.0,
+  "A": {
+    "status": "PASS",
+    "normal_verdict": "HANDLED",
+    "robustness": 100.0,
+    "initial_clock_minutes": 720.0
+  },
+  "B": {
+    "status": "PASS",
+    "mild_verdict": "HANDLED",
+    "robustness": 100.0,
+    "source_unchanged": true
+  },
+  "C": {
+    "status": "PASS",
+    "current_robustness": 0.0,
+    "optimized_robustness": 100.0,
+    "current_verdict": "CANNOT HANDLE",
+    "optimized_verdict": "HANDLED",
+    "outcome": "VERIFIED SUCCESS",
+    "current_mean_wait": 23.520727887489066,
+    "optimized_mean_wait": 17.88258658256857,
+    "current_policy": {
+      "high_risk_priority_weight": 1.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.25,
+      "surge_priority_strength": 0.0
+    },
+    "recommended_policy": {
+      "high_risk_priority_weight": 1.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.21,
+      "surge_priority_strength": 0.0
+    },
+    "summary": "Authoritative verified result: HANDLED. Predictive robustness changed from 0.0% to 100.0%. Predicted mean wait changed from 23m 31s to 17m 53s. All configured operational targets met the verified robustness requirement. Policy changes include nurse reserve percentage 25% to 21%. Physical resources remained unchanged; the finite scheduling-policy recommendation requires clinician/administrator review.",
+    "xai_available": true,
+    "runtime_seconds": 4.2077526999637485
+  },
+  "D": {
+    "status": "PASS",
+    "current_robustness": 0.0,
+    "optimized_robustness": 20.0,
+    "current_verdict": "CANNOT HANDLE",
+    "optimized_verdict": "AT RISK",
+    "outcome": "PARTIAL IMPROVEMENT",
+    "current_mean_wait": 25.92042583872877,
+    "optimized_mean_wait": 20.454958648858543,
+    "current_policy": {
+      "high_risk_priority_weight": 1.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.25,
+      "surge_priority_strength": 0.0
+    },
+    "recommended_policy": {
+      "high_risk_priority_weight": 1.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.21,
+      "surge_priority_strength": 0.0
+    },
+    "summary": "Authoritative verified result: AT RISK. Predictive robustness changed from 0.0% to 20.0%. Predicted mean wait changed from 25m 55s to 20m 27s. Remaining limiting condition: Mean wait, failing 4/5 verified runs. Policy changes include nurse reserve percentage 25% to 21%. Physical resources remained unchanged; the finite scheduling-policy recommendation requires clinician/administrator review.",
+    "xai_available": false,
+    "runtime_seconds": 3.9538569001015276
+  },
+  "E": {
+    "status": "PASS",
+    "rejection_preserves_state": true,
+    "ui_rejection": "Covered by AppTest regression"
+  },
+  "F": {
+    "status": "PASS",
+    "temporary_policy_restored": true,
+    "compound_recovery": true,
+    "original_assignments_preserved": true,
+    "actual_surge_patients": 34
+  },
+  "G": {
+    "status": "PASS",
+    "days": 7,
+    "random_events": 24,
+    "arrived": 792,
+    "active": 251,
+    "retained_events": 1000,
+    "invariants": true,
+    "runtime_seconds": 0.37234610016457736
+  },
+  "total_runtime_seconds": 9.92459569987841
+}

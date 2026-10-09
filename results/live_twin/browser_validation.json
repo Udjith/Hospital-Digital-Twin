@@ -1,0 +1,13 @@
+{
+  "browser": "PASS",
+  "playback_speed": 10,
+  "playback_before_minutes": 5,
+  "playback_after_minutes": 5.41,
+  "pause_minutes": 5.46,
+  "pause_freezes_clock": true,
+  "reset_clock_minutes": 0,
+  "capacity_lock": true,
+  "native_fragment_updates": true,
+  "screenshot_files_created": 0,
+  "runtime_seconds": 16.642627299996093
+}

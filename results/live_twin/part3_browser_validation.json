@@ -1,0 +1,20 @@
+{
+  "browser": "PASS",
+  "playback_speed": 10,
+  "playback_before_minutes": 134.35,
+  "playback_after_minutes": 134.81,
+  "pause_minutes": 134.87,
+  "pause_freezes_clock": true,
+  "reset_clock_minutes": 0,
+  "capacity_lock": true,
+  "native_fragment_updates": true,
+  "screenshot_files_created": 0,
+  "event_default_count": 12,
+  "event_preview_read_only": true,
+  "explicit_event_apply": true,
+  "adaptive_ga_read_only": true,
+  "explicit_policy_application": true,
+  "stale_after_policy_change": true,
+  "high_speed_pause": 3600,
+  "runtime_seconds": 38.66627419996075
+}

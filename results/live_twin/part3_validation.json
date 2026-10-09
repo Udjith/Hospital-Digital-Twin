@@ -1,0 +1,385 @@
+{
+  "dashboard": "PASS",
+  "fixed_capacity": {
+    "icu_beds": 220,
+    "general_beds": 550,
+    "doctors": 80,
+    "nurses": 140
+  },
+  "baseline_arrival_rate": 4.0,
+  "initial_state": {
+    "sim_time_minutes": 720.0,
+    "metrics": {
+      "total_patients_arrived": 55,
+      "completed_patients": 3,
+      "currently_waiting": 0,
+      "currently_active": 52,
+      "in_treatment": 16,
+      "bed_stay": 36,
+      "mean_wait_so_far": 0.0,
+      "high_risk_mean_wait_so_far": 0.0,
+      "throughput_per_hour": 0.25,
+      "cumulative_utilization": {
+        "icu_beds": 0.04907731783349313,
+        "general_beds": 0.02363873315573654,
+        "doctors": 0.1505262507351999,
+        "nurses": 0.08601500042011423
+      },
+      "rolling_60_minutes": {
+        "observed_minutes": 60.0,
+        "arrivals": 1,
+        "completions": 1,
+        "queue_length_now": 0,
+        "mean_queue_length": 0.0,
+        "mean_wait": 0.0,
+        "utilization": {
+          "icu_beds": 0.12727272727272726,
+          "general_beds": 0.043657216681246704,
+          "doctors": 0.22022683877385774,
+          "nurses": 0.12584390787077585
+        }
+      }
+    },
+    "free_resources": {
+      "icu_beds": 192,
+      "general_beds": 526,
+      "doctors": 64,
+      "nurses": 124
+    }
+  },
+  "standalone_surge": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 41.6,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 93.6,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.19636363636363635,
+      "general_utilization": 0.09163636363636363,
+      "doctor_utilization": 0.5975,
+      "nurse_utilization": 0.34142857142857136,
+      "recovery_time_minutes": 30.0,
+      "recovered_replications": 5,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.17943201987116011,
+          "peak_utilization": 0.19636363636363638,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.08164800482082644,
+          "peak_utilization": 0.09163636363636364,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.5217462626495278,
+          "peak_utilization": 0.5974999999999999,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.2981407215140159,
+          "peak_utilization": 0.3414285714285714,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {
+        "surge_patients_introduced": 30.0,
+        "surge_patients_completed": 0.0,
+        "event_mean_wait": 0.0,
+        "event_high_risk_mean_wait": 0.0,
+        "event_unfinished_patients": 30.0,
+        "event_waiting_patients": 0.0
+      }
+    },
+    "seeds": [
+      2247199352,
+      3448645160,
+      4271638691,
+      1154413661,
+      2949546264
+    ]
+  },
+  "combined_event": {
+    "surge": {
+      "event_id": "EVT-000002",
+      "event_type": "PATIENT_SURGE",
+      "created_sim_time": 720.0,
+      "start_sim_time": 720.0,
+      "duration_minutes": 30.0,
+      "parameters": {
+        "count": 30,
+        "high_risk_proportion": 0.3
+      },
+      "description": "Patient Surge",
+      "source": "manual simulated event"
+    },
+    "shortage": {
+      "event_id": "EVT-000001",
+      "event_type": "NURSE_SHORTAGE",
+      "created_sim_time": 720.0,
+      "start_sim_time": 720.0,
+      "duration_minutes": 120.0,
+      "parameters": {
+        "count": 90
+      },
+      "description": "Nurse Shortage",
+      "source": "manual simulated event"
+    }
+  },
+  "ga_settings": {
+    "population": 10,
+    "generations": 6,
+    "search_replications": 3,
+    "patience": 3,
+    "seed": 42
+  },
+  "current_policy": {
+    "high_risk_priority_weight": 1.0,
+    "waiting_time_aging_weight": 0.1,
+    "icu_reserve_percentage": 0.0,
+    "doctor_reserve_percentage": 0.0,
+    "nurse_reserve_percentage": 0.0,
+    "surge_priority_strength": 0.0
+  },
+  "optimized_policy": {
+    "high_risk_priority_weight": 0.0,
+    "waiting_time_aging_weight": 0.0,
+    "icu_reserve_percentage": 0.0,
+    "doctor_reserve_percentage": 0.0,
+    "nurse_reserve_percentage": 0.0,
+    "surge_priority_strength": 0.0
+  },
+  "current_prediction": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 38.6,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 90.6,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.1890909090909091,
+      "general_utilization": 0.08909090909090908,
+      "doctor_utilization": 0.5775,
+      "nurse_utilization": 0.9239999999999998,
+      "recovery_time_minutes": 30.0,
+      "recovered_replications": 5,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.17432056881335664,
+          "peak_utilization": 0.1890909090909091,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.08146129128955544,
+          "peak_utilization": 0.08909090909090908,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.5107410522891034,
+          "peak_utilization": 0.5775,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.8171856836625654,
+          "peak_utilization": 0.924,
+          "minutes_above_target": 16.521243640103876,
+          "longest_above_target_streak": 14.127214169593595,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {
+        "surge_patients_introduced": 30.0,
+        "surge_patients_completed": 0.0,
+        "event_mean_wait": 0.0,
+        "event_high_risk_mean_wait": 0.0,
+        "event_unfinished_patients": 30.0,
+        "event_waiting_patients": 0.0
+      }
+    },
+    "seeds": [
+      2089731643,
+      35876821,
+      2057074083,
+      1119749670,
+      1903088498
+    ]
+  },
+  "optimized_prediction": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 38.6,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 90.6,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.1890909090909091,
+      "general_utilization": 0.08909090909090908,
+      "doctor_utilization": 0.5775,
+      "nurse_utilization": 0.9239999999999998,
+      "recovery_time_minutes": 30.0,
+      "recovered_replications": 5,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.17432056881335664,
+          "peak_utilization": 0.1890909090909091,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.08146129128955544,
+          "peak_utilization": 0.08909090909090908,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.5107410522891034,
+          "peak_utilization": 0.5775,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.8171856836625654,
+          "peak_utilization": 0.924,
+          "minutes_above_target": 16.521243640103876,
+          "longest_above_target_streak": 14.127214169593595,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {
+        "surge_patients_introduced": 30.0,
+        "surge_patients_completed": 0.0,
+        "event_mean_wait": 0.0,
+        "event_high_risk_mean_wait": 0.0,
+        "event_unfinished_patients": 30.0,
+        "event_waiting_patients": 0.0
+      }
+    },
+    "seeds": [
+      2089731643,
+      35876821,
+      2057074083,
+      1119749670,
+      1903088498
+    ]
+  },
+  "ga_runtime_seconds": 10.492352799978107,
+  "generations_completed": 4,
+  "distinct_candidates": 30,
+  "adaptive_status": "OPTIMIZED POLICY HANDLES EVENT",
+  "original_assignments_preserved": true,
+  "actual_surge_patients": 30,
+  "temporary_policy_restored": true,
+  "lifecycle": [
+    {
+      "sim_time_minutes": 720.0,
+      "event_type": "POLICY_CHANGED",
+      "event_id": "EVT-000002",
+      "description": "Validated major synthetic stress demonstration; physical capacities unchanged."
+    },
+    {
+      "sim_time_minutes": 750.0,
+      "event_type": "EVENT_ENDED",
+      "event_id": "EVT-000002",
+      "description": "Patient Surge; temporary effects restored."
+    },
+    {
+      "sim_time_minutes": 840.0,
+      "event_type": "EVENT_ENDED",
+      "event_id": "EVT-000001",
+      "description": "Nurse Shortage; temporary effects restored."
+    },
+    {
+      "sim_time_minutes": 840.0,
+      "event_type": "POLICY_RESTORED",
+      "event_id": "EVT-000002",
+      "description": "Previous operating policy restored; physical capacities unchanged."
+    }
+  ],
+  "seven_day_low_random": {
+    "metrics": {
+      "total_patients_arrived": 738,
+      "completed_patients": 507,
+      "currently_waiting": 0,
+      "currently_active": 231,
+      "in_treatment": 13,
+      "bed_stay": 218,
+      "mean_wait_so_far": 0.0,
+      "high_risk_mean_wait_so_far": 0.0,
+      "throughput_per_hour": 3.017857142857143,
+      "cumulative_utilization": {
+        "icu_beds": 0.40847320037143825,
+        "general_beds": 0.17923199446801955,
+        "doctors": 0.17982719533316346,
+        "nurses": 0.10275839733323627
+      },
+      "rolling_60_minutes": {
+        "observed_minutes": 60.0,
+        "arrivals": 4,
+        "completions": 5,
+        "queue_length_now": 0,
+        "mean_queue_length": 0.0,
+        "mean_wait": 0.0,
+        "utilization": {
+          "icu_beds": 0.48714973670606454,
+          "general_beds": 0.22674787413353173,
+          "doctors": 0.15308608948675934,
+          "nurses": 0.08747776542100534
+        }
+      }
+    },
+    "bounded_skip_seconds": 0.1825274999719113,
+    "equals_incremental": true,
+    "retained_events": 1000
+  },
+  "total_runtime_seconds": 17.090316200163215,
+  "acceptance_schema": "3.4-sustained-pressure-policy-ga",
+  "seed_strategy": "experiment_seed=SeedSequence([live_seed,ga_seed,3303]).generate_state(1)[0]; lookahead seeds=SeedSequence([experiment_seed,3002,index]); stable optimization seed shared across all candidates/generations/full verification; state hash is for stale protection only"
+}

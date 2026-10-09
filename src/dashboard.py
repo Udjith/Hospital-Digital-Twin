@@ -25,6 +25,7 @@ from genetic_algorithm_v2 import (
     validate_bounds, result_is_current, dependency_fingerprints,
 )
 from decision_tree_xai_v2 import train_xai_v2, save_xai_v2, xai_is_current
+from live_dashboard import render_live_twin
 from feedback_interpreter import interpret_feedback_v2, apply_feedback_v2, prepare_modification_v2, save_review_v2
 from llm_explanation import generate_explanation_v2, explanation_is_current_v2
 
@@ -1674,9 +1675,12 @@ status_panel.markdown(
 # Main navigation
 # ============================================================
 
-dashboard_tab, optimize_tab, review_tab = st.tabs(
-    ["Dashboard", "Optimize", "Review"]
+live_tab, dashboard_tab, optimize_tab, review_tab = st.tabs(
+    ["Live Twin", "Dashboard", "Optimize", "Review"]
 )
+
+with live_tab:
+    render_live_twin(DATA_SYNTHETIC, RF_MODEL, current_config)
 
 
 # ============================================================

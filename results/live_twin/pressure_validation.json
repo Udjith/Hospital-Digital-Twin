@@ -1,0 +1,2367 @@
+{
+  "transient_91_percent": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 0.0,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 31.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.0,
+      "general_utilization": 0.62,
+      "doctor_utilization": 0.9117647058823529,
+      "nurse_utilization": 0.62,
+      "recovery_time_minutes": 0.0,
+      "recovered_replications": 3,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.0,
+          "peak_utilization": 0.0,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.62,
+          "peak_utilization": 0.62,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.030392156862745098,
+          "peak_utilization": 0.9117647058823529,
+          "minutes_above_target": 4.0,
+          "longest_above_target_streak": 4.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.020666666666666667,
+          "peak_utilization": 0.62,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {}
+    },
+    "run_verdicts": [
+      "HANDLED_RUN",
+      "HANDLED_RUN",
+      "HANDLED_RUN"
+    ]
+  },
+  "transient_full_saturation": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 0.0,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 1.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.0,
+      "general_utilization": 0.02,
+      "doctor_utilization": 1.0,
+      "nurse_utilization": 0.02,
+      "recovery_time_minutes": 0.0,
+      "recovered_replications": 3,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.0,
+          "peak_utilization": 0.0,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.020000000000000004,
+          "peak_utilization": 0.02,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.03333333333333333,
+          "peak_utilization": 1.0,
+          "minutes_above_target": 4.0,
+          "longest_above_target_streak": 4.0,
+          "minutes_at_full_saturation": 4.0,
+          "longest_full_saturation_streak": 4.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.0006666666666666666,
+          "peak_utilization": 0.02,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {}
+    },
+    "run_verdicts": [
+      "HANDLED_RUN",
+      "HANDLED_RUN",
+      "HANDLED_RUN"
+    ]
+  },
+  "sustained_doctor_overload": {
+    "verdict": "CANNOT HANDLE",
+    "robustness": 0.0,
+    "metrics": {
+      "additional_arrivals": 0.0,
+      "completed_patients": 1.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 0.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.0,
+      "general_utilization": 0.10000000000000002,
+      "doctor_utilization": 1.0,
+      "nurse_utilization": 0.10000000000000002,
+      "recovery_time_minutes": 0.0,
+      "recovered_replications": 3,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.0,
+          "peak_utilization": 0.0,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.075,
+          "peak_utilization": 0.10000000000000002,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.4166666666666667,
+          "peak_utilization": 1.0,
+          "minutes_above_target": 50.0,
+          "longest_above_target_streak": 50.0,
+          "minutes_at_full_saturation": 50.0,
+          "longest_full_saturation_streak": 50.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.041666666666666664,
+          "peak_utilization": 0.10000000000000002,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {}
+    },
+    "run_verdicts": [
+      "FAILED_RUN",
+      "FAILED_RUN",
+      "FAILED_RUN"
+    ]
+  },
+  "ga_success": {
+    "outcome": "VERIFIED SUCCESS",
+    "current_policy": {
+      "high_risk_priority_weight": 0.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.0,
+      "surge_priority_strength": 0.0
+    },
+    "optimized_policy": {
+      "high_risk_priority_weight": 0.4,
+      "waiting_time_aging_weight": 1.4,
+      "icu_reserve_percentage": 0.01,
+      "doctor_reserve_percentage": 0.11,
+      "nurse_reserve_percentage": 0.11,
+      "surge_priority_strength": 0.0
+    },
+    "current": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 1.0,
+        "queue_peak": 2.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 1.0,
+        "mean_wait": 0.125,
+        "high_risk_mean_wait": 0.25,
+        "p95_wait": 0.2375,
+        "checkpoint_queue": 2.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.1,
+        "doctor_utilization": 1.0,
+        "nurse_utilization": 0.1,
+        "recovery_time_minutes": 0.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.09979166666666668,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.1,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.004166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 0.5,
+            "longest_above_target_streak": 0.5,
+            "minutes_at_full_saturation": 0.5,
+            "longest_full_saturation_streak": 0.5
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.00041666666666666664,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          }
+        },
+        "event_metrics": {}
+      },
+      "run_verdicts": [
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN"
+      ]
+    },
+    "optimized": {
+      "verdict": "HANDLED",
+      "robustness": 100.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 1.0,
+        "queue_peak": 2.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 1.0,
+        "mean_wait": 0.125,
+        "high_risk_mean_wait": 0.0,
+        "p95_wait": 0.2375,
+        "checkpoint_queue": 2.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.1,
+        "doctor_utilization": 1.0,
+        "nurse_utilization": 0.1,
+        "recovery_time_minutes": 0.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.1,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.09979166666666668,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.004166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 0.5,
+            "longest_above_target_streak": 0.5,
+            "minutes_at_full_saturation": 0.5,
+            "longest_full_saturation_streak": 0.5
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.00041666666666666664,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          }
+        },
+        "event_metrics": {}
+      },
+      "run_verdicts": [
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN"
+      ]
+    },
+    "diagnosis": {
+      "overall_result": "VERIFIED_ACCEPTABLE_POLICY",
+      "authoritative_verdict": "HANDLED",
+      "robustness": 100.0,
+      "blocking_conditions": [],
+      "residual_failed_conditions": [],
+      "operational_observations": [],
+      "likely_constraint_type": "NO_BLOCKING_CONDITION",
+      "classifications": [
+        "NO_BLOCKING_CONDITION"
+      ],
+      "primary_limiting_factor": null,
+      "secondary_limiting_factors": [],
+      "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible.",
+      "current_policy_diagnosis": {
+        "overall_result": "NO_VERIFIED_FEASIBLE_POLICY",
+        "authoritative_verdict": "CANNOT HANDLE",
+        "robustness": 0.0,
+        "blocking_conditions": [
+          {
+            "metric": "high_risk_mean_wait",
+            "label": "High-risk wait",
+            "observed": 0.25,
+            "observed_mean": 0.25,
+            "observed_min": 0.25,
+            "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+            "target": 0.1,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true
+          },
+          {
+            "metric": "robustness",
+            "label": "Robustness",
+            "observed": 0.0,
+            "target": 90.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true,
+            "observed_statistic": "percentage of acceptable replications"
+          }
+        ],
+        "residual_failed_conditions": [],
+        "operational_observations": [],
+        "likely_constraint_type": "WAITING_TIME_TARGET_FAILURE",
+        "classifications": [
+          "WAITING_TIME_TARGET_FAILURE"
+        ],
+        "primary_limiting_factor": {
+          "metric": "high_risk_mean_wait",
+          "label": "High-risk wait",
+          "observed": 0.25,
+          "observed_mean": 0.25,
+          "observed_min": 0.25,
+          "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+          "target": 0.1,
+          "severity": "critical",
+          "failed_replications": 5,
+          "total_replications": 5,
+          "affects_acceptance": true
+        },
+        "secondary_limiting_factors": [],
+        "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible."
+      },
+      "metric_changes": {
+        "improved": {
+          "high_risk_mean_wait": {
+            "current": 0.25,
+            "optimized": 0.0,
+            "change": -0.25
+          },
+          "robustness": {
+            "current": 0.0,
+            "optimized": 100.0,
+            "change": 100.0
+          }
+        },
+        "unchanged": {
+          "mean_wait": {
+            "current": 0.125,
+            "optimized": 0.125,
+            "change": 0.0
+          },
+          "icu_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "general_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "doctor_utilization": {
+            "current": 1.0,
+            "optimized": 1.0,
+            "change": 0.0
+          },
+          "nurse_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "p95_wait": {
+            "current": 0.2375,
+            "optimized": 0.2375,
+            "change": 0.0
+          },
+          "queue_peak": {
+            "current": 2.0,
+            "optimized": 2.0,
+            "change": 0.0
+          },
+          "queue_at_horizon_end": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "unfinished_patients": {
+            "current": 1.0,
+            "optimized": 1.0,
+            "change": 0.0
+          },
+          "recovery_time_minutes": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "recovered_replications": {
+            "current": 5,
+            "optimized": 5,
+            "change": 0
+          },
+          "completed_patients": {
+            "current": 1.0,
+            "optimized": 1.0,
+            "change": 0.0
+          },
+          "icu_time_weighted_utilization": {
+            "current": 0.09979166666666668,
+            "optimized": 0.1,
+            "change": 0.00020833333333332427
+          },
+          "icu_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_time_weighted_utilization": {
+            "current": 0.1,
+            "optimized": 0.09979166666666668,
+            "change": -0.00020833333333332427
+          },
+          "general_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_time_weighted_utilization": {
+            "current": 0.004166666666666667,
+            "optimized": 0.004166666666666667,
+            "change": 0.0
+          },
+          "doctor_minutes_above_target": {
+            "current": 0.5,
+            "optimized": 0.5,
+            "change": 0.0
+          },
+          "doctor_longest_above_target_streak": {
+            "current": 0.5,
+            "optimized": 0.5,
+            "change": 0.0
+          },
+          "doctor_minutes_at_full_saturation": {
+            "current": 0.5,
+            "optimized": 0.5,
+            "change": 0.0
+          },
+          "doctor_longest_full_saturation_streak": {
+            "current": 0.5,
+            "optimized": 0.5,
+            "change": 0.0
+          },
+          "nurse_time_weighted_utilization": {
+            "current": 0.00041666666666666664,
+            "optimized": 0.00041666666666666664,
+            "change": 0.0
+          },
+          "nurse_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          }
+        },
+        "worsened": {}
+      },
+      "secondary_improvements": {
+        "mean_wait_improved": false,
+        "high_risk_mean_wait_improved": true,
+        "p95_wait_improved": false,
+        "queue_peak_improved": false,
+        "icu_utilization_improved": false,
+        "general_utilization_improved": false,
+        "doctor_utilization_improved": false,
+        "nurse_utilization_improved": false,
+        "recovery_time_minutes_improved": false
+      },
+      "operational_result": "VERIFIED FEASIBILITY RECOVERY",
+      "recommendation_outcome": "VERIFIED SUCCESS",
+      "policy_changes": {
+        "high_risk_priority_weight": {
+          "current": 0.0,
+          "optimized": 0.4
+        },
+        "waiting_time_aging_weight": {
+          "current": 0.0,
+          "optimized": 1.4
+        },
+        "icu_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.01
+        },
+        "doctor_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        },
+        "nurse_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        }
+      },
+      "provenance": {
+        "version": "live-condition-diagnosis-v2-sustained-pressure",
+        "live_state_hash": "590e7c383a24490eafd51f32c22f5d79880ec14bf66c7e9ca1594a89a4abf441",
+        "input_sha256": "85428508899b96faede1b8ca3f79676c36eacfa132b3f6fcbdbbba3ff5006a41"
+      },
+      "transient_resource_warnings": {
+        "doctor": {
+          "warned_replications": 5,
+          "total_replications": 5,
+          "evidence": {
+            "time_weighted_utilization": 0.004166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 0.5,
+            "longest_above_target_streak": 0.5,
+            "minutes_at_full_saturation": 0.5,
+            "longest_full_saturation_streak": 0.5
+          }
+        }
+      }
+    },
+    "xai": {
+      "run_id": "0897d77f43966560d76e",
+      "provenance": {
+        "version": "3.4-sustained-pressure-policy-ga",
+        "live_state_hash": "590e7c383a24490eafd51f32c22f5d79880ec14bf66c7e9ca1594a89a4abf441",
+        "state_hash_schema": "live-canonical-json-v1",
+        "live_state_context": {
+          "sim_time_minutes": 0.0,
+          "active_patient_count": 2,
+          "queue": 2,
+          "base_arrival_rate": 0.0,
+          "effective_arrival_rate": 0.0,
+          "active_events": []
+        },
+        "sim_time_minutes": 0.0,
+        "physical_capacity": {
+          "icu_beds": 10,
+          "general_beds": 10,
+          "doctors": 1,
+          "nurses": 10
+        },
+        "effective_capacity": {
+          "icu_beds": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "general_beds": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "doctors": {
+            "total": 1,
+            "occupied_or_busy": 0,
+            "available": 1,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 1,
+            "planned_usable": 1,
+            "current_utilization": 0.0
+          },
+          "nurses": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          }
+        },
+        "current_queue": 2,
+        "current_policy": {
+          "high_risk_priority_weight": 0.0,
+          "waiting_time_aging_weight": 0.0,
+          "icu_reserve_percentage": 0.0,
+          "doctor_reserve_percentage": 0.0,
+          "nurse_reserve_percentage": 0.0,
+          "surge_priority_strength": 0.0
+        },
+        "proposed_event": null,
+        "profile_sha256": "19db483d999de2e9877f85dd0decd3eccc047d5cf408dbffcdf456816fe0bd28",
+        "horizon_minutes": 120.0,
+        "verification_replications": 5,
+        "targets": {
+          "mean_wait_target_minutes": 20.0,
+          "high_risk_wait_target_minutes": 0.1,
+          "max_utilization_target": 0.9,
+          "robustness_threshold": 90.0,
+          "sustained_overload_grace_minutes": 30.0,
+          "critical_saturation_grace_minutes": 15.0
+        },
+        "ga_options": {
+          "population": 4,
+          "generations": 2,
+          "search_replications": 1,
+          "patience": 3,
+          "seed": 42
+        },
+        "gene_bounds": {
+          "high_risk_priority_weight": [
+            0.0,
+            5.0,
+            0.1
+          ],
+          "waiting_time_aging_weight": [
+            0.0,
+            2.0,
+            0.1
+          ],
+          "icu_reserve_percentage": [
+            0.0,
+            0.3,
+            0.01
+          ],
+          "doctor_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "nurse_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "surge_priority_strength": [
+            0.0,
+            5.0,
+            0.1
+          ]
+        },
+        "seed_strategy": "experiment_seed=SeedSequence([live_seed,ga_seed,3303]).generate_state(1)[0]; lookahead seeds=SeedSequence([experiment_seed,3002,index]); stable optimization seed shared across all candidates/generations/full verification; state hash is for stale protection only",
+        "live_seed": 42,
+        "policy_assumption": "Candidate policy held throughout look-ahead; live temporary recovery is a separate human-selected application mode."
+      },
+      "training_sample_count": 5,
+      "class_distribution": {
+        "UNACCEPTABLE": 1,
+        "ACCEPTABLE": 4
+      },
+      "limitations": "Learned operational patterns within this checkpoint/event experiment, not clinical triage or proof of generalization.",
+      "available": true,
+      "rules": [
+        "nurse_reserve_percentage > 0.090"
+      ],
+      "rule_path": [
+        {
+          "feature": "nurse_reserve_percentage",
+          "operator": ">",
+          "threshold": 0.08999999985098839
+        }
+      ],
+      "class_probabilities": {
+        "UNACCEPTABLE": 0.0,
+        "ACCEPTABLE": 1.0
+      },
+      "failure_pattern": {
+        "policy": {
+          "high_risk_priority_weight": 0.0,
+          "waiting_time_aging_weight": 0.0,
+          "icu_reserve_percentage": 0.0,
+          "doctor_reserve_percentage": 0.0,
+          "nurse_reserve_percentage": 0.0,
+          "surge_priority_strength": 0.0
+        },
+        "rules": [
+          "nurse_reserve_percentage <= 0.090"
+        ],
+        "rule_path": [
+          {
+            "feature": "nurse_reserve_percentage",
+            "operator": "<=",
+            "threshold": 0.08999999985098839
+          }
+        ],
+        "prediction": "UNACCEPTABLE",
+        "observed_unacceptable_replications": 1,
+        "tested_replications": 1,
+        "class_probabilities": {
+          "UNACCEPTABLE": 0.5,
+          "ACCEPTABLE": 0.5
+        },
+        "limitations": "Actual tested-policy path associated with unacceptable outcomes, not a causal explanation or acceptance rule."
+      },
+      "prediction": "ACCEPTABLE",
+      "tree_depth": 1,
+      "leaf_count": 2,
+      "training_accuracy": 0.8,
+      "validation_accuracy": null,
+      "message": "XAI surrogate prediction does not determine the authoritative handling verdict."
+    },
+    "explanation": "Authoritative verified result: HANDLED. Predictive robustness changed from 0.0% to 100.0%. The current policy failed High-risk wait in 5/5 runs. All verified runs met the operational conditions. Doctor briefly peaked above target (mean peak 100.0%); in 5/5 runs this did not constitute sustained resource-overload failure. The verified recommendation met the configured robustness requirement. VERIFIED FEASIBILITY RECOVERY. Observed improvements: high risk mean wait 15s to 0s; robustness 0.0% to 100.0%.  Policy changes: high risk priority weight 0.00 -> 0.40; waiting time aging weight 0.00 -> 1.40; icu reserve percentage 0.00 -> 0.01; doctor reserve percentage 0.00 -> 0.11; nurse reserve percentage 0.00 -> 0.11 Reserve values are fractions. Physical capacity remains unchanged: 10 icu beds, 10 general beds, 1 doctors, 10 nurses. The simulation suggests an operational scheduling policy for human review, not a validated clinical triage protocol. Finite GA search cannot prove that no feasible policy exists.",
+    "human_options": [
+      "Apply Optimized Operating Policy",
+      "Reject Recommendation",
+      "Modify / Retry"
+    ],
+    "ga_runtime_seconds": 0.026485499925911427,
+    "verified_candidate_count": 5
+  },
+  "ga_partial": {
+    "outcome": "PARTIAL IMPROVEMENT",
+    "current_policy": {
+      "high_risk_priority_weight": 0.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.0,
+      "surge_priority_strength": 0.0
+    },
+    "optimized_policy": {
+      "high_risk_priority_weight": 0.4,
+      "waiting_time_aging_weight": 1.4,
+      "icu_reserve_percentage": 0.01,
+      "doctor_reserve_percentage": 0.11,
+      "nurse_reserve_percentage": 0.11,
+      "surge_priority_strength": 0.0
+    },
+    "current": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 2.0,
+        "queue_peak": 2.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 0.0,
+        "mean_wait": 7.5,
+        "high_risk_mean_wait": 15.0,
+        "p95_wait": 14.25,
+        "checkpoint_queue": 2.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.1,
+        "doctor_utilization": 0.1,
+        "nurse_utilization": 1.0,
+        "recovery_time_minutes": 0.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.5,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 30.0,
+            "longest_above_target_streak": 30.0,
+            "minutes_at_full_saturation": 30.0,
+            "longest_full_saturation_streak": 30.0
+          }
+        },
+        "event_metrics": {}
+      },
+      "run_verdicts": [
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN"
+      ]
+    },
+    "optimized": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 2.0,
+        "queue_peak": 2.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 0.0,
+        "mean_wait": 7.5,
+        "high_risk_mean_wait": 0.0,
+        "p95_wait": 14.25,
+        "checkpoint_queue": 2.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.1,
+        "doctor_utilization": 0.1,
+        "nurse_utilization": 1.0,
+        "recovery_time_minutes": 0.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.05,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.5,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 30.0,
+            "longest_above_target_streak": 30.0,
+            "minutes_at_full_saturation": 30.0,
+            "longest_full_saturation_streak": 30.0
+          }
+        },
+        "event_metrics": {}
+      },
+      "run_verdicts": [
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN"
+      ]
+    },
+    "diagnosis": {
+      "overall_result": "NO_VERIFIED_FEASIBLE_POLICY",
+      "authoritative_verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "blocking_conditions": [
+        {
+          "metric": "nurse_utilization",
+          "label": "Nurse utilization",
+          "observed": 0.5,
+          "observed_mean": 0.5,
+          "observed_min": 0.5,
+          "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+          "target": 0.9,
+          "severity": "critical",
+          "failed_replications": 5,
+          "total_replications": 5,
+          "affects_acceptance": true,
+          "resource_pressure": {
+            "time_weighted_utilization": 0.5,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 30.0,
+            "longest_above_target_streak": 30.0,
+            "minutes_at_full_saturation": 30.0,
+            "longest_full_saturation_streak": 30.0
+          },
+          "thresholds": {
+            "utilization_target": 0.9,
+            "sustained_overload_grace_minutes": 30.0,
+            "critical_saturation_grace_minutes": 15.0
+          },
+          "failure_reasons": {
+            "average_utilization_pass": 0,
+            "sustained_overload_pass": 0,
+            "critical_saturation_pass": 5
+          },
+          "initial_state_utilization": 0.0,
+          "already_above_target_at_checkpoint": false
+        },
+        {
+          "metric": "robustness",
+          "label": "Robustness",
+          "observed": 0.0,
+          "target": 90.0,
+          "severity": "critical",
+          "failed_replications": 5,
+          "total_replications": 5,
+          "affects_acceptance": true,
+          "observed_statistic": "percentage of acceptable replications"
+        }
+      ],
+      "residual_failed_conditions": [],
+      "operational_observations": [],
+      "likely_constraint_type": "STAFF_BOTTLENECK",
+      "classifications": [
+        "STAFF_BOTTLENECK"
+      ],
+      "primary_limiting_factor": {
+        "metric": "nurse_utilization",
+        "label": "Nurse utilization",
+        "observed": 0.5,
+        "observed_mean": 0.5,
+        "observed_min": 0.5,
+        "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+        "target": 0.9,
+        "severity": "critical",
+        "failed_replications": 5,
+        "total_replications": 5,
+        "affects_acceptance": true,
+        "resource_pressure": {
+          "time_weighted_utilization": 0.5,
+          "peak_utilization": 1.0,
+          "minutes_above_target": 30.0,
+          "longest_above_target_streak": 30.0,
+          "minutes_at_full_saturation": 30.0,
+          "longest_full_saturation_streak": 30.0
+        },
+        "thresholds": {
+          "utilization_target": 0.9,
+          "sustained_overload_grace_minutes": 30.0,
+          "critical_saturation_grace_minutes": 15.0
+        },
+        "failure_reasons": {
+          "average_utilization_pass": 0,
+          "sustained_overload_pass": 0,
+          "critical_saturation_pass": 5
+        },
+        "initial_state_utilization": 0.0,
+        "already_above_target_at_checkpoint": false
+      },
+      "secondary_limiting_factors": [],
+      "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible.",
+      "current_policy_diagnosis": {
+        "overall_result": "NO_VERIFIED_FEASIBLE_POLICY",
+        "authoritative_verdict": "CANNOT HANDLE",
+        "robustness": 0.0,
+        "blocking_conditions": [
+          {
+            "metric": "high_risk_mean_wait",
+            "label": "High-risk wait",
+            "observed": 15.0,
+            "observed_mean": 15.0,
+            "observed_min": 15.0,
+            "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+            "target": 10.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true
+          },
+          {
+            "metric": "nurse_utilization",
+            "label": "Nurse utilization",
+            "observed": 0.5,
+            "observed_mean": 0.5,
+            "observed_min": 0.5,
+            "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+            "target": 0.9,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true,
+            "resource_pressure": {
+              "time_weighted_utilization": 0.5,
+              "peak_utilization": 1.0,
+              "minutes_above_target": 30.0,
+              "longest_above_target_streak": 30.0,
+              "minutes_at_full_saturation": 30.0,
+              "longest_full_saturation_streak": 30.0
+            },
+            "thresholds": {
+              "utilization_target": 0.9,
+              "sustained_overload_grace_minutes": 30.0,
+              "critical_saturation_grace_minutes": 15.0
+            },
+            "failure_reasons": {
+              "average_utilization_pass": 0,
+              "sustained_overload_pass": 0,
+              "critical_saturation_pass": 5
+            },
+            "initial_state_utilization": 0.0,
+            "already_above_target_at_checkpoint": false
+          },
+          {
+            "metric": "robustness",
+            "label": "Robustness",
+            "observed": 0.0,
+            "target": 90.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true,
+            "observed_statistic": "percentage of acceptable replications"
+          }
+        ],
+        "residual_failed_conditions": [],
+        "operational_observations": [],
+        "likely_constraint_type": "STAFF_BOTTLENECK",
+        "classifications": [
+          "STAFF_BOTTLENECK",
+          "WAITING_TIME_TARGET_FAILURE"
+        ],
+        "primary_limiting_factor": {
+          "metric": "nurse_utilization",
+          "label": "Nurse utilization",
+          "observed": 0.5,
+          "observed_mean": 0.5,
+          "observed_min": 0.5,
+          "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+          "target": 0.9,
+          "severity": "critical",
+          "failed_replications": 5,
+          "total_replications": 5,
+          "affects_acceptance": true,
+          "resource_pressure": {
+            "time_weighted_utilization": 0.5,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 30.0,
+            "longest_above_target_streak": 30.0,
+            "minutes_at_full_saturation": 30.0,
+            "longest_full_saturation_streak": 30.0
+          },
+          "thresholds": {
+            "utilization_target": 0.9,
+            "sustained_overload_grace_minutes": 30.0,
+            "critical_saturation_grace_minutes": 15.0
+          },
+          "failure_reasons": {
+            "average_utilization_pass": 0,
+            "sustained_overload_pass": 0,
+            "critical_saturation_pass": 5
+          },
+          "initial_state_utilization": 0.0,
+          "already_above_target_at_checkpoint": false
+        },
+        "secondary_limiting_factors": [
+          {
+            "metric": "high_risk_mean_wait",
+            "label": "High-risk wait",
+            "observed": 15.0,
+            "observed_mean": 15.0,
+            "observed_min": 15.0,
+            "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+            "target": 10.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true
+          }
+        ],
+        "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible."
+      },
+      "metric_changes": {
+        "improved": {
+          "high_risk_mean_wait": {
+            "current": 15.0,
+            "optimized": 0.0,
+            "change": -15.0
+          }
+        },
+        "unchanged": {
+          "mean_wait": {
+            "current": 7.5,
+            "optimized": 7.5,
+            "change": 0.0
+          },
+          "icu_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "general_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "doctor_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "nurse_utilization": {
+            "current": 1.0,
+            "optimized": 1.0,
+            "change": 0.0
+          },
+          "p95_wait": {
+            "current": 14.25,
+            "optimized": 14.25,
+            "change": 0.0
+          },
+          "queue_peak": {
+            "current": 2.0,
+            "optimized": 2.0,
+            "change": 0.0
+          },
+          "queue_at_horizon_end": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "unfinished_patients": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "recovery_time_minutes": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "robustness": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "recovered_replications": {
+            "current": 5,
+            "optimized": 5,
+            "change": 0
+          },
+          "completed_patients": {
+            "current": 2.0,
+            "optimized": 2.0,
+            "change": 0.0
+          },
+          "icu_time_weighted_utilization": {
+            "current": 0.05,
+            "optimized": 0.05,
+            "change": 0.0
+          },
+          "icu_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_time_weighted_utilization": {
+            "current": 0.05,
+            "optimized": 0.05,
+            "change": 0.0
+          },
+          "general_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_time_weighted_utilization": {
+            "current": 0.05,
+            "optimized": 0.05,
+            "change": 0.0
+          },
+          "doctor_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_time_weighted_utilization": {
+            "current": 0.5,
+            "optimized": 0.5,
+            "change": 0.0
+          },
+          "nurse_minutes_above_target": {
+            "current": 30.0,
+            "optimized": 30.0,
+            "change": 0.0
+          },
+          "nurse_longest_above_target_streak": {
+            "current": 30.0,
+            "optimized": 30.0,
+            "change": 0.0
+          },
+          "nurse_minutes_at_full_saturation": {
+            "current": 30.0,
+            "optimized": 30.0,
+            "change": 0.0
+          },
+          "nurse_longest_full_saturation_streak": {
+            "current": 30.0,
+            "optimized": 30.0,
+            "change": 0.0
+          }
+        },
+        "worsened": {}
+      },
+      "secondary_improvements": {
+        "mean_wait_improved": false,
+        "high_risk_mean_wait_improved": true,
+        "p95_wait_improved": false,
+        "queue_peak_improved": false,
+        "icu_utilization_improved": false,
+        "general_utilization_improved": false,
+        "doctor_utilization_improved": false,
+        "nurse_utilization_improved": false,
+        "recovery_time_minutes_improved": false
+      },
+      "operational_result": "Operational improvement without feasibility recovery",
+      "recommendation_outcome": "PARTIAL IMPROVEMENT",
+      "policy_changes": {
+        "high_risk_priority_weight": {
+          "current": 0.0,
+          "optimized": 0.4
+        },
+        "waiting_time_aging_weight": {
+          "current": 0.0,
+          "optimized": 1.4
+        },
+        "icu_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.01
+        },
+        "doctor_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        },
+        "nurse_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        }
+      },
+      "provenance": {
+        "version": "live-condition-diagnosis-v2-sustained-pressure",
+        "live_state_hash": "8bbcff961aaf844128af19957833bb3c44ddd8df11fbd0a485fd8efa625fdf38",
+        "input_sha256": "c3a1847633d988461904795b98feeba8358627ece428985fe0a177db1ae7bfb4"
+      },
+      "transient_resource_warnings": {}
+    },
+    "xai": {
+      "run_id": "efab66d54d1a230b1c8a",
+      "provenance": {
+        "version": "3.4-sustained-pressure-policy-ga",
+        "live_state_hash": "8bbcff961aaf844128af19957833bb3c44ddd8df11fbd0a485fd8efa625fdf38",
+        "state_hash_schema": "live-canonical-json-v1",
+        "live_state_context": {
+          "sim_time_minutes": 0.0,
+          "active_patient_count": 2,
+          "queue": 2,
+          "base_arrival_rate": 0.0,
+          "effective_arrival_rate": 0.0,
+          "active_events": []
+        },
+        "sim_time_minutes": 0.0,
+        "physical_capacity": {
+          "icu_beds": 10,
+          "general_beds": 10,
+          "doctors": 10,
+          "nurses": 1
+        },
+        "effective_capacity": {
+          "icu_beds": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "general_beds": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "doctors": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "nurses": {
+            "total": 1,
+            "occupied_or_busy": 0,
+            "available": 1,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 1,
+            "planned_usable": 1,
+            "current_utilization": 0.0
+          }
+        },
+        "current_queue": 2,
+        "current_policy": {
+          "high_risk_priority_weight": 0.0,
+          "waiting_time_aging_weight": 0.0,
+          "icu_reserve_percentage": 0.0,
+          "doctor_reserve_percentage": 0.0,
+          "nurse_reserve_percentage": 0.0,
+          "surge_priority_strength": 0.0
+        },
+        "proposed_event": null,
+        "profile_sha256": "19db483d999de2e9877f85dd0decd3eccc047d5cf408dbffcdf456816fe0bd28",
+        "horizon_minutes": 60,
+        "verification_replications": 5,
+        "targets": {
+          "mean_wait_target_minutes": 100.0,
+          "high_risk_wait_target_minutes": 10.0,
+          "max_utilization_target": 0.9,
+          "robustness_threshold": 90.0,
+          "sustained_overload_grace_minutes": 30.0,
+          "critical_saturation_grace_minutes": 15.0
+        },
+        "ga_options": {
+          "population": 4,
+          "generations": 2,
+          "search_replications": 1,
+          "patience": 3,
+          "seed": 42
+        },
+        "gene_bounds": {
+          "high_risk_priority_weight": [
+            0.0,
+            5.0,
+            0.1
+          ],
+          "waiting_time_aging_weight": [
+            0.0,
+            2.0,
+            0.1
+          ],
+          "icu_reserve_percentage": [
+            0.0,
+            0.3,
+            0.01
+          ],
+          "doctor_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "nurse_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "surge_priority_strength": [
+            0.0,
+            5.0,
+            0.1
+          ]
+        },
+        "seed_strategy": "experiment_seed=SeedSequence([live_seed,ga_seed,3303]).generate_state(1)[0]; lookahead seeds=SeedSequence([experiment_seed,3002,index]); stable optimization seed shared across all candidates/generations/full verification; state hash is for stale protection only",
+        "live_seed": 42,
+        "policy_assumption": "Candidate policy held throughout look-ahead; live temporary recovery is a separate human-selected application mode."
+      },
+      "training_sample_count": 5,
+      "class_distribution": {
+        "UNACCEPTABLE": 5
+      },
+      "limitations": "Learned operational patterns within this checkpoint/event experiment, not clinical triage or proof of generalization.",
+      "available": false,
+      "message": "Decision Tree explanation unavailable because all evaluated policies received the same deterministic class."
+    },
+    "explanation": "Authoritative verified result: CANNOT HANDLE. Predictive robustness changed from 0.0% to 0.0%. The fully verified recommendation did not reach the configured robustness threshold. Nurse utilization: time-weighted utilization 50.0% (target 90.0%); peak 100.0%; above target 30m 0s, longest 30m 0s (grace 30m 0s); fully saturated 30m 0s, longest 30m 0s (grace 15m 0s); failed 5/5 runs. Repeated staff-utilization failures indicate a modeled staffing bottleneck under this event and these targets. Operational improvement without feasibility recovery. Observed improvements: high risk mean wait 15m 0s to 0s. Unchanged blocking conditions: Nurse utilization; Robustness. Policy changes: high risk priority weight 0.00 -> 0.40; waiting time aging weight 0.00 -> 1.40; icu reserve percentage 0.00 -> 0.01; doctor reserve percentage 0.00 -> 0.11; nurse reserve percentage 0.00 -> 0.11 Reserve values are fractions. Physical capacity remains unchanged: 10 icu beds, 10 general beds, 10 doctors, 1 nurses. The simulation suggests an operational scheduling policy for human review, not a validated clinical triage protocol. Finite GA search cannot prove that no feasible policy exists.",
+    "human_options": [
+      "Apply Optimized Operating Policy",
+      "Reject Recommendation",
+      "Modify / Retry"
+    ],
+    "ga_runtime_seconds": 0.02601999999023974,
+    "verified_candidate_count": 5
+  },
+  "ga_sustained_pressure_improvement": {
+    "outcome": "VERIFIED SUCCESS",
+    "current_policy": {
+      "high_risk_priority_weight": 0.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.0,
+      "surge_priority_strength": 0.0
+    },
+    "optimized_policy": {
+      "high_risk_priority_weight": 0.4,
+      "waiting_time_aging_weight": 1.4,
+      "icu_reserve_percentage": 0.01,
+      "doctor_reserve_percentage": 0.11,
+      "nurse_reserve_percentage": 0.11,
+      "surge_priority_strength": 0.0
+    },
+    "current": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 10.0,
+        "queue_peak": 11.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 11.0,
+        "mean_wait": 5.818181818181818,
+        "high_risk_mean_wait": 24.0,
+        "p95_wait": 14.0,
+        "checkpoint_queue": 11.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.2,
+        "doctor_utilization": 1.0,
+        "nurse_utilization": 0.1,
+        "recovery_time_minutes": 60.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.08,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.19666666666666668,
+            "peak_utilization": 0.2,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.2166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 24.0,
+            "longest_above_target_streak": 24.0,
+            "minutes_at_full_saturation": 24.0,
+            "longest_full_saturation_streak": 24.0
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.021666666666666667,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          }
+        },
+        "event_metrics": {
+          "surge_patients_introduced": 0.0,
+          "surge_patients_completed": 0.0,
+          "event_mean_wait": 0.0,
+          "event_high_risk_mean_wait": 0.0,
+          "event_unfinished_patients": 0.0,
+          "event_waiting_patients": 0.0
+        }
+      },
+      "run_verdicts": [
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN",
+        "FAILED_RUN"
+      ]
+    },
+    "optimized": {
+      "verdict": "HANDLED",
+      "robustness": 100.0,
+      "metrics": {
+        "additional_arrivals": 0.0,
+        "completed_patients": 10.0,
+        "queue_peak": 11.0,
+        "queue_at_horizon_end": 0.0,
+        "unfinished_patients": 11.0,
+        "mean_wait": 9.454545454545455,
+        "high_risk_mean_wait": 4.0,
+        "p95_wait": 24.0,
+        "checkpoint_queue": 11.0,
+        "unresolved_event_waiting": 0.0,
+        "icu_utilization": 0.1,
+        "general_utilization": 0.2,
+        "doctor_utilization": 1.0,
+        "nurse_utilization": 0.1,
+        "recovery_time_minutes": 60.0,
+        "recovered_replications": 5,
+        "resource_pressure": {
+          "icu": {
+            "time_weighted_utilization": 0.09666666666666666,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "general": {
+            "time_weighted_utilization": 0.19166666666666668,
+            "peak_utilization": 0.2,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          },
+          "doctor": {
+            "time_weighted_utilization": 0.2166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 4.0,
+            "longest_above_target_streak": 4.0,
+            "minutes_at_full_saturation": 4.0,
+            "longest_full_saturation_streak": 4.0
+          },
+          "nurse": {
+            "time_weighted_utilization": 0.021666666666666667,
+            "peak_utilization": 0.1,
+            "minutes_above_target": 0.0,
+            "longest_above_target_streak": 0.0,
+            "minutes_at_full_saturation": 0.0,
+            "longest_full_saturation_streak": 0.0
+          }
+        },
+        "event_metrics": {
+          "surge_patients_introduced": 0.0,
+          "surge_patients_completed": 0.0,
+          "event_mean_wait": 0.0,
+          "event_high_risk_mean_wait": 0.0,
+          "event_unfinished_patients": 0.0,
+          "event_waiting_patients": 0.0
+        }
+      },
+      "run_verdicts": [
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN",
+        "HANDLED_RUN"
+      ]
+    },
+    "diagnosis": {
+      "overall_result": "VERIFIED_ACCEPTABLE_POLICY",
+      "authoritative_verdict": "HANDLED",
+      "robustness": 100.0,
+      "blocking_conditions": [],
+      "residual_failed_conditions": [],
+      "operational_observations": [],
+      "likely_constraint_type": "NO_BLOCKING_CONDITION",
+      "classifications": [
+        "NO_BLOCKING_CONDITION"
+      ],
+      "primary_limiting_factor": null,
+      "secondary_limiting_factors": [],
+      "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible.",
+      "current_policy_diagnosis": {
+        "overall_result": "NO_VERIFIED_FEASIBLE_POLICY",
+        "authoritative_verdict": "CANNOT HANDLE",
+        "robustness": 0.0,
+        "blocking_conditions": [
+          {
+            "metric": "high_risk_mean_wait",
+            "label": "High-risk wait",
+            "observed": 24.0,
+            "observed_mean": 24.0,
+            "observed_min": 24.0,
+            "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+            "target": 10.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true
+          },
+          {
+            "metric": "doctor_utilization",
+            "label": "Doctor utilization",
+            "observed": 0.21666666666666667,
+            "observed_mean": 0.2166666666666667,
+            "observed_min": 0.21666666666666667,
+            "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+            "target": 0.9,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true,
+            "resource_pressure": {
+              "time_weighted_utilization": 0.21666666666666667,
+              "peak_utilization": 1.0,
+              "minutes_above_target": 24.0,
+              "longest_above_target_streak": 24.0,
+              "minutes_at_full_saturation": 24.0,
+              "longest_full_saturation_streak": 24.0
+            },
+            "thresholds": {
+              "utilization_target": 0.9,
+              "sustained_overload_grace_minutes": 30.0,
+              "critical_saturation_grace_minutes": 15.0
+            },
+            "failure_reasons": {
+              "average_utilization_pass": 0,
+              "sustained_overload_pass": 0,
+              "critical_saturation_pass": 5
+            },
+            "initial_state_utilization": 1.0,
+            "already_above_target_at_checkpoint": true
+          },
+          {
+            "metric": "robustness",
+            "label": "Robustness",
+            "observed": 0.0,
+            "target": 90.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true,
+            "observed_statistic": "percentage of acceptable replications"
+          }
+        ],
+        "residual_failed_conditions": [],
+        "operational_observations": [],
+        "likely_constraint_type": "STAFF_BOTTLENECK",
+        "classifications": [
+          "STAFF_BOTTLENECK",
+          "WAITING_TIME_TARGET_FAILURE"
+        ],
+        "primary_limiting_factor": {
+          "metric": "doctor_utilization",
+          "label": "Doctor utilization",
+          "observed": 0.21666666666666667,
+          "observed_mean": 0.2166666666666667,
+          "observed_min": 0.21666666666666667,
+          "observed_statistic": "maximum verified time-weighted utilization; durations can block even when average passes",
+          "target": 0.9,
+          "severity": "critical",
+          "failed_replications": 5,
+          "total_replications": 5,
+          "affects_acceptance": true,
+          "resource_pressure": {
+            "time_weighted_utilization": 0.21666666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 24.0,
+            "longest_above_target_streak": 24.0,
+            "minutes_at_full_saturation": 24.0,
+            "longest_full_saturation_streak": 24.0
+          },
+          "thresholds": {
+            "utilization_target": 0.9,
+            "sustained_overload_grace_minutes": 30.0,
+            "critical_saturation_grace_minutes": 15.0
+          },
+          "failure_reasons": {
+            "average_utilization_pass": 0,
+            "sustained_overload_pass": 0,
+            "critical_saturation_pass": 5
+          },
+          "initial_state_utilization": 1.0,
+          "already_above_target_at_checkpoint": true
+        },
+        "secondary_limiting_factors": [
+          {
+            "metric": "high_risk_mean_wait",
+            "label": "High-risk wait",
+            "observed": 24.0,
+            "observed_mean": 24.0,
+            "observed_min": 24.0,
+            "observed_statistic": "maximum verified value (resource values are per-run peaks)",
+            "target": 10.0,
+            "severity": "critical",
+            "failed_replications": 5,
+            "total_replications": 5,
+            "affects_acceptance": true
+          }
+        ],
+        "limitation": "Diagnostic evidence from finite-horizon verified simulations, not proof that every possible operating policy is infeasible."
+      },
+      "metric_changes": {
+        "improved": {
+          "high_risk_mean_wait": {
+            "current": 24.0,
+            "optimized": 4.0,
+            "change": -20.0
+          },
+          "robustness": {
+            "current": 0.0,
+            "optimized": 100.0,
+            "change": 100.0
+          },
+          "general_time_weighted_utilization": {
+            "current": 0.19666666666666668,
+            "optimized": 0.19166666666666668,
+            "change": -0.0050000000000000044
+          },
+          "doctor_minutes_above_target": {
+            "current": 24.0,
+            "optimized": 4.0,
+            "change": -20.0
+          },
+          "doctor_longest_above_target_streak": {
+            "current": 24.0,
+            "optimized": 4.0,
+            "change": -20.0
+          },
+          "doctor_minutes_at_full_saturation": {
+            "current": 24.0,
+            "optimized": 4.0,
+            "change": -20.0
+          },
+          "doctor_longest_full_saturation_streak": {
+            "current": 24.0,
+            "optimized": 4.0,
+            "change": -20.0
+          }
+        },
+        "unchanged": {
+          "icu_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "general_utilization": {
+            "current": 0.2,
+            "optimized": 0.2,
+            "change": 0.0
+          },
+          "doctor_utilization": {
+            "current": 1.0,
+            "optimized": 1.0,
+            "change": 0.0
+          },
+          "nurse_utilization": {
+            "current": 0.1,
+            "optimized": 0.1,
+            "change": 0.0
+          },
+          "queue_peak": {
+            "current": 11.0,
+            "optimized": 11.0,
+            "change": 0.0
+          },
+          "queue_at_horizon_end": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "unfinished_patients": {
+            "current": 11.0,
+            "optimized": 11.0,
+            "change": 0.0
+          },
+          "recovery_time_minutes": {
+            "current": 60.0,
+            "optimized": 60.0,
+            "change": 0.0
+          },
+          "recovered_replications": {
+            "current": 5,
+            "optimized": 5,
+            "change": 0
+          },
+          "completed_patients": {
+            "current": 10.0,
+            "optimized": 10.0,
+            "change": 0.0
+          },
+          "icu_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "icu_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "general_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "doctor_time_weighted_utilization": {
+            "current": 0.2166666666666667,
+            "optimized": 0.2166666666666667,
+            "change": 0.0
+          },
+          "nurse_time_weighted_utilization": {
+            "current": 0.021666666666666667,
+            "optimized": 0.021666666666666667,
+            "change": 0.0
+          },
+          "nurse_minutes_above_target": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_longest_above_target_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_minutes_at_full_saturation": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          },
+          "nurse_longest_full_saturation_streak": {
+            "current": 0.0,
+            "optimized": 0.0,
+            "change": 0.0
+          }
+        },
+        "worsened": {
+          "mean_wait": {
+            "current": 5.818181818181818,
+            "optimized": 9.454545454545455,
+            "change": 3.6363636363636367
+          },
+          "p95_wait": {
+            "current": 14.0,
+            "optimized": 24.0,
+            "change": 10.0
+          },
+          "icu_time_weighted_utilization": {
+            "current": 0.08,
+            "optimized": 0.09666666666666666,
+            "change": 0.016666666666666663
+          }
+        }
+      },
+      "secondary_improvements": {
+        "mean_wait_improved": false,
+        "high_risk_mean_wait_improved": true,
+        "p95_wait_improved": false,
+        "queue_peak_improved": false,
+        "icu_utilization_improved": false,
+        "general_utilization_improved": false,
+        "doctor_utilization_improved": false,
+        "nurse_utilization_improved": false,
+        "recovery_time_minutes_improved": false
+      },
+      "operational_result": "VERIFIED FEASIBILITY RECOVERY",
+      "recommendation_outcome": "VERIFIED SUCCESS",
+      "policy_changes": {
+        "high_risk_priority_weight": {
+          "current": 0.0,
+          "optimized": 0.4
+        },
+        "waiting_time_aging_weight": {
+          "current": 0.0,
+          "optimized": 1.4
+        },
+        "icu_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.01
+        },
+        "doctor_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        },
+        "nurse_reserve_percentage": {
+          "current": 0.0,
+          "optimized": 0.11
+        }
+      },
+      "provenance": {
+        "version": "live-condition-diagnosis-v2-sustained-pressure",
+        "live_state_hash": "7212f2d1016ed0db2cea54b20ec72f2822aca385264a5b309b83e99ee6db97a6",
+        "input_sha256": "6356f7c7a3da94311b823eac7c7b9736ee8806c026f9144fb64b10854afbc031"
+      },
+      "transient_resource_warnings": {
+        "doctor": {
+          "warned_replications": 5,
+          "total_replications": 5,
+          "evidence": {
+            "time_weighted_utilization": 0.2166666666666667,
+            "peak_utilization": 1.0,
+            "minutes_above_target": 4.0,
+            "longest_above_target_streak": 4.0,
+            "minutes_at_full_saturation": 4.0,
+            "longest_full_saturation_streak": 4.0
+          }
+        }
+      }
+    },
+    "xai": {
+      "run_id": "456d4da84d25b9649018",
+      "provenance": {
+        "version": "3.4-sustained-pressure-policy-ga",
+        "live_state_hash": "7212f2d1016ed0db2cea54b20ec72f2822aca385264a5b309b83e99ee6db97a6",
+        "state_hash_schema": "live-canonical-json-v1",
+        "live_state_context": {
+          "sim_time_minutes": 0.0,
+          "active_patient_count": 21,
+          "queue": 11,
+          "base_arrival_rate": 0.0,
+          "effective_arrival_rate": 0.0,
+          "active_events": [
+            {
+              "event_id": "EVT-000001",
+              "event_type": "DOCTOR_SHORTAGE",
+              "created_sim_time": 0.0,
+              "start_sim_time": 0.0,
+              "duration_minutes": 60.0,
+              "parameters": {
+                "count": 1
+              },
+              "description": "Doctor Shortage",
+              "source": "manual simulated event",
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "sim_time_minutes": 0.0,
+        "physical_capacity": {
+          "icu_beds": 10,
+          "general_beds": 100,
+          "doctors": 11,
+          "nurses": 100
+        },
+        "effective_capacity": {
+          "icu_beds": {
+            "total": 10,
+            "occupied_or_busy": 0,
+            "available": 10,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 0.0
+          },
+          "general_beds": {
+            "total": 100,
+            "occupied_or_busy": 10,
+            "available": 90,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 100,
+            "planned_usable": 100,
+            "current_utilization": 0.1
+          },
+          "doctors": {
+            "total": 11,
+            "occupied_or_busy": 10,
+            "available": 0,
+            "temporarily_unavailable": 1,
+            "pending_unavailable": 0,
+            "usable": 10,
+            "planned_usable": 10,
+            "current_utilization": 1.0
+          },
+          "nurses": {
+            "total": 100,
+            "occupied_or_busy": 10,
+            "available": 90,
+            "temporarily_unavailable": 0,
+            "pending_unavailable": 0,
+            "usable": 100,
+            "planned_usable": 100,
+            "current_utilization": 0.1
+          }
+        },
+        "current_queue": 11,
+        "current_policy": {
+          "high_risk_priority_weight": 0.0,
+          "waiting_time_aging_weight": 0.0,
+          "icu_reserve_percentage": 0.0,
+          "doctor_reserve_percentage": 0.0,
+          "nurse_reserve_percentage": 0.0,
+          "surge_priority_strength": 0.0
+        },
+        "proposed_event": {
+          "event_id": "EVT-000001",
+          "event_type": "DOCTOR_SHORTAGE",
+          "created_sim_time": 0.0,
+          "start_sim_time": 0.0,
+          "duration_minutes": 60.0,
+          "parameters": {
+            "count": 1
+          },
+          "description": "Doctor Shortage",
+          "source": "manual simulated event"
+        },
+        "profile_sha256": "19db483d999de2e9877f85dd0decd3eccc047d5cf408dbffcdf456816fe0bd28",
+        "horizon_minutes": 120.0,
+        "verification_replications": 5,
+        "targets": {
+          "mean_wait_target_minutes": 20.0,
+          "high_risk_wait_target_minutes": 10.0,
+          "max_utilization_target": 0.9,
+          "robustness_threshold": 90.0,
+          "sustained_overload_grace_minutes": 30.0,
+          "critical_saturation_grace_minutes": 15.0
+        },
+        "ga_options": {
+          "population": 4,
+          "generations": 2,
+          "search_replications": 1,
+          "patience": 3,
+          "seed": 42
+        },
+        "gene_bounds": {
+          "high_risk_priority_weight": [
+            0.0,
+            5.0,
+            0.1
+          ],
+          "waiting_time_aging_weight": [
+            0.0,
+            2.0,
+            0.1
+          ],
+          "icu_reserve_percentage": [
+            0.0,
+            0.3,
+            0.01
+          ],
+          "doctor_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "nurse_reserve_percentage": [
+            0.0,
+            0.25,
+            0.01
+          ],
+          "surge_priority_strength": [
+            0.0,
+            5.0,
+            0.1
+          ]
+        },
+        "seed_strategy": "experiment_seed=SeedSequence([live_seed,ga_seed,3303]).generate_state(1)[0]; lookahead seeds=SeedSequence([experiment_seed,3002,index]); stable optimization seed shared across all candidates/generations/full verification; state hash is for stale protection only",
+        "live_seed": 42,
+        "policy_assumption": "Candidate policy held throughout look-ahead; live temporary recovery is a separate human-selected application mode."
+      },
+      "training_sample_count": 5,
+      "class_distribution": {
+        "UNACCEPTABLE": 1,
+        "ACCEPTABLE": 4
+      },
+      "limitations": "Learned operational patterns within this checkpoint/event experiment, not clinical triage or proof of generalization.",
+      "available": true,
+      "rules": [
+        "nurse_reserve_percentage > 0.090"
+      ],
+      "rule_path": [
+        {
+          "feature": "nurse_reserve_percentage",
+          "operator": ">",
+          "threshold": 0.08999999985098839
+        }
+      ],
+      "class_probabilities": {
+        "UNACCEPTABLE": 0.0,
+        "ACCEPTABLE": 1.0
+      },
+      "failure_pattern": {
+        "policy": {
+          "high_risk_priority_weight": 0.0,
+          "waiting_time_aging_weight": 0.0,
+          "icu_reserve_percentage": 0.0,
+          "doctor_reserve_percentage": 0.0,
+          "nurse_reserve_percentage": 0.0,
+          "surge_priority_strength": 0.0
+        },
+        "rules": [
+          "nurse_reserve_percentage <= 0.090"
+        ],
+        "rule_path": [
+          {
+            "feature": "nurse_reserve_percentage",
+            "operator": "<=",
+            "threshold": 0.08999999985098839
+          }
+        ],
+        "prediction": "UNACCEPTABLE",
+        "observed_unacceptable_replications": 1,
+        "tested_replications": 1,
+        "class_probabilities": {
+          "UNACCEPTABLE": 0.5,
+          "ACCEPTABLE": 0.5
+        },
+        "limitations": "Actual tested-policy path associated with unacceptable outcomes, not a causal explanation or acceptance rule."
+      },
+      "prediction": "ACCEPTABLE",
+      "tree_depth": 1,
+      "leaf_count": 2,
+      "training_accuracy": 0.8,
+      "validation_accuracy": null,
+      "message": "XAI surrogate prediction does not determine the authoritative handling verdict."
+    },
+    "explanation": "Authoritative verified result: HANDLED. Predictive robustness changed from 0.0% to 100.0%. The current policy failed High-risk wait in 5/5 runs; Doctor utilization in 5/5 runs. All verified runs met the operational conditions. Doctor briefly peaked above target (mean peak 100.0%); in 5/5 runs this did not constitute sustained resource-overload failure. The verified recommendation met the configured robustness requirement. VERIFIED FEASIBILITY RECOVERY. Observed improvements: high risk mean wait 24m 0s to 4m 0s; robustness 0.0% to 100.0%; general time weighted utilization 19.7% to 19.2%; doctor minutes above target 24m 0s to 4m 0s; doctor longest above target streak 24m 0s to 4m 0s; doctor minutes at full saturation 24m 0s to 4m 0s; doctor longest full saturation streak 24m 0s to 4m 0s.  Policy changes: high risk priority weight 0.00 -> 0.40; waiting time aging weight 0.00 -> 1.40; icu reserve percentage 0.00 -> 0.01; doctor reserve percentage 0.00 -> 0.11; nurse reserve percentage 0.00 -> 0.11 Reserve values are fractions. Physical capacity remains unchanged: 10 icu beds, 100 general beds, 11 doctors, 100 nurses. The simulation suggests an operational scheduling policy for human review, not a validated clinical triage protocol. Finite GA search cannot prove that no feasible policy exists.",
+    "human_options": [
+      "Apply Optimized Operating Policy",
+      "Reject Recommendation",
+      "Modify / Retry"
+    ],
+    "ga_runtime_seconds": 0.11953100003302097,
+    "verified_candidate_count": 5
+  },
+  "real_profile_surge": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "metrics": {
+      "additional_arrivals": 42.0,
+      "completed_patients": 0.0,
+      "queue_peak": 0.0,
+      "queue_at_horizon_end": 0.0,
+      "unfinished_patients": 94.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "p95_wait": 0.0,
+      "checkpoint_queue": 0.0,
+      "unresolved_event_waiting": 0.0,
+      "icu_utilization": 0.21818181818181817,
+      "general_utilization": 0.08363636363636363,
+      "doctor_utilization": 0.6,
+      "nurse_utilization": 0.3428571428571428,
+      "recovery_time_minutes": 30.0,
+      "recovered_replications": 3,
+      "resource_pressure": {
+        "icu": {
+          "time_weighted_utilization": 0.19836570907033887,
+          "peak_utilization": 0.21818181818181817,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "general": {
+          "time_weighted_utilization": 0.07472875667382506,
+          "peak_utilization": 0.08363636363636363,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "doctor": {
+          "time_weighted_utilization": 0.5310425612138011,
+          "peak_utilization": 0.6,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        },
+        "nurse": {
+          "time_weighted_utilization": 0.303452892122172,
+          "peak_utilization": 0.3428571428571428,
+          "minutes_above_target": 0.0,
+          "longest_above_target_streak": 0.0,
+          "minutes_at_full_saturation": 0.0,
+          "longest_full_saturation_streak": 0.0
+        }
+      },
+      "event_metrics": {
+        "surge_patients_introduced": 30.0,
+        "surge_patients_completed": 0.0,
+        "event_mean_wait": 0.0,
+        "event_high_risk_mean_wait": 0.0,
+        "event_unfinished_patients": 30.0,
+        "event_waiting_patients": 0.0
+      }
+    },
+    "run_verdicts": [
+      "HANDLED_RUN",
+      "HANDLED_RUN",
+      "HANDLED_RUN"
+    ]
+  },
+  "real_profile_fixed_capacity": {
+    "icu_beds": 220,
+    "general_beds": 550,
+    "doctors": 80,
+    "nurses": 140
+  },
+  "real_profile_source_unchanged": true,
+  "real_profile_forecast_runtime_seconds": 0.08062430005520582,
+  "runtime_seconds": 0.8785671000368893,
+  "network_calls": 0
+}
