@@ -207,6 +207,7 @@ class InitializationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "RF profiles routed to icu_beds"):
             LiveHospitalState(profiles, warm_start=WarmStartSettings())
 
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_dashboard_default_warm_reset_empty_and_restore(self):
         from streamlit.testing.v1 import AppTest
         def button(app, label):

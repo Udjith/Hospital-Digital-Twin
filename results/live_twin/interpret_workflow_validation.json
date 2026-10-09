@@ -1,0 +1,55 @@
+{
+  "validate_final_v3_ui.py": {
+    "result": "PASS",
+    "runtime_seconds": 23.031743899919093,
+    "evidence": {
+      "primary_ui": "PASS",
+      "historical_ui_opt_in": "PASS",
+      "warm_start": "PASS",
+      "advanced_normal_minutes": 1440,
+      "provider": "raw Groq-shaped fixture; no network",
+      "lookahead_verdict": "CANNOT HANDLE",
+      "current_robustness": 0.0,
+      "optimized_robustness": 0.0,
+      "ga_outcome": "PARTIAL IMPROVEMENT",
+      "ga_seconds": 6.907077000010759,
+      "diagnosis": "STAFF_BOTTLENECK",
+      "xai_explanation": "rendered",
+      "deterministic_fallback": "rendered",
+      "reject_no_mutation": true,
+      "retry": true,
+      "apply_preserves_ownership": true,
+      "temporary_restore": true,
+      "reset": true,
+      "fixed_capacity": {
+        "icu_beds": 220,
+        "general_beds": 550,
+        "doctors": 80,
+        "nurses": 140
+      },
+      "runtime_seconds": 19.772841300116852
+    }
+  },
+  "validate_cleanup_phase2.py": {
+    "result": "PASS",
+    "runtime_seconds": 40.50464759999886,
+    "evidence": {
+      "validate_live_initialization.py": {
+        "result": "PASS",
+        "runtime_seconds": 10.002859399886802
+      },
+      "validate_live_pressure.py": {
+        "result": "PASS",
+        "runtime_seconds": 3.6147239999845624
+      },
+      "validate_live_dashboard.py": {
+        "result": "PASS",
+        "runtime_seconds": 6.222886099945754
+      },
+      "validate_part3_dashboard.py": {
+        "result": "PASS",
+        "runtime_seconds": 20.576650599949062
+      }
+    }
+  }
+}

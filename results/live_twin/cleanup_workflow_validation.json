@@ -1,0 +1,27 @@
+{
+  "primary_ui": "PASS",
+  "historical_ui_opt_in": "PASS",
+  "warm_start": "PASS",
+  "advanced_normal_minutes": 1440,
+  "provider": "raw Groq-shaped fixture; no network",
+  "lookahead_verdict": "CANNOT HANDLE",
+  "current_robustness": 0.0,
+  "optimized_robustness": 0.0,
+  "ga_outcome": "PARTIAL IMPROVEMENT",
+  "ga_seconds": 5.4649650999344885,
+  "diagnosis": "STAFF_BOTTLENECK",
+  "xai_explanation": "rendered",
+  "deterministic_fallback": "rendered",
+  "reject_no_mutation": true,
+  "retry": true,
+  "apply_preserves_ownership": true,
+  "temporary_restore": true,
+  "reset": true,
+  "fixed_capacity": {
+    "icu_beds": 220,
+    "general_beds": 550,
+    "doctors": 80,
+    "nurses": 140
+  },
+  "runtime_seconds": 17.22383370017633
+}

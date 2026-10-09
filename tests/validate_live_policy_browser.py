@@ -5,11 +5,15 @@ from validate_live_event_browser import check_event
 
 async def check_policy(evaluate, wait_for, click, clock):
     result = await check_event(evaluate, wait_for, click, clock)
-    await click("Advance Simulation")
-    await wait_for("document.body.innerText.includes('Elapsed 10.00 simulated minutes')")
+    skip_start = await clock()
+    # Applying an event performs a full rerun; reopen the collapsed controls.
+    await evaluate("(()=>{const e=[...document.querySelectorAll('summary')].find(e=>e.innerText.includes('Fast Forward Controls'));if(e&&!e.parentElement.open)e.click()})()")
+    await wait_for("[...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Fast Forward'&&!b.disabled)")
+    await click("Fast Forward")
+    await wait_for(f"Number(document.body.innerText.match(/Elapsed ([0-9.]+) simulated minutes/)[1]) >= {skip_start + 4.99}")
     before = await clock()
     await click("Optimize Current Operating Policy")
-    await wait_for("document.body.innerText.includes('OPTIMIZED POLICY') && [...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Apply Optimized Operating Policy'&&!b.disabled)")
+    await wait_for("document.body.innerText.includes('Verified outcome:') && [...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Apply Optimized Operating Policy'&&!b.disabled)")
     assert await clock() == before
     await click("Apply Optimized Operating Policy")
     await wait_for("document.body.innerText.includes('STALE live policy recommendation')")
@@ -21,8 +25,9 @@ async def check_policy(evaluate, wait_for, click, clock):
     assert await evaluate("(() => {const e=[...document.querySelectorAll('[role=option]')].find(e=>e.innerText.trim()==='3600x');e.click();return true;})()")
     await wait_for(f"(() => {{const e={host};return e?.innerText.includes('3600x') || e?.querySelector('input')?.value==='3600x';}})()")
     toggle = """(() => {const host=[...document.querySelectorAll('[data-testid=stCheckbox], [data-testid=stToggle]')].find(e=>e.innerText.includes('Automatic Live Playback'));host.querySelector('input[type=checkbox]').click();return true;})()"""
-    await evaluate(toggle)
-    await wait_for("document.body.innerText.includes('Automatic playback on')")
+    await evaluate("(() => {const host=[...document.querySelectorAll('[data-testid=stCheckbox], [data-testid=stToggle]')].find(e=>e.innerText.includes('Automatic Live Playback'));const input=host.querySelector('input[type=checkbox]');if(!input.checked)input.click();return true;})()")
+    await click("Resume")
+    await wait_for("document.body.innerText.includes('| RUNNING') && document.body.innerText.includes('Automatic playback on')")
     await wait_for(f"Number(document.body.innerText.match(/Elapsed ([0-9.]+) simulated minutes/)[1]) > {before + 30}")
     await click("Pause")
     await wait_for("document.body.innerText.includes('| PAUSED')")

@@ -14,8 +14,16 @@ from live_policy_control import DEMO_CAPACITY, DEMO_ARRIVAL_RATE, NORMAL_POLICY_
 from live_hospital_state import OperatingPolicy
 from live_skip_control import LiveSkipDriver
 from live_initialization import WarmStartSettings
+from live_presentation import status_html, expanded_status_html, overview_html
+from live_presentation import section_anchor, render_initial_details
+from live_pressure import LiveTargets
 
 LABELS = dict(icu_beds="ICU Beds", general_beds="General Beds", doctors="Doctors", nurses="Nurses")
+
+
+def wall_seconds():
+    """Monotonic playback clock; separate seam for deterministic UI tests."""
+    return time.monotonic()
 
 
 def format_time(minutes):
@@ -28,9 +36,13 @@ def get_live_hospital(state):
 
 
 @st.fragment(run_every="1s")
-def render_live_twin(data_path, model_path, targets=None):
-    st.header("V3 Live Twin")
-    st.caption("Simulated live hospital feed, not an EHR integration. Fixed physical capacities are separate from the V2 sidebar and GA recommendation. Operational queue priority is not a clinical triage protocol.")
+def render_live_twin(data_path, model_path, targets=None, target_controls=False):
+    # Permanent slots precede controls; variable content stays within each slot.
+    with st.container(key="v3_top_status", border=False):
+        section_anchor("live")
+        status_slot = st.empty()
+        with st.expander("Expand Status", expanded=False, key="v3_expand_status", on_change="ignore"):
+            expanded_slot = st.empty()
     hospital = get_live_hospital(st.session_state)
     if hospital is not None and not hasattr(hospital, "initial_state"):
         st.warning("This retained session predates warm-start initialization. Reset it explicitly to use the new initialization settings.")
@@ -41,16 +53,18 @@ def render_live_twin(data_path, model_path, targets=None):
                 st.session_state.pop(key, None)
             st.rerun()
         return
+    if "v3_pending_autoplay" in st.session_state:
+        st.session_state.v3_autoplay = st.session_state.pop("v3_pending_autoplay")
     locked = hospital is not None and hospital.status != "READY"
-    with st.container(border=True):
+    with st.expander("Hospital Setup · Fixed Physical Capacity", expanded=hospital is None):
         st.subheader("Fixed Live Hospital Capacity")
         capacity_values = {}
         for column, kind in zip(st.columns(4), KINDS):
             with column:
                 capacity_values[kind] = st.number_input(f"Live {LABELS[kind]}", 1, 10000,
                     DEMO_CAPACITY[kind], key=f"v3_capacity_{kind}", disabled=locked,
-                    help="Fixed physical capacity for this live session. Reset Live Twin before editing; V2 optimization cannot change it.")
-        feed_col, seed_col, speed_col = st.columns(3)
+                    help="Fixed physical capacity for this live session. Reset Live Twin before editing; adaptive optimization cannot change it.")
+        feed_col, seed_col = st.columns(2)
         with feed_col:
             rate = st.number_input("Live Base Arrival Rate (patients/hour)", 0., 1000., DEMO_ARRIVAL_RATE,
                 key="v3_arrival_rate", disabled=locked,
@@ -58,10 +72,6 @@ def render_live_twin(data_path, model_path, targets=None):
         with seed_col:
             seed = st.number_input("Live Random Seed", 0, 2**32 - 1, 42, key="v3_seed", disabled=locked,
                 help="Same live configuration and seed reproduce arrivals and clinical profile sampling. Synthetic patient IDs are used.")
-        with speed_col:
-            speed = st.selectbox("Simulation Speed", SIMULATION_SPEEDS, index=2,
-                format_func=lambda x: f"{x}x", key="v3_speed",
-                help="Automatic playback converts elapsed monotonic wall seconds to simulated minutes at this multiplier. Manual advances use the chosen minute step.")
         with st.expander("Advanced Live Twin Initialization Settings"):
             warm_enabled = st.checkbox("Enable Warm Start", value=True, key="v3_warm_enabled", disabled=locked,
                 help="Create a seeded simulated initial operating state using existing RF profiles. Reset before changing settings; these are not real hospital measurements.")
@@ -79,22 +89,35 @@ def render_live_twin(data_path, model_path, targets=None):
                 help="Reset Empty is for debugging. Reset with Warm Start reproduces initialization for unchanged seed, capacities, settings and profile pool.")
             warm_settings = WarmStartSettings(enabled=warm_enabled and reset_mode != "Reset Empty",
                 initial_queue=None if queue_choice == "Auto" else queue_choice, **warm_values)
-        auto = st.toggle("Automatic Live Playback", key="v3_autoplay",
+        if target_controls:
+            with st.expander("Operational Targets", expanded=False):
+                mean_wait = st.number_input("Mean Wait Target (minutes)", 1., 120., 20., key="mean_wait_number",
+                    help="Maximum acceptable average observed wait in look-ahead replications.")
+                high_wait = st.number_input("High-Risk Wait Target (minutes)", 1., 120., 10., key="high_risk_wait_number",
+                    help="Maximum acceptable average wait for RF-classified high-risk patients; RF threshold stays 0.50.")
+                utilization = st.number_input("Maximum Utilization (%)", 0., 100., 90., key="live_utilization_target",
+                    help="Time-weighted utilization target. Brief peaks are warnings; sustained-pressure grace periods are configured in Advanced Live Twin settings.")
+                robustness = st.number_input("Robustness Threshold (%)", 0., 100., 90., key="live_robustness_threshold",
+                    help="Required percentage of handled look-ahead replications.")
+            targets = LiveTargets(mean_wait_target_minutes=mean_wait, high_risk_wait_target_minutes=high_wait,
+                max_utilization_target=utilization / 100., robustness_threshold=robustness)
+    with st.container(key="v3_playback"):
+        playback_speed, playback_auto = st.columns([1, 2])
+        speed = playback_speed.selectbox("Simulation Speed", SIMULATION_SPEEDS, index=2,
+            format_func=lambda x: f"{x}x", key="v3_speed",
+            help="Playback speed. Simulated events retain their deterministic ordering at every speed.")
+        auto = playback_auto.toggle("Automatic Live Playback", key="v3_autoplay",
             help="Advance using elapsed wall time, with bounded catch-up steps. Turn off to use manual stepping. No infinite loop or background simulation thread.")
         # Accrue elapsed time exactly once, before processing control transitions.
         driver = st.session_state.get("v3_clock_driver")
         if driver is not None:
             skip = st.session_state.get("v3_skip_driver")
             skipping = bool(skip and skip.remaining_minutes)
-            driver.tick(time.monotonic(), speed=speed, enabled=auto and not skipping)
-            if skipping:
-                skip.tick()
-                driver.reanchor(time.monotonic())
-                if not skip.remaining_minutes:
-                    driver.enabled = bool(auto)
+            if not st.session_state.get("v3_synchronous_action", False):
+                driver.tick(wall_seconds(), speed=speed, enabled=auto and not skipping)
         controls = st.columns(5)
         with controls[0]:
-            start = st.button("Start Live Simulation", disabled=hospital is not None and hospital.status != "READY", width="stretch")
+            start = st.button("Start Live Simulation", type="primary", disabled=hospital is not None and hospital.status != "READY", width="stretch")
         with controls[1]:
             pause = st.button("Pause", disabled=hospital is None or hospital.status != "RUNNING", width="stretch")
         with controls[2]:
@@ -103,9 +126,16 @@ def render_live_twin(data_path, model_path, targets=None):
             stop = st.button("Stop Live Simulation", disabled=hospital is None or hospital.status not in ("RUNNING", "PAUSED"), width="stretch")
         with controls[4]:
             reset = st.button("Reset Live Twin", disabled=hospital is None, width="stretch")
+        start_status = st.empty()
+        status_slot.markdown(status_html(hospital, speed), unsafe_allow_html=True)
+        if hospital is not None:
+            expanded_slot.markdown(expanded_status_html(hospital), unsafe_allow_html=True)
+        else:
+            expanded_slot.info("Patient flow and performance appear after Start.")
         if start:
             try:
-                with st.spinner("Loading cached RF profiles and preparing live state..."):
+                with start_status.container():
+                    st.info("Loading cached RF profiles and preparing live state...")
                     # Cache is owned by the validated V2 profile loader; inference
                     # is performed once per source/model version, never per arrival.
                     profiles = load_patient_profiles(data_path, model_path)
@@ -113,7 +143,9 @@ def render_live_twin(data_path, model_path, targets=None):
                         operating_policy=OperatingPolicy(**NORMAL_POLICY_VALUES), warm_start=warm_settings)
                 hospital.start()
                 driver = LiveClockDriver(hospital)
-                driver.tick(time.monotonic(), speed=speed, enabled=auto)
+                start_playback = bool(warm_settings.enabled)
+                driver.tick(wall_seconds(), speed=speed, enabled=start_playback)
+                st.session_state.v3_pending_autoplay = start_playback
                 st.session_state.v3_live_hospital = hospital
                 st.session_state.v3_clock_driver = driver
                 st.session_state.v3_skip_driver = LiveSkipDriver(hospital)
@@ -130,7 +162,7 @@ def render_live_twin(data_path, model_path, targets=None):
                 hospital.resume()
                 if st.session_state.get("v3_skip_driver"):
                     st.session_state.v3_skip_driver.paused = False
-                driver.reanchor(time.monotonic())
+                driver.reanchor(wall_seconds())
             if stop:
                 hospital.stop()
                 if st.session_state.get("v3_skip_driver"):
@@ -138,133 +170,156 @@ def render_live_twin(data_path, model_path, targets=None):
             if reset:
                 hospital.warm_start_settings = warm_settings
                 hospital.reset()
-                for key in ("v3_proposed_event", "v3_lookahead_result", "v3_preview_audit", "v3_proposal_form", "v3_live_ga_result", "v3_live_xai", "v3_live_ai", "v3_policy_recommendations", "v3_manual_policy_reference", "v3_scenario_interpretation", "v3_scenario_preview", "v3_scenario_audit", "v3_applied_scenario_events", "v3_modify_retry", "v3_recommendation_decision"):
+                for key in ("v3_proposed_event", "v3_lookahead_result", "v3_preview_audit", "v3_proposal_form", "v3_live_ga_result", "v3_live_ga_status", "v3_live_ga_error", "v3_live_xai", "v3_live_ai", "v3_policy_recommendations", "v3_manual_policy_reference", "v3_scenario_interpretation", "v3_scenario_preview", "v3_scenario_audit", "v3_applied_scenario_events", "v3_modify_retry", "v3_recommendation_decision"):
                     st.session_state.pop(key, None)
                 st.session_state.v3_clock_driver = LiveClockDriver(hospital)
                 st.session_state.v3_skip_driver = LiveSkipDriver(hospital)
+                st.session_state.v3_pending_autoplay = False
                 st.session_state.pop("v3_snapshot_download", None)
             if pause or resume or stop or reset:
                 st.rerun()
-        step_col, action_col = st.columns([2, 1])
-        with step_col:
-            delta = st.number_input("Manual Advance (simulated minutes)", 0.1, MAX_MANUAL_MINUTES, 5., key="v3_manual_delta",
-                help="Explicit simulated minutes, up to 30 days. Large requests become cancellable skip debt, processed in 60-minute chunks without dropping events.")
-        with action_col:
-            if st.button("Advance Simulation", disabled=hospital is None or hospital.status not in ("RUNNING", "PAUSED"), width="stretch"):
+        with st.expander("Fast Forward Controls", key="v3_fast_forward_controls"):
+            step_col, action_col = st.columns([2, 1])
+            with step_col:
+                delta = st.number_input("Fast Forward (simulated minutes)", 0.1, MAX_MANUAL_MINUTES, 5., key="v3_manual_delta",
+                    help="Process all scheduled events without playback throttling or intermediate dashboard tables. Maximum 30 days; physical capacity and stochastic streams are unchanged.")
+            with action_col:
+                if st.button("Fast Forward", disabled=hospital is None or hospital.status not in ("RUNNING", "PAUSED"), width="stretch"):
+                    skip = st.session_state.setdefault("v3_skip_driver", LiveSkipDriver(hospital))
+                    try:
+                        skip.request(float(delta))
+                        driver.enabled = False
+                        driver.reanchor(wall_seconds())
+                    except ValueError as exc:
+                        st.error(str(exc))
+            if hospital is not None:
                 skip = st.session_state.setdefault("v3_skip_driver", LiveSkipDriver(hospital))
-                try:
-                    skip.request(float(delta))
-                    skip.tick()
-                    driver.enabled = bool(auto and not skip.remaining_minutes)
-                    driver.reanchor(time.monotonic())
-                except ValueError as exc:
-                    st.error(str(exc))
-        if hospital is not None:
-            skip = st.session_state.setdefault("v3_skip_driver", LiveSkipDriver(hospital))
-            with st.expander("Manual Skip Presets"):
+                st.caption("Presets · custom duration is entered above. Pause / Resume remain beside the clock.")
                 presets = (("+5 min", 5), ("+30 min", 30), ("+1 hour", 60), ("+6 hours", 360),
                     ("+12 hours", 720), ("+1 day", 1440), ("+3 days", 4320), ("+7 days", 10080))
-                for col, (label, minutes) in zip(st.columns(8), presets):
-                    if col.button(label, disabled=bool(skip.remaining_minutes) or hospital.status not in ("RUNNING", "PAUSED")):
-                        skip.request(minutes)
-                        skip.tick()
-                        driver.enabled = bool(auto and not skip.remaining_minutes)
-                        driver.reanchor(time.monotonic())
-            if skip.remaining_minutes:
-                st.progress(1 - skip.remaining_minutes / skip.total_minutes,
-                    text=f"Manual skip {'paused' if skip.paused else 'in progress'}: {format_duration(skip.remaining_minutes)} remaining; at most 60 minutes per refresh.")
-                if st.button("Cancel Remaining Manual Skip"):
+                for row in (presets[:4], presets[4:]):
+                    for col, (label, minutes) in zip(st.columns(4), row):
+                        if col.button(label, disabled=bool(skip.remaining_minutes) or hospital.status not in ("RUNNING", "PAUSED")):
+                            skip.request(minutes)
+                            driver.enabled = False
+                            driver.reanchor(wall_seconds())
+            if hospital is not None and skip.remaining_minutes:
+                status_slot.markdown(status_html(hospital, speed, skipping=True), unsafe_allow_html=True)
+                indicator = st.progress(1 - skip.remaining_minutes / skip.total_minutes,
+                    text=f"Fast Forward {'paused' if skip.paused else 'in progress'}: {format_duration(skip.remaining_minutes)} remaining.")
+                if st.button("Cancel Remaining Fast Forward"):
                     skip.cancel()
-                    driver.enabled = bool(auto)
-                    driver.reanchor(time.monotonic())
+                elif not skip.paused:
+                    # Only this indicator updates during execution, not the tables,
+                    # event preview, GA/XAI/LLM or snapshots below this block.
+                    last_update = [time.perf_counter()]
+                    def progress(fraction):
+                        now = time.perf_counter()
+                        if fraction == 1 or now - last_update[0] >= .1:
+                            indicator.progress(fraction, text=f"Fast Forward: {format_duration(skip.remaining_minutes)} remaining.")
+                            last_update[0] = now
+                    driver.enabled = False
+                    try:
+                        skip.fast_forward(progress)
+                    finally:
+                        driver.reanchor(wall_seconds())
+                        driver.enabled = bool(auto and not skip.remaining_minutes)
+                if not skip.remaining_minutes:
+                    st.rerun()
+    with st.container(key="v3_live_overview"):
+        if hospital is None:
+            st.info("Set physical resources and start the warm-start simulated live feed.")
+        else:
+            st.subheader("Live Hospital Status")
+            st.caption(f"Elapsed {hospital.sim_time_minutes:.2f} simulated minutes ({format_duration(hospital.sim_time_minutes)} elapsed). Capacities stay fixed until reset. Automatic playback {'on' if auto else 'off'}.")
+            if driver and driver.pending_minutes > .01:
+                st.caption(f"Pending clock catch-up: {format_duration(driver.pending_minutes)}; no events are discarded.")
+            initial = hospital.initial_state
+            with st.container(border=True):
+                st.markdown("**INITIAL HOSPITAL STATE — simulated operating state**")
+                resources = initial["resources"]
+                st.caption(f"Warm Start: {'Enabled' if initial['enabled'] else 'Disabled'} | {initial['active_patients']} initial active patients | ICU {resources['icu_beds']['occupied_or_busy']} / {resources['icu_beds']['total']} | General {resources['general_beds']['occupied_or_busy']} / {resources['general_beds']['total']} | Staff busy {resources['doctors']['occupied_or_busy']} doctors / {resources['nurses']['occupied_or_busy']} nurses")
+                with st.expander("Initial Hospital State Details", expanded=False):
+                    render_initial_details(initial)
+            st.markdown(overview_html(hospital), unsafe_allow_html=True)
+            metrics = hospital.metrics()
+            with st.expander("Cumulative and Rolling Live Metrics"):
+                st.dataframe(pd.DataFrame([{"Resource": LABELS[kind], **row} for kind, row in hospital.resource_summary().items()]), hide_index=True, width="stretch")
+                st.write(f"Arrived: {metrics['total_patients_arrived']} | Active: {metrics['currently_active']} | Completed: {metrics['completed_patients']}")
+                st.caption(f"Completed during observation: {metrics['initial_patients_completed']} initial incumbents + {metrics['live_arrivals_completed']} live arrivals. Cumulative wait measures live arrivals only; look-ahead also includes current queued incumbents.")
+                st.write(f"Cumulative observed mean wait: {format_duration(metrics['mean_wait_so_far'])} | High-risk mean: {format_duration(metrics['high_risk_mean_wait_so_far'])} | Throughput: {metrics['throughput_per_hour']:.2f}/hour")
+                st.caption("Waiting patients contribute elapsed wait only; future waits are not counted. Current cards show instantaneous occupancy, while cumulative/rolling utilization integrates occupied minutes.")
+                rolling = metrics["rolling_60_minutes"]
+                st.write(f"Last {format_duration(rolling['observed_minutes'])}: {rolling['arrivals']} arrivals, {rolling['completions']} completions, observed mean wait {format_duration(rolling['mean_wait'])}, mean queue {rolling['mean_queue_length']:.2f}.")
+                st.dataframe(pd.DataFrame([{"Resource": LABELS[k], "Cumulative utilization": metrics["cumulative_utilization"][k],
+                    "Rolling utilization": rolling["utilization"][k]} for k in KINDS]), hide_index=True, width="stretch")
+    # Render parents in page order. Read-only technical callbacks are collected
+    # while actions render, then populated below in permanent child slots.
+    technical_queue = {name: [] for name in ("scenario", "policy", "events", "state")}
+    with st.container(key="v3_event_workspace"):
+        render_event_controls(hospital, targets, technical_slots=technical_queue)
+    technical_region = st.container(key="v3_technical_details")
+    with technical_region:
+        section_anchor("technical-details")
+        st.subheader("Technical Details")
+        st.caption("Inspect the verified pressure, search, explanations, ownership and audit evidence.")
+        technical_slots = {name: st.container(key="v3_technical_" + name) for name in ("scenario", "policy", "events", "state")}
+        for name, callbacks in technical_queue.items():
+            with technical_slots[name]:
+                for callback in callbacks:
+                    callback()
     if hospital is None:
-        st.info("Set physical resources and start the simulated live feed. V2 scenario analysis and optimization remain available in their existing tabs.")
         return
-    st.subheader(f"{format_time(hospital.sim_time_minutes)} | {hospital.status}")
-    st.caption(f"Elapsed {hospital.sim_time_minutes:.2f} simulated minutes ({format_duration(hospital.sim_time_minutes)} elapsed). Capacities stay fixed until reset. Automatic playback {'on' if auto else 'off'}.")
-    if driver and driver.pending_minutes > .01:
-        st.caption(f"Pending clock catch-up: {format_duration(driver.pending_minutes)}; no events are discarded.")
-    initial = hospital.initial_state
-    with st.container(border=True):
-        st.markdown("**INITIAL HOSPITAL STATE — simulated operating state**")
-        initial_columns = st.columns(5)
-        for col, kind in zip(initial_columns[:4], KINDS):
-            values = initial["resources"][kind]
-            col.metric("Initial " + LABELS[kind], f"{values['occupied_or_busy']} / {values['total']}")
-        initial_columns[4].metric("Initial Waiting", initial["waiting_patients"])
-        st.caption(f"Warm Start: {'Enabled' if initial['enabled'] else 'Disabled'} | Initial Active Patients: {initial['active_patients']} | Live arrivals are counted separately from these incumbents.")
-        with st.expander("Initial State Details"):
-            st.json(initial)
-            for warning in initial["warnings"]:
-                st.info(warning)
-    summary = hospital.resource_summary()
-    for col, kind in zip(st.columns(4), KINDS):
-        resource = summary[kind]
-        verb = "occupied" if kind.endswith("beds") else "busy"
-        col.metric(f"Live {LABELS[kind]} {verb}", f"{resource['occupied_or_busy']} / {resource['total']}")
-        col.caption(f"{resource['available']} free | {resource['current_utilization']:.1%} of usable capacity")
-        col.caption(f"Total {resource['total']} | Usable {resource['usable']} | Out {resource['temporarily_unavailable']} | Pending {resource['pending_unavailable']}")
-    metrics = hospital.metrics()
-    for col, (label, key) in zip(st.columns(4), (("Waiting Patients", "currently_waiting"),
-            ("In Treatment", "in_treatment"), ("Bed-Stay Patients", "bed_stay"), ("Completed During Session", "completed_patients"))):
-        col.metric(label, metrics[key])
-    with st.expander("Cumulative and Rolling Live Metrics"):
-        st.write(f"Arrived: {metrics['total_patients_arrived']} | Active: {metrics['currently_active']} | Completed: {metrics['completed_patients']}")
-        st.caption(f"Completed during observation: {metrics['initial_patients_completed']} initial incumbents + {metrics['live_arrivals_completed']} live arrivals. Cumulative wait measures live arrivals only; look-ahead also includes current queued incumbents.")
-        st.write(f"Cumulative observed mean wait: {format_duration(metrics['mean_wait_so_far'])} | High-risk mean: {format_duration(metrics['high_risk_mean_wait_so_far'])} | Throughput: {metrics['throughput_per_hour']:.2f}/hour")
-        st.caption("Waiting patients contribute elapsed wait only; future waits are not counted. Current cards show instantaneous occupancy, while cumulative/rolling utilization integrates occupied minutes.")
-        rolling = metrics["rolling_60_minutes"]
-        st.write(f"Last {format_duration(rolling['observed_minutes'])}: {rolling['arrivals']} arrivals, {rolling['completions']} completions, observed mean wait {format_duration(rolling['mean_wait'])}, mean queue {rolling['mean_queue_length']:.2f}.")
-        st.dataframe(pd.DataFrame([{"Resource": LABELS[k], "Cumulative utilization": metrics["cumulative_utilization"][k],
-            "Rolling utilization": rolling["utilization"][k]} for k in KINDS]), hide_index=True, width="stretch")
-    st.subheader("Live Active Patients")
-    limit = st.selectbox("Patient Row Limit", (25, 50, 100, 200), index=1, key="v3_patient_limit")
-    include_completed = st.checkbox("Include Recent Completed Patients", key="v3_include_completed",
-        help="Fill unused display rows from the capped recent-completion history; cumulative completion metrics retain the full count.")
-    rows = hospital.patient_rows(limit, include_completed)
-    if rows:
-        columns = ["patient_id", "source_event_id", "risk_classification", "risk_probability", "required_bed_type", "assigned_bed_id",
-            "assigned_doctor_id", "assigned_nurse_id", "status", "arrival_time", "waiting_time_minutes",
-            "queue_entry_time", "treatment_start_time", "expected_treatment_completion", "expected_discharge_time", "discharge_time"]
-        frame = pd.DataFrame(rows)[columns]
-        frame["required_bed_type"] = frame["required_bed_type"].map({"icu_beds": "ICU", "general_beds": "General"})
-        for name in ("arrival_time", "queue_entry_time", "treatment_start_time",
-                     "expected_treatment_completion", "expected_discharge_time", "discharge_time"):
-            frame[name] = frame[name].map(lambda value: "Before start: " + format_duration(-value) + " earlier" if pd.notna(value) and value < 0 else format_timestamp(value))
-        frame["waiting_time_minutes"] = frame["waiting_time_minutes"].map(format_duration)
-        frame = frame.rename(columns=dict(patient_id="Patient ID", risk_classification="Risk", risk_probability="RF Probability",
-            required_bed_type="Bed Type", assigned_bed_id="Bed ID", assigned_doctor_id="Doctor ID", assigned_nurse_id="Nurse ID",
-            status="Status", arrival_time="Arrival", waiting_time_minutes="Wait", queue_entry_time="Queue Entry",
-            treatment_start_time="Treatment Start", expected_treatment_completion="Expected Staff Release",
-            expected_discharge_time="Expected Discharge", discharge_time="Discharged"))
-        st.dataframe(frame, hide_index=True, width="stretch")
-        st.caption(f"Showing at most {limit} rows; timestamps use Day N HH:MM:SS (session starts Day 1); Wait is a compact duration. Raw minutes remain in JSON snapshots.")
-    else:
-        st.info("No active patients at this simulated time.")
-    render_event_controls(hospital, targets)
-    st.subheader("Recent Live Events")
-    audit_rows = [{"patient_id": None, "resource_ids": [], "description": "Read-only prediction audit", **row}
-                  for row in st.session_state.get("v3_preview_audit", [])]
-    event_rows = sorted(list(hospital.events) + audit_rows,
-                        key=lambda row: row["sim_time_minutes"], reverse=True)[:50]
-    if event_rows:
-        st.dataframe(pd.DataFrame([{**row, "description": format_time_text(row["description"]), "simulated_time": format_time(row["sim_time_minutes"])} for row in event_rows])[
-            ["simulated_time", "event_type", "event_id", "patient_id", "resource_ids", "description"]], hide_index=True, width="stretch")
-    st.caption(f"Showing latest 50 live/audit events; live in-memory log is capped at {hospital.events.maxlen}. No per-refresh disk writes.")
-    with st.expander("Inspect Live Resources"):
-        if st.checkbox("Show Resource Table", key="v3_show_resources"):
-            kind = st.selectbox("Resource Type", KINDS, format_func=lambda k: LABELS[k], key="v3_resource_kind")
-            status = st.selectbox("Resource Status", ("All", "AVAILABLE", "OCCUPIED" if kind.endswith("beds") else "BUSY", "OUT_OF_SERVICE_PENDING", "OUT_OF_SERVICE"), key=f"v3_filter_{kind}")
-            resource_frame = pd.DataFrame(hospital.resource_rows(kind, status, limit=100)).rename(columns={
-                "resource_id": "ID", "kind": "Type", "status": "Status", "patient_id": "Patient"})
-            st.dataframe(resource_frame, hide_index=True, width="stretch")
-            st.caption("At most 100 resource rows are rendered. Stable IDs and patient ownership are kept in the session engine.")
-    with st.expander("Live Operating Policy and Snapshot"):
-        st.json(asdict(hospital.current_policy))
-        st.caption("Adaptive operational scheduling policy. Physical capacities remain fixed. Reserve and surge weights affect only future queue/allocation decisions; this is not validated clinical triage.")
-        if st.button("Prepare Compact Live Snapshot"):
-            st.session_state.v3_snapshot_download = json.dumps(hospital.snapshot(patient_limit=25, event_limit=50), indent=2, allow_nan=False)
-        if st.session_state.get("v3_snapshot_download"):
-            st.caption("Prepared snapshot is a historical export; prepare again to capture current state.")
-            st.download_button("Download Live State Snapshot", st.session_state.v3_snapshot_download,
-                file_name="live_hospital_snapshot.json", mime="application/json")
+    with technical_slots["state"]:
+        with st.expander("Active Patient Details"):
+            st.subheader("Live Active Patients")
+            limit = st.selectbox("Patient Row Limit", (25, 50, 100, 200), index=1, key="v3_patient_limit")
+            include_completed = st.checkbox("Include Recent Completed Patients", key="v3_include_completed",
+                help="Fill unused display rows from the capped recent-completion history; cumulative completion metrics retain the full count.")
+            rows = hospital.patient_rows(limit, include_completed)
+            if rows:
+                columns = ["patient_id", "source_event_id", "risk_classification", "risk_probability", "required_bed_type", "assigned_bed_id",
+                    "assigned_doctor_id", "assigned_nurse_id", "status", "arrival_time", "waiting_time_minutes",
+                    "queue_entry_time", "treatment_start_time", "expected_treatment_completion", "expected_discharge_time", "discharge_time"]
+                frame = pd.DataFrame(rows)[columns]
+                frame["required_bed_type"] = frame["required_bed_type"].map({"icu_beds": "ICU", "general_beds": "General"})
+                for name in ("arrival_time", "queue_entry_time", "treatment_start_time",
+                             "expected_treatment_completion", "expected_discharge_time", "discharge_time"):
+                    frame[name] = frame[name].map(lambda value: "Before start: " + format_duration(-value) + " earlier" if pd.notna(value) and value < 0 else format_timestamp(value))
+                frame["waiting_time_minutes"] = frame["waiting_time_minutes"].map(format_duration)
+                frame = frame.rename(columns=dict(patient_id="Patient ID", risk_classification="Risk", risk_probability="RF Probability",
+                    required_bed_type="Bed Type", assigned_bed_id="Bed ID", assigned_doctor_id="Doctor ID", assigned_nurse_id="Nurse ID",
+                    status="Status", arrival_time="Arrival", waiting_time_minutes="Wait", queue_entry_time="Queue Entry",
+                    treatment_start_time="Treatment Start", expected_treatment_completion="Expected Staff Release",
+                    expected_discharge_time="Expected Discharge", discharge_time="Discharged"))
+                st.dataframe(frame, hide_index=True, width="stretch", column_config={"RF Probability": st.column_config.NumberColumn(format="%.2f")})
+                st.caption(f"Showing at most {limit} rows; timestamps use Day N HH:MM:SS (session starts Day 1); Wait is a compact duration. Raw minutes remain in JSON snapshots.")
+            else:
+                st.info("No active patients at this simulated time.")
+        with st.expander("Recent Live Events"):
+            audit_rows = [{"patient_id": None, "resource_ids": [], "description": "Read-only prediction audit", **row}
+                          for row in st.session_state.get("v3_preview_audit", [])]
+            event_rows = sorted(list(hospital.events) + audit_rows,
+                                key=lambda row: row["sim_time_minutes"], reverse=True)[:50]
+            if event_rows:
+                st.dataframe(pd.DataFrame([{**row, "description": format_time_text(row["description"]), "simulated_time": format_time(row["sim_time_minutes"])} for row in event_rows])[
+                    ["simulated_time", "event_type", "event_id", "patient_id", "resource_ids", "description"]], hide_index=True, width="stretch")
+            st.caption(f"Showing latest 50 live/audit events; live in-memory log is capped at {hospital.events.maxlen}. No per-refresh disk writes.")
+        with st.expander("Inspect Live Resources"):
+            if st.checkbox("Show Resource Table", key="v3_show_resources"):
+                kind = st.selectbox("Resource Type", KINDS, format_func=lambda k: LABELS[k], key="v3_resource_kind")
+                status = st.selectbox("Resource Status", ("All", "AVAILABLE", "OCCUPIED" if kind.endswith("beds") else "BUSY", "OUT_OF_SERVICE_PENDING", "OUT_OF_SERVICE"), key=f"v3_filter_{kind}")
+                resource_frame = pd.DataFrame(hospital.resource_rows(kind, status, limit=100)).rename(columns={
+                    "resource_id": "ID", "kind": "Type", "status": "Status", "patient_id": "Patient"})
+                st.dataframe(resource_frame, hide_index=True, width="stretch")
+                st.caption("At most 100 resource rows are rendered. Stable IDs and patient ownership are kept in the session engine.")
+        with st.expander("Live Operating Policy and Snapshot"):
+            st.json(asdict(hospital.current_policy))
+            st.caption("Adaptive operational scheduling policy. Physical capacities remain fixed. Reserve and surge weights affect only future queue/allocation decisions; this is not validated clinical triage.")
+            if st.button("Prepare Compact Live Snapshot"):
+                st.session_state.v3_snapshot_download = json.dumps(hospital.snapshot(patient_limit=25, event_limit=50), indent=2, allow_nan=False)
+            if st.session_state.get("v3_snapshot_download"):
+                st.caption("Prepared snapshot is a historical export; prepare again to capture current state.")
+                st.download_button("Download Live State Snapshot", st.session_state.v3_snapshot_download,
+                    file_name="live_hospital_snapshot.json", mime="application/json")
+        st.caption("Simulated operational decision-support prototype. Not clinical advice or production EHR integration.")

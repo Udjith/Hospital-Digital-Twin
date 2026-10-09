@@ -1,0 +1,48 @@
+{
+  "before": {
+    "body_length": 3432,
+    "clock": "0.69",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 4029,
+    "clock": "1.14",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+    "preview": true,
+    "stale": true
+  },
+  "actions": {
+    "lookahead": {
+      "body_length": 4090,
+      "clock": "1.34",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "optimization": {
+      "body_length": 0,
+      "running": false,
+      "paused": false,
+      "preview": false,
+      "stale": false
+    }
+  },
+  "minimum_body_length": 3476,
+  "browser_errors": [
+    "Error: Bad delta path index 56 (should be between [0, 52])\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6144)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6391)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6391)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.setNodeAtPath (http://localhost:18521/static/js/index.CcFifQPt.js:14:6755)\n    at e.addElement (http://localhost:18521/static/js/index.CcFifQPt.js:14:9438)\n    at e.applyDelta (http://localhost:18521/static/js/index.CcFifQPt.js:14:8065)\n    at y.<anonymous> (http://localhost:18521/static/js/index.CcFifQPt.js:33:28582)"
+  ],
+  "server_log": "SCENARIO_BOUNDARY {\"stage\": \"before\", \"clock\": 0.7931093000030766, \"hash\": \"fad3b3ab0c4fe219326fe57204cf07d65c93c9d0356c5dbf6176e8ddc5c6717d\", \"checkpoint_hash\": \"fad3b3ab0c4fe219326fe57204cf07d65c93c9d0356c5dbf6176e8ddc5c6717d\", \"status\": \"RUNNING\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_BOUNDARY {\"stage\": \"after\", \"clock\": 0.7931093000030766, \"hash\": \"fad3b3ab0c4fe219326fe57204cf07d65c93c9d0356c5dbf6176e8ddc5c6717d\", \"checkpoint_hash\": \"fad3b3ab0c4fe219326fe57204cf07d65c93c9d0356c5dbf6176e8ddc5c6717d\", \"status\": \"RUNNING\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_RESULT {\"status\": \"VALID\", \"original_text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"parsed_events\": [{\"event_id\": \"EVT-000001\", \"event_type\": \"PATIENT_SURGE\", \"created_sim_time\": 0.7931093000030766, \"start_sim_time\": 0.7931093000030766, \"duration_minutes\": 20.0, \"parameters\": {\"count\": 60}, \"description\": \"Patient Surge\", \"source\": \"human-reviewed natural-language simulated scenario\"}, {\"event_id\": \"EVT-000002\", \"event_type\": \"DOCTOR_SHORTAGE\", \"created_sim_time\": 0.7931093000030766, \"start_sim_time\": 0.7931093000030766, \"duration_minutes\": 120.0, \"parameters\": {\"count\": 70}, \"description\": \"Doctor Shortage\", \"source\": \"human-reviewed natural-language simulated scenario\"}], \"assumptions\": [\"PATIENT_SURGE starts at the current simulated time.\", \"High-risk proportion uses the normal RF-profile distribution (threshold 0.50 unchanged).\", \"DOCTOR_SHORTAGE starts at the current simulated time.\"], \"warnings\": [], \"live_state_hash\": \"fad3b3ab0c4fe219326fe57204cf07d65c93c9d0356c5dbf6176e8ddc5c6717d\", \"interpretation_hash\": \"3a62b559eb8f3f046ef5a97578ec43308bf9d7d38e9ff2b3b28064e132e54036\"}\nSCENARIO_GA_STARTED {\"hash\": \"b5367bfc951bd2c6acaf5828e313f22cb7ea52f422b6f091548299d85f04513a\", \"clock\": 1.337509583332576, \"autoplay\": true, \"driver_enabled\": true, \"busy\": false, \"fragment_ids\": [\"25fb4bdb735a1fca1d62d51c7412eb14\"]}\nSCENARIO_GA_COMPLETED {\"outcome\": \"PARTIAL IMPROVEMENT\", \"verdict\": \"CANNOT HANDLE\", \"run_id\": \"3e18ae90ccccfbcdd51b\", \"hash\": \"b5367bfc951bd2c6acaf5828e313f22cb7ea52f422b6f091548299d85f04513a\", \"clock\": 1.337509583332576}",
+  "interpretation_state_unchanged": true,
+  "request_guarded": true
+}

@@ -71,6 +71,7 @@ class LivePressureTests(unittest.TestCase):
         self.assertEqual(result["outcome"], "VERIFIED SUCCESS")
         self.assertEqual(result["optimized_verified"]["aggregate"]["resource_pressure"]["doctor"]["longest_full_saturation_streak"], .5)
 
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_dashboard_apply_reject_modify_and_grace_stale_paths(self):
         from streamlit.testing.v1 import AppTest
         root = Path(__file__).resolve().parents[1]

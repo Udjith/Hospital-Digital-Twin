@@ -1,4 +1,4 @@
-"""Persistent, cancellable manual skip debt; one bounded chunk per UI update."""
+"""Persistent skip debt with bounded stepping and an unthrottled Fast Forward path."""
 import math
 
 from live_policy_control import MAX_MANUAL_MINUTES
@@ -30,6 +30,22 @@ class LiveSkipDriver:
             self.chunks_completed += 1
             return delta
         return 0.
+
+    def fast_forward(self, progress=None):
+        """Finish debt without rebuilding the dashboard at observation boundaries.
+
+        Debt is committed before each progress callback, so a Streamlit rerun
+        interruption can resume/cancel safely without replaying completed work.
+        """
+        requested = self.remaining_minutes
+        def after_boundary(advanced, total, processed):
+            self.remaining_minutes = requested - advanced
+            self.chunks_completed += 1
+            if progress:
+                progress(1 - self.remaining_minutes / self.total_minutes)
+        return self.hospital.fast_forward(requested, progress=after_boundary,
+            should_continue=lambda: bool(self.remaining_minutes and not self.paused
+                and self.hospital.status in ("RUNNING", "PAUSED")))
 
     def cancel(self):
         self.remaining_minutes = 0.

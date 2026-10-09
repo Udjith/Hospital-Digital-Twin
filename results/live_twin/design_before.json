@@ -1,0 +1,34 @@
+{
+  "before": {
+    "body_length": 3432,
+    "clock": "0.37",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 3432,
+    "clock": "0.37",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "",
+    "preview": false,
+    "stale": false
+  },
+  "actions": {},
+  "minimum_body_length": 1000,
+  "browser_errors": [],
+  "screenshots": {
+    "startup": "C:\\Users\\udjit\\AppData\\Local\\Temp\\hospital_v3_design\\before_startup.png",
+    "warm_running": "C:\\Users\\udjit\\AppData\\Local\\Temp\\hospital_v3_design\\before_warm_running.png"
+  },
+  "server_log": "",
+  "interpretation_state_unchanged": null,
+  "request_guarded": null,
+  "ga_completed": false,
+  "ga_start_guarded": true
+}

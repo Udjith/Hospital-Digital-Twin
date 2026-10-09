@@ -40,6 +40,7 @@ def mocked_interpret(text, state, data):
 
 
 class ScenarioTests(unittest.TestCase):
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_documented_examples_raw_provider_json_through_ui_preview(self):
         from streamlit.testing.v1 import AppTest
         cases = [
@@ -109,6 +110,7 @@ class ScenarioTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "requires integer parameter 'count'"):
             validate_scenario(payload(event(count=40.5)), state, "invalid")
 
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_precise_provider_validation_reason_is_visible_in_ui_details(self):
         from streamlit.testing.v1 import AppTest
         with patch.dict(os.environ, {"GROQ_API_KEY": "test"}), patch("live_scenario_interpreter.Groq") as groq:
@@ -248,6 +250,7 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual(len(session["v3_scenario_audit"]), 200)
         json.dumps(list(session["v3_scenario_audit"]), allow_nan=False)
 
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_dashboard_interpret_cancel_edit_confirm_apply_and_stale(self):
         from streamlit.testing.v1 import AppTest
         def button(app, label):
@@ -277,6 +280,7 @@ class ScenarioTests(unittest.TestCase):
             self.assertTrue(any("Applied interpreted scenario" in option for option in app.selectbox(key="v3_ga_context_name").options))
             self.assertTrue(any(row["action"] == "APPLY_SCENARIO_EVENTS" for row in app.session_state["v3_scenario_audit"]))
 
+    @patch("live_dashboard.wall_seconds", new=lambda: 0.)
     def test_dashboard_compound_ga_reject_retry_apply_revalidate_and_recovery(self):
         from streamlit.testing.v1 import AppTest
         def button(app, label):

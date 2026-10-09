@@ -1,0 +1,59 @@
+{
+  "before": {
+    "body_length": 3431,
+    "clock": "0.48",
+    "running": false,
+    "paused": true,
+    "autoplay": true,
+    "scenario": "A bus accident sends 40 patients over 20 minutes",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 3739,
+    "clock": "0.48",
+    "running": false,
+    "paused": true,
+    "autoplay": true,
+    "scenario": "A bus accident sends 40 patients over 20 minutes",
+    "preview": true,
+    "stale": false
+  },
+  "actions": {
+    "lookahead": {
+      "body_length": 4037,
+      "clock": "0.48",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": true,
+      "stale": false
+    },
+    "edit": {
+      "body_length": 3431,
+      "clock": "0.48",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": false,
+      "stale": false
+    },
+    "cancel": {
+      "body_length": 3431,
+      "clock": "0.48",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": false,
+      "stale": false
+    }
+  },
+  "minimum_body_length": 3739,
+  "browser_errors": [],
+  "server_log": "SCENARIO_BOUNDARY {\"stage\": \"before\", \"clock\": 0.4785139999973277, \"hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"checkpoint_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"status\": \"PAUSED\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_BOUNDARY {\"stage\": \"after\", \"clock\": 0.4785139999973277, \"hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"checkpoint_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"status\": \"PAUSED\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_RESULT {\"status\": \"VALID\", \"original_text\": \"A bus accident sends 40 patients over 20 minutes\", \"parsed_events\": [{\"event_id\": \"EVT-000001\", \"event_type\": \"PATIENT_SURGE\", \"created_sim_time\": 0.4785139999973277, \"start_sim_time\": 0.4785139999973277, \"duration_minutes\": 20.0, \"parameters\": {\"count\": 40}, \"description\": \"Patient Surge\", \"source\": \"human-reviewed natural-language simulated scenario\"}], \"assumptions\": [\"PATIENT_SURGE starts at the current simulated time.\", \"High-risk proportion uses the normal RF-profile distribution (threshold 0.50 unchanged).\", \"No staffing shortage or bed outage specified.\"], \"warnings\": [], \"live_state_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"interpretation_hash\": \"ef396e8abbc30cc862580c45fcab58983071396b822cf3b2520772274fe720e6\"}\nSCENARIO_BOUNDARY {\"stage\": \"before\", \"clock\": 0.4785139999973277, \"hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"checkpoint_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"status\": \"PAUSED\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_BOUNDARY {\"stage\": \"after\", \"clock\": 0.4785139999973277, \"hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"checkpoint_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"status\": \"PAUSED\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_RESULT {\"status\": \"VALID\", \"original_text\": \"A bus accident sends 40 patients over 20 minutes\", \"parsed_events\": [{\"event_id\": \"EVT-000001\", \"event_type\": \"PATIENT_SURGE\", \"created_sim_time\": 0.4785139999973277, \"start_sim_time\": 0.4785139999973277, \"duration_minutes\": 20.0, \"parameters\": {\"count\": 40}, \"description\": \"Patient Surge\", \"source\": \"human-reviewed natural-language simulated scenario\"}], \"assumptions\": [\"PATIENT_SURGE starts at the current simulated time.\", \"High-risk proportion uses the normal RF-profile distribution (threshold 0.50 unchanged).\", \"No staffing shortage or bed outage specified.\"], \"warnings\": [], \"live_state_hash\": \"d4f999bbcbb4a3be33a61f3da38b13246be89b34a41154fed748f9ab5e45db15\", \"interpretation_hash\": \"ef396e8abbc30cc862580c45fcab58983071396b822cf3b2520772274fe720e6\"}",
+  "interpretation_state_unchanged": true,
+  "request_guarded": true
+}

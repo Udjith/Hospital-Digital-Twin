@@ -39,7 +39,7 @@ def dashboard_check():
         state = app.session_state["v3_live_hospital"]
         assert asdict(state.current_policy) == NORMAL_POLICY_VALUES
         app.number_input(key="v3_manual_delta").set_value(60.).run()
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert state.active_patients
         app.number_input(key="v3_ga_population").set_value(4).run()
         app.number_input(key="v3_ga_generations").set_value(1).run()
@@ -57,18 +57,17 @@ def dashboard_check():
         assert state.policy_history[-1]["applied"]
         assert app.session_state["v3_policy_recommendations"][-1]["applied"]
         assert any("STALE" in w.value for w in app.warning)
-        # A seven-day request creates debt; each callback advances at most an hour.
+        # Fast Forward completes the same seven-day timeline in one operation.
         app.number_input(key="v3_manual_delta").set_value(10080.).run()
         before = state.sim_time_minutes
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         skip = app.session_state["v3_skip_driver"]
-        assert state.sim_time_minutes - before == 60. and skip.remaining_minutes == 10020.
+        assert state.sim_time_minutes - before == 10080. and skip.remaining_minutes == 0.
         button(app, "Pause").click().run()
         frozen = state.sim_time_minutes
         app.run()
-        assert state.sim_time_minutes == frozen and skip.paused
-        button(app, "Cancel Remaining Manual Skip").click().run()
-        assert skip.remaining_minutes == 0.
+        assert state.sim_time_minutes == frozen
+        # Safe-boundary pause/cancel/interruption is covered by test_live_ux.
         button(app, "Reset Live Twin").click().run()
         assert not state.policy_history and "v3_live_ga_result" not in app.session_state
         assert "v3_policy_recommendations" not in app.session_state
@@ -82,6 +81,7 @@ def prediction_summary(result):
                 metrics=result["aggregate"], seeds=result["provenance"]["replication_seeds"])
 
 
+@patch("live_dashboard.wall_seconds", new=lambda: 0.)
 def main():
     started = time.perf_counter()
     destination = ROOT / "results/live_twin/part3_validation.json"

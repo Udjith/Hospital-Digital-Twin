@@ -18,6 +18,7 @@ def button(app, label):
     return next(widget for widget in app.button if widget.label == label)
 
 
+@patch("live_dashboard.wall_seconds", new=lambda: 0.)
 def main():
     started = time.perf_counter()
     scenarios._load_profiles.cache_clear()
@@ -37,7 +38,7 @@ def main():
         assert hospital.status == "RUNNING"
         assert inference.call_count == 1
         assert all(app.number_input(key=f"v3_capacity_{kind}").disabled for kind in asdict(hospital.capacity))
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert hospital.sim_time_minutes == 5.
         assert hospital.metrics()["currently_waiting"] > 0
         before = hospital.snapshot()

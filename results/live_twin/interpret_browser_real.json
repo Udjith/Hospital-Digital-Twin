@@ -1,0 +1,59 @@
+{
+  "before": {
+    "body_length": 3432,
+    "clock": "0.73",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "A bus accident sends 40 patients over 20 minutes",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 3967,
+    "clock": "1.16",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "A bus accident sends 40 patients over 20 minutes",
+    "preview": true,
+    "stale": true
+  },
+  "actions": {
+    "lookahead": {
+      "body_length": 4040,
+      "clock": "1.37",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": true,
+      "stale": false
+    },
+    "edit": {
+      "body_length": 3434,
+      "clock": "1.37",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": false,
+      "stale": false
+    },
+    "cancel": {
+      "body_length": 3434,
+      "clock": "1.37",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "A bus accident sends 40 patients over 20 minutes",
+      "preview": false,
+      "stale": false
+    }
+  },
+  "minimum_body_length": 3476,
+  "browser_errors": [],
+  "server_log": "",
+  "interpretation_state_unchanged": null,
+  "request_guarded": null
+}

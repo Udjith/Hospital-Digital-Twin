@@ -1,0 +1,101 @@
+{
+  "before": {
+    "body_length": 3432,
+    "clock": "0.70",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 4029,
+    "clock": "1.15",
+    "running": true,
+    "paused": false,
+    "autoplay": true,
+    "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+    "preview": true,
+    "stale": true
+  },
+  "actions": {
+    "lookahead": {
+      "body_length": 4090,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "optimization": {
+      "body_length": 6329,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "reject": {
+      "body_length": 6446,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "retry": {
+      "body_length": 6657,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "optimized_again": {
+      "body_length": 6329,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": false
+    },
+    "apply": {
+      "body_length": 4505,
+      "clock": "1.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": true
+    },
+    "advance": {
+      "body_length": 4552,
+      "clock": "6.35",
+      "running": false,
+      "paused": true,
+      "autoplay": true,
+      "scenario": "60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.",
+      "preview": true,
+      "stale": true
+    }
+  },
+  "minimum_body_length": 3476,
+  "browser_errors": [],
+  "server_log": "SCENARIO_BOUNDARY {\"stage\": \"before\", \"clock\": 0.8075738333476087, \"hash\": \"dd78cd2b1cae88fdfc38518d3792aa520a7554b8e3155ee4bec2ee0de3a0164f\", \"checkpoint_hash\": \"dd78cd2b1cae88fdfc38518d3792aa520a7554b8e3155ee4bec2ee0de3a0164f\", \"status\": \"RUNNING\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_BOUNDARY {\"stage\": \"after\", \"clock\": 0.8075738333476087, \"hash\": \"dd78cd2b1cae88fdfc38518d3792aa520a7554b8e3155ee4bec2ee0de3a0164f\", \"checkpoint_hash\": \"dd78cd2b1cae88fdfc38518d3792aa520a7554b8e3155ee4bec2ee0de3a0164f\", \"status\": \"RUNNING\", \"autoplay\": true, \"driver_enabled\": false, \"text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"busy\": true, \"fragment_run\": true}\nSCENARIO_RESULT {\"status\": \"VALID\", \"original_text\": \"60 patients arrive over 20 minutes while 70 doctors are unavailable for two hours.\", \"parsed_events\": [{\"event_id\": \"EVT-000001\", \"event_type\": \"PATIENT_SURGE\", \"created_sim_time\": 0.8075738333476087, \"start_sim_time\": 0.8075738333476087, \"duration_minutes\": 20.0, \"parameters\": {\"count\": 60}, \"description\": \"Patient Surge\", \"source\": \"human-reviewed natural-language simulated scenario\"}, {\"event_id\": \"EVT-000002\", \"event_type\": \"DOCTOR_SHORTAGE\", \"created_sim_time\": 0.8075738333476087, \"start_sim_time\": 0.8075738333476087, \"duration_minutes\": 120.0, \"parameters\": {\"count\": 70}, \"description\": \"Doctor Shortage\", \"source\": \"human-reviewed natural-language simulated scenario\"}], \"assumptions\": [\"PATIENT_SURGE starts at the current simulated time.\", \"High-risk proportion uses the normal RF-profile distribution (threshold 0.50 unchanged).\", \"DOCTOR_SHORTAGE starts at the current simulated time.\"], \"warnings\": [], \"live_state_hash\": \"dd78cd2b1cae88fdfc38518d3792aa520a7554b8e3155ee4bec2ee0de3a0164f\", \"interpretation_hash\": \"a9ab91ecc4ed368c329eb7c7d98e79ddd1df6e625c3a0217727cce7cc36c520f\"}\nSCENARIO_GA_STARTED {\"hash\": \"cac6c3dee8e84b231381e054983598781ef4a8567efdb12b970790ef4a3ffd13\", \"clock\": 1.3543294166835647, \"autoplay\": true, \"driver_enabled\": false, \"busy\": true, \"fragment_ids\": [\"25fb4bdb735a1fca1d62d51c7412eb14\"]}\nSCENARIO_GA_COMPLETED {\"outcome\": \"PARTIAL IMPROVEMENT\", \"verdict\": \"CANNOT HANDLE\", \"run_id\": \"a961f05d0935eb7ebcfd\", \"hash\": \"cac6c3dee8e84b231381e054983598781ef4a8567efdb12b970790ef4a3ffd13\", \"clock\": 1.3543294166835647}\nSCENARIO_GA_STARTED {\"hash\": \"cac6c3dee8e84b231381e054983598781ef4a8567efdb12b970790ef4a3ffd13\", \"clock\": 1.3543294166835647, \"autoplay\": true, \"driver_enabled\": false, \"busy\": true, \"fragment_ids\": [\"25fb4bdb735a1fca1d62d51c7412eb14\"]}\nSCENARIO_GA_COMPLETED {\"outcome\": \"PARTIAL IMPROVEMENT\", \"verdict\": \"CANNOT HANDLE\", \"run_id\": \"a961f05d0935eb7ebcfd\", \"hash\": \"cac6c3dee8e84b231381e054983598781ef4a8567efdb12b970790ef4a3ffd13\", \"clock\": 1.3543294166835647}",
+  "interpretation_state_unchanged": true,
+  "request_guarded": true,
+  "ga_completed": true,
+  "ga_start_guarded": true
+}

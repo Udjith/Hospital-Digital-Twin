@@ -1,0 +1,61 @@
+{
+  "baseline": {
+    "icu_beds": 220,
+    "general_beds": 550,
+    "doctors": 80,
+    "nurses": 140
+  },
+  "arrival_rate": 4.0,
+  "warm_start": true,
+  "benchmark": "Same cached real profiles/checkpoint. Engine-only plus actual AppTest presentation; no artificial sleeps. Durations are single-run observations, not universal guarantees.",
+  "results": [
+    {
+      "duration": "1h",
+      "minutes": 60.0,
+      "ordinary_engine_seconds": 0.001608000136911869,
+      "fast_forward_engine_seconds": 0.001325800083577633,
+      "old_dashboard_seconds": 0.05132279987446964,
+      "fast_forward_dashboard_seconds": 0.0717990999110043,
+      "processed_events": 16,
+      "ordinary_dashboard_updates": 1,
+      "fast_forward_completion_updates": 1,
+      "exact_state_hash_equal": true
+    },
+    {
+      "duration": "24h",
+      "minutes": 1440.0,
+      "ordinary_engine_seconds": 0.029173400020226836,
+      "fast_forward_engine_seconds": 0.0277280998416245,
+      "old_dashboard_seconds": 1.2972560001071543,
+      "fast_forward_dashboard_seconds": 0.0870276999194175,
+      "processed_events": 366,
+      "ordinary_dashboard_updates": 24,
+      "fast_forward_completion_updates": 1,
+      "exact_state_hash_equal": true
+    },
+    {
+      "duration": "7d",
+      "minutes": 10080.0,
+      "ordinary_engine_seconds": 0.16659889998845756,
+      "fast_forward_engine_seconds": 0.18985890015028417,
+      "old_dashboard_seconds": 10.309896199963987,
+      "fast_forward_dashboard_seconds": 0.2722131998743862,
+      "processed_events": 2016,
+      "ordinary_dashboard_updates": 168,
+      "fast_forward_completion_updates": 1,
+      "exact_state_hash_equal": true
+    },
+    {
+      "duration": "30d",
+      "minutes": 43200.0,
+      "ordinary_engine_seconds": 0.7739122998900712,
+      "fast_forward_engine_seconds": 0.7205693998839706,
+      "old_dashboard_seconds": 49.39819490001537,
+      "fast_forward_dashboard_seconds": 0.8918510999064893,
+      "processed_events": 8545,
+      "ordinary_dashboard_updates": 720,
+      "fast_forward_completion_updates": 1,
+      "exact_state_hash_equal": true
+    }
+  ]
+}

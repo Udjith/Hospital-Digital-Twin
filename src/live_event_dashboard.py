@@ -9,6 +9,7 @@ from live_events import EVENT_TYPES, OUTAGE_KINDS
 from live_scenario_dashboard import render_scenario_entry
 from live_adaptive_dashboard import render_adaptive_optimization
 from live_time_display import format_duration, format_timestamp, format_time_text
+from live_presentation import section_anchor, render_technical_detail
 from live_lookahead import simulate_lookahead_from_current_state, preview_is_current, target_values
 from live_pressure import LiveTargets, RESOURCES, PRESSURE_FIELDS
 
@@ -37,39 +38,8 @@ def load_preset(hospital):
     st.session_state.update(values)
 
 
-def render_event_controls(hospital, targets=None):
-    targets = targets or LiveTargets()
-    if st.session_state.get("v3_modify_retry"):
-        st.info("Modify / Retry: adjust event magnitude/duration, look-ahead horizon, operational targets or overload tolerances below, then prepare/preview the event and run optimization again. Physical capacity is unchanged.")
-    with st.expander("Advanced Live Twin Acceptance Settings"):
-        sustained = st.number_input("Sustained Overload Grace (simulated minutes)", 0., 1440., 30., key="v3_overload_grace",
-            help="A continuous interval above the utilization target fails only when longer than this grace period. Average utilization must also satisfy its target.")
-        critical = st.number_input("Full-Saturation Grace (simulated minutes)", 0., 1440., 15., key="v3_saturation_grace",
-            help="A continuous 100% interval fails only when longer than this grace period. Brief peaks remain diagnostic warnings.")
-    targets = LiveTargets(**{**target_values(targets), "sustained_overload_grace_minutes": sustained,
-        "critical_saturation_grace_minutes": critical})
-    enabled = hospital.status in ("RUNNING", "PAUSED")
-    st.subheader("Event Injection / Event Preview")
-    st.caption("Synthetic operational stress events, not a production emergency alert system. Preview evaluates the current operating policy; it never runs GA or changes physical totals.")
-    with st.expander("Random Synthetic Events (off by default)"):
-        random_enabled = st.checkbox("Enable Random Events", key="v3_random_events", disabled=not enabled,
-            help="Schedules reproducible stress events in simulated time. Refreshing the dashboard does not generate an event.")
-        frequency = st.selectbox("Event Frequency", ("Low", "Medium", "High"), key="v3_random_frequency",
-            help="Mean simulated intervals: Low 360 minutes, Medium 180, High 60. Arrivals of events are exponential.")
-        allowed = st.multiselect("Allowed Random Event Types", EVENT_TYPES, default=list(EVENT_TYPES), key="v3_random_types")
-        if enabled:
-            try:
-                hospital.configure_random_events(random_enabled, frequency, allowed)
-            except ValueError as exc:
-                st.error(str(exc))
-    with st.expander("Look-Ahead Settings"):
-        horizon = st.selectbox("Look-Ahead Horizon (minutes)", (30, 60, 120, 240, 480), index=2, key="v3_lookahead_horizon",
-            format_func=lambda value: f"{format_duration(value)} ({value} minutes)")
-        reps = st.number_input("Look-Ahead Replications", 1, 20, 5, key="v3_lookahead_reps",
-            help="Each independent future begins from the same complete checkpoint. The real RNG and hospital state remain unchanged.")
-        delay = st.number_input("Event Start Delay (minutes)", 0., 480., 0., key="v3_event_delay")
-        st.caption(f"Live targets: mean wait <= {format_duration(targets.mean_wait_target_minutes)}; high-risk <= {format_duration(targets.high_risk_wait_target_minutes)}; time-weighted utilization <= {targets.max_utilization_target:.0%}; longest overload <= {format_duration(sustained)}; longest full saturation <= {format_duration(critical)}; robustness >= {targets.robustness_threshold:g}%. Peaks alone do not fail a run.")
-    event_context, optimize_request = render_scenario_entry(hospital, targets, horizon, int(reps))
+def _render_manual_builder(hospital, targets, horizon, reps, delay, enabled):
+    event_context, optimize_request = None, False
     with st.expander("Advanced / Manual Event Builder"):
         col, action = st.columns([3, 1])
         col.selectbox("Simulated Event Preset", PRESETS, key="v3_event_preset")
@@ -115,18 +85,21 @@ def render_event_controls(hospital, targets=None):
                 st.warning("Event controls changed. Prepare the proposed event again before previewing or applying.")
             resources = hospital.resource_summary()
             st.caption("Current free resources: " + " | ".join(f"{kind.replace('_', ' ')} {r['available']}" for kind, r in resources.items()) + f" | Queue {len(hospital._waiting)}")
+            manual_progress = st.empty()
             if st.button("Run Event Look-Ahead", disabled=not enabled or not form_current):
                 audit = st.session_state.setdefault("v3_preview_audit", deque(maxlen=50))
                 audit.append(dict(sim_time_minutes=hospital.sim_time_minutes, event_type="LOOKAHEAD_STARTED", event_id=event.event_id))
                 try:
-                    with st.spinner("Predicting from independent current-state checkpoints..."):
-                        result = simulate_lookahead_from_current_state(hospital, event, horizon, int(reps), targets)
+                    manual_progress.info("Predicting from independent current-state checkpoints...")
+                    result = simulate_lookahead_from_current_state(hospital, event, horizon, int(reps), targets)
                     event.lookahead_run = True
                     st.session_state.v3_lookahead_result = result
                     audit.append(dict(sim_time_minutes=hospital.sim_time_minutes, event_type="LOOKAHEAD_RESULT",
                         event_id=event.event_id, description=result["verdict"]))
                 except ValueError as exc:
                     st.error(f"Look-ahead unavailable: {exc}. Prepare a new event at the current clock.")
+                finally:
+                    manual_progress.empty()
             result = st.session_state.get("v3_lookahead_result")
             event_context = event if form_current and event.start_sim_time >= hospital.sim_time_minutes else None
             current = bool(result) and form_current and preview_is_current(result, hospital, event, targets, horizon, int(reps))
@@ -169,24 +142,90 @@ def render_event_controls(hospital, targets=None):
                     st.rerun()
                 except ValueError as exc:
                     st.error(f"Event was not applied: {exc}")
-    render_adaptive_optimization(hospital, event_context, targets, horizon, int(reps), request=optimize_request)
-    st.subheader("Active Events")
-    active = hospital.event_rows()
-    if active:
-        st.dataframe(pd.DataFrame([dict(Event=e["event_id"], Type=e["event_type"], Start=format_timestamp(e["start_sim_time"]),
-            End=format_timestamp(e["end_sim_time"]), Status=e["status"], Magnitude=str(e["parameters"]),
-            Duration=format_duration(e["duration_minutes"]), Remaining=format_duration(e["remaining_minutes"])) for e in active]), hide_index=True, width="stretch")
-    else:
-        st.caption("No active or scheduled stress events.")
-    st.caption(f"Base feed {hospital.arrival_rate:g}/hour | Effective feed {hospital.effective_arrival_rate:g}/hour. Temporary effects expire automatically.")
-    with st.expander("Recent Stress Events and Preview Audit"):
-        ended = hospital.event_rows(active_only=False)[-20:]
-        if ended:
-            st.dataframe(pd.DataFrame([dict(Event=e["event_id"], Type=e["event_type"], Status=e["status"],
-                **{k: format_duration(v) if k in ("event_mean_wait", "event_high_risk_mean_wait") else v
-                   for k, v in hospital.event_metrics(e["event_id"]).items()}) for e in ended]), hide_index=True)
-        audit = list(st.session_state.get("v3_preview_audit", []))[-20:]
-        if audit:
-            st.dataframe(pd.DataFrame([{**row, "sim_time_minutes": format_timestamp(row["sim_time_minutes"])}
-                for row in audit]).rename(columns={"sim_time_minutes": "Simulated Time"}), hide_index=True)
-        st.caption("Preview audit stays in the UI session; previewing does not append to or mutate the actual hospital event log.")
+    return event_context, optimize_request
+
+
+def render_event_controls(hospital, targets=None, technical_slots=None):
+    targets = targets or LiveTargets()
+    technical_slots = technical_slots or {}
+    # All destinations exist before Start as well as during a live session.
+    regions = {name: st.container(key="v3_section_" + name) for name in ("stress", "scenario", "policy", "events")}
+    with regions["stress"]:
+        section_anchor("stress-event")
+        st.subheader("Stress Event")
+        st.caption("Manual and seeded automatic stress-event tools. Scenario text is interpreted separately below.")
+        if hospital is None:
+            st.caption("Start Live Twin to enable manual and automatic stress events.")
+            horizon, reps = 120, 5
+            manual_context, manual_request = None, False
+        else:
+            retry_notice = st.empty()
+            if st.session_state.get("v3_modify_retry"):
+                retry_notice.info("Modify / Retry: adjust event magnitude/duration, look-ahead horizon, operational targets or overload tolerances below, then prepare/preview the event and run optimization again. Physical capacity is unchanged.")
+            with st.expander("Advanced Live Twin Acceptance Settings"):
+                sustained = st.number_input("Sustained Overload Grace (simulated minutes)", 0., 1440., 30., key="v3_overload_grace",
+                    help="A continuous interval above the utilization target fails only when longer than this grace period. Average utilization must also satisfy its target.")
+                critical = st.number_input("Full-Saturation Grace (simulated minutes)", 0., 1440., 15., key="v3_saturation_grace",
+                    help="A continuous 100% interval fails only when longer than this grace period. Brief peaks remain diagnostic warnings.")
+            targets = LiveTargets(**{**target_values(targets), "sustained_overload_grace_minutes": sustained,
+                "critical_saturation_grace_minutes": critical})
+            enabled = hospital.status in ("RUNNING", "PAUSED")
+            with st.expander("Random Synthetic Events (off by default)"):
+                random_enabled = st.checkbox("Enable Random Events", key="v3_random_events", disabled=not enabled,
+                    help="Schedules reproducible stress events in simulated time. Refreshing the dashboard does not generate an event.")
+                frequency = st.selectbox("Event Frequency", ("Low", "Medium", "High"), key="v3_random_frequency",
+                    help="Mean simulated intervals: Low 360 minutes, Medium 180, High 60. Arrivals of events are exponential.")
+                allowed = st.multiselect("Allowed Random Event Types", EVENT_TYPES, default=list(EVENT_TYPES), key="v3_random_types")
+                if enabled:
+                    try:
+                        hospital.configure_random_events(random_enabled, frequency, allowed)
+                    except ValueError as exc:
+                        st.error(str(exc))
+            with st.expander("Look-Ahead Settings"):
+                horizon = st.selectbox("Look-Ahead Horizon (minutes)", (30, 60, 120, 240, 480), index=2, key="v3_lookahead_horizon",
+                    format_func=lambda value: f"{format_duration(value)} ({value} minutes)")
+                reps = st.number_input("Look-Ahead Replications", 1, 20, 5, key="v3_lookahead_reps",
+                    help="Each independent future begins from the same complete checkpoint. The real RNG and hospital state remain unchanged.")
+                delay = st.number_input("Event Start Delay (minutes)", 0., 480., 0., key="v3_event_delay")
+                st.caption(f"Live targets: mean wait <= {format_duration(targets.mean_wait_target_minutes)}; high-risk <= {format_duration(targets.high_risk_wait_target_minutes)}; time-weighted utilization <= {targets.max_utilization_target:.0%}; longest overload <= {format_duration(sustained)}; longest full saturation <= {format_duration(critical)}; robustness >= {targets.robustness_threshold:g}%. Peaks alone do not fail a run.")
+            manual_context, manual_request = _render_manual_builder(hospital, targets, horizon, reps, delay, enabled)
+    with regions["scenario"]:
+        event_context, scenario_request = render_scenario_entry(hospital, targets, horizon, int(reps), technical_region=technical_slots.get("scenario"))
+    # Proposal creation/interpretation are mutually exclusive, as before. A
+    # scenario action may have cleared the retained manual proposal in this run.
+    if event_context is None and st.session_state.get("v3_proposed_event") is not None:
+        event_context = manual_context
+    optimize_request = manual_request or scenario_request
+    with regions["policy"]:
+        render_adaptive_optimization(hospital, event_context, targets, horizon, int(reps), request=optimize_request, technical_region=technical_slots.get("policy"))
+    with regions["events"]:
+        section_anchor("active-events")
+        st.subheader("Active Events")
+        if hospital is None:
+            st.caption("No active or scheduled stress events.")
+            return
+        active = hospital.event_rows()
+        st.caption(f"Active Events: {sum(e['status'] == 'ACTIVE' for e in active)} · Scheduled: {sum(e['status'] == 'SCHEDULED' for e in active)}")
+        if active:
+            for event in active:
+                st.write(f"{event['event_id']} · {event['event_type'].replace('_', ' ').title()} — {format_duration(event['remaining_minutes'])} remaining ({event['status'].lower()})")
+            with st.expander("Active Event Details"):
+                st.dataframe(pd.DataFrame([dict(Event=e["event_id"], Type=e["event_type"], Start=format_timestamp(e["start_sim_time"]),
+                End=format_timestamp(e["end_sim_time"]), Status=e["status"], Magnitude=str(e["parameters"]),
+                Duration=format_duration(e["duration_minutes"]), Remaining=format_duration(e["remaining_minutes"])) for e in active]), hide_index=True, width="stretch")
+        else:
+            st.caption("No active or scheduled stress events.")
+        st.caption(f"Base feed {hospital.arrival_rate:g}/hour | Effective feed {hospital.effective_arrival_rate:g}/hour. Temporary effects expire automatically.")
+    def event_history_details():
+        with st.expander("Recent Stress Events and Preview Audit"):
+            ended = hospital.event_rows(active_only=False)[-20:]
+            if ended:
+                st.dataframe(pd.DataFrame([dict(Event=e["event_id"], Type=e["event_type"], Status=e["status"],
+                    **{k: format_duration(v) if k in ("event_mean_wait", "event_high_risk_mean_wait") else v
+                       for k, v in hospital.event_metrics(e["event_id"]).items()}) for e in ended]), hide_index=True)
+            audit = list(st.session_state.get("v3_preview_audit", []))[-20:]
+            if audit:
+                st.dataframe(pd.DataFrame([{**row, "sim_time_minutes": format_timestamp(row["sim_time_minutes"])}
+                    for row in audit]).rename(columns={"sim_time_minutes": "Simulated Time"}), hide_index=True)
+            st.caption("Preview audit stays in the UI session; previewing does not append to or mutate the actual hospital event log.")
+    render_technical_detail(technical_slots.get("events"), regions["events"], event_history_details)

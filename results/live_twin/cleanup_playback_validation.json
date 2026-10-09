@@ -5,9 +5,9 @@
   "fast_forward": true,
   "browser": "PASS",
   "playback_speed": 10,
-  "playback_before_minutes": 118.65,
-  "playback_after_minutes": 118.96,
-  "pause_minutes": 119.12,
+  "playback_before_minutes": 110.42,
+  "playback_after_minutes": 110.87,
+  "pause_minutes": 110.93,
   "pause_freezes_clock": true,
   "reset_clock_minutes": 0,
   "capacity_lock": true,
@@ -20,5 +20,5 @@
   "explicit_policy_application": true,
   "stale_after_policy_change": true,
   "high_speed_pause": 3600,
-  "runtime_seconds": 50.026732099941
+  "runtime_seconds": 48.92319819983095
 }

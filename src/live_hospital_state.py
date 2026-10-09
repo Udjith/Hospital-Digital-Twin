@@ -11,7 +11,7 @@ import math
 import numpy as np
 
 from live_events import LiveEventSupport
-from live_policy_control import LivePolicyControl, POLICY_BOUNDS, SIMULATION_SPEEDS
+from live_policy_control import LivePolicyControl, POLICY_BOUNDS, SIMULATION_SPEEDS, MAX_MANUAL_MINUTES
 from live_initialization import WarmStartSettings, initialize_hospital
 
 from scenario_evaluation import HospitalPolicy, prepare_profiles, validate_policy
@@ -314,12 +314,17 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
             raise ValueError("Start or resume the live twin before advancing; stopped sessions require reset.")
         if not math.isfinite(delta_minutes) or not 0 <= delta_minutes <= self.MAX_STEP_MINUTES:
             raise ValueError("Each live advance must be between 0 and 60 simulated minutes.")
+        self._advance_to(self.sim_time_minutes + delta_minutes)
+
+    def _advance_to(self, target):
+        """Shared event-to-event scheduler; callers validate their observation window."""
         if self._policy_dirty:
             self._policy_dirty = False
             self._dispatch()
-        target = self.sim_time_minutes + delta_minutes
+        processed_events = 0
         while self._agenda and self._agenda[0][0] <= target:
             time, _, _, event_type, patient_id = heapq.heappop(self._agenda)
+            processed_events += 1
             self._integrate(time)
             if event_type == "ARRIVAL":
                 self._arrive()
@@ -361,6 +366,30 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
         self._integrate(target)
         self._check_policy_recovery()
         self._prune_rolling()
+        return processed_events
+
+    def fast_forward(self, minutes, progress=None, should_continue=None):
+        """FAST_FORWARD: same events and arithmetic, without playback/UI throttling.
+
+        Retain ordinary 60-minute observation boundaries for exact cumulative
+        floating-point/rolling-history equivalence. Within each boundary the
+        scheduler jumps directly to heap timestamps, never minute-by-minute.
+        No persistent execution-mode field enters provenance/state hashing.
+        """
+        if self.status not in ("RUNNING", "PAUSED"):
+            raise ValueError("Start the live twin before Fast Forward.")
+        if not math.isfinite(minutes) or not 0 <= minutes <= MAX_MANUAL_MINUTES:
+            raise ValueError("Fast Forward must be between zero and 43200 minutes (30 days).")
+        remaining, processed, boundaries = float(minutes), 0, 0
+        while remaining and (should_continue is None or should_continue()):
+            delta = min(remaining, self.MAX_STEP_MINUTES)
+            processed += self._advance_to(self.sim_time_minutes + delta)
+            remaining -= delta
+            boundaries += 1
+            if progress:
+                progress(minutes - remaining, minutes, processed)
+        return dict(advanced_minutes=minutes - remaining, processed_events=processed,
+                    integration_boundaries=boundaries)
 
     def resource_summary(self):
         summary = {}

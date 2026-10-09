@@ -35,29 +35,53 @@ async def inspect(endpoint, event_check=None):
                 if await evaluate(expression):
                     return
                 await asyncio.sleep(.25)
-            raise AssertionError("Browser condition failed: " + expression)
+            raise AssertionError("Browser condition failed: " + expression + " | UI: " + str(await evaluate("document.body.innerText.slice(-5500)")))
 
         async def click(label):
             encoded = json.dumps(label)
-            found = await evaluate(f"(() => {{const b=[...document.querySelectorAll('button')].find(b=>b.innerText.trim()==={encoded}); if(!b||b.disabled)return false;b.click();return true;}})()")
-            assert found, label
+            # Native fragments can replace the button between inspection and click.
+            for _ in range(40):
+                found = await evaluate(f"(() => {{const app=document.querySelector('[data-testid=stApp]');if(app?.getAttribute('data-test-script-state')==='running')return false;const b=[...document.querySelectorAll('button')].find(b=>b.innerText.trim()==={encoded}); if(!b||b.disabled)return false;b.click();return true;}})()")
+                if found:
+                    return
+                await asyncio.sleep(.25)
+            raise AssertionError(label + " unavailable: " + str(await evaluate("[...document.querySelectorAll('button')].map(b=>({label:b.innerText,disabled:b.disabled}))")))
 
         async def clock():
+            await wait_for("/Elapsed ([0-9.]+) simulated minutes/.test(document.body.innerText) && document.querySelector('[data-testid=stApp]')?.getAttribute('data-test-script-state') !== 'running'")
             return await evaluate("Number(document.body.innerText.match(/Elapsed ([0-9.]+) simulated minutes/)[1])")
 
-        await wait_for("document.body.innerText.includes('V3 Live Twin') && [...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Start Live Simulation')")
+        await wait_for("document.body.innerText.includes('Hospital Digital Twin') && [...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Start Live Simulation')")
         await click("Start Live Simulation")
         await wait_for("document.body.innerText.includes('| RUNNING') && document.querySelector('input[aria-label=\"Live ICU Beds\"]')?.disabled")
-        assert await clock() == 0
-        await click("Advance Simulation")
-        await wait_for("document.body.innerText.includes('Elapsed 5.00 simulated minutes')")
+        await wait_for("document.body.innerText.includes('Automatic playback on')")
+        start_clock = await clock()
+        await asyncio.sleep(1.5)
+        assert await clock() > start_clock, "Start must enable automatic playback"
+        await click("Pause")
+        await wait_for("document.body.innerText.includes('| PAUSED')")
+        # The top bar updates before the lower elapsed-time caption. Observe a
+        # completed render, not two different deltas from the same fragment run.
+        await wait_for("document.querySelector('[data-testid=stApp]')?.getAttribute('data-test-script-state') !== 'running'")
+        paused_start = await clock()
+        await asyncio.sleep(1.)
+        assert await clock() == paused_start
+        assert await evaluate("![...document.querySelectorAll('summary')].find(e=>e.innerText.includes('Initial Hospital State Details')).parentElement.open")
+        await evaluate("[...document.querySelectorAll('summary')].find(e=>e.innerText.includes('Fast Forward Controls')).click()")
+        await wait_for("[...document.querySelectorAll('button')].some(b=>b.innerText.trim()==='Fast Forward'&&!b.disabled)")
+        skip_start = await clock()
+        await click("Fast Forward")
+        await wait_for(f"Number(document.body.innerText.match(/Elapsed ([0-9.]+) simulated minutes/)[1]) >= {skip_start + 4.99}")
         event_result = await event_check(evaluate, wait_for, click, clock) if event_check else {}
         toggled = await evaluate("""(() => {
             const host=[...document.querySelectorAll('[data-testid="stCheckbox"], [data-testid="stToggle"]')].find(e=>e.innerText.includes('Automatic Live Playback'));
-            const input=host?.querySelector('input[type="checkbox"]'); if(!input)return false; input.click();return true;
+            const input=host?.querySelector('input[type="checkbox"]'); if(!input)return false; if(!input.checked)input.click();return true;
         })()""")
         assert toggled, "Automatic playback toggle not found"
         await wait_for("document.body.innerText.includes('Automatic playback on')")
+        if await evaluate("document.body.innerText.includes('| PAUSED')"):
+            await click("Resume")
+            await wait_for("document.body.innerText.includes('| RUNNING')")
         before = await clock()
         await asyncio.sleep(2.5)
         after = await clock()
@@ -78,7 +102,16 @@ async def inspect(endpoint, event_check=None):
         await wait_for("document.body.innerText.includes('| READY') && !document.querySelector('input[aria-label=\"Live ICU Beds\"]').disabled")
         assert await clock() == 0
         assert not await evaluate("document.querySelector('[data-testid=stException]') !== null")
-        return dict(browser="PASS", playback_speed=10, playback_before_minutes=before,
+        await click("Start Live Simulation")
+        await wait_for("document.body.innerText.includes('| RUNNING') && document.body.innerText.includes('Automatic playback on')")
+        restarted = await clock()
+        await asyncio.sleep(1.5)
+        assert await clock() > restarted
+        await click("Reset Live Twin")
+        await wait_for("document.body.innerText.includes('| READY') && document.body.innerText.includes('Automatic playback off')")
+        assert await clock() == 0
+        return dict(auto_start_playback=True, restart_playback=True, initial_details_collapsed=True,
+            fast_forward=True, browser="PASS", playback_speed=10, playback_before_minutes=before,
             playback_after_minutes=after, pause_minutes=paused, pause_freezes_clock=True,
             reset_clock_minutes=0, capacity_lock=True, native_fragment_updates=True,
             screenshot_files_created=0, **event_result)

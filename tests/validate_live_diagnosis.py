@@ -29,7 +29,7 @@ def dashboard_check():
         button(app, "Start Live Simulation").click().run()
         state = app.session_state["v3_live_hospital"]
         app.number_input(key="v3_manual_delta").set_value(60.).run()
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         app.number_input(key="v3_ga_population").set_value(4).run()
         app.number_input(key="v3_ga_generations").set_value(1).run()
         app.number_input(key="v3_ga_search_reps").set_value(1).run()
@@ -51,7 +51,7 @@ def dashboard_check():
         app.run()
         assert not app.exception and state.state_hash() == before
         assert not any("STALE" in w.value for w in app.warning)
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert any("STALE" in w.value for w in app.warning)
         groq.assert_not_called()
     # Exercise prominent failure diagnosis using a real retained live state.
@@ -62,7 +62,7 @@ def dashboard_check():
         app.number_input(key="v3_arrival_rate").set_value(60.)
         app.run()
         button(app, "Start Live Simulation").click().run()
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         app.number_input(key="v3_ga_population").set_value(4).run()
         app.number_input(key="v3_ga_generations").set_value(1).run()
         app.number_input(key="v3_ga_search_reps").set_value(1).run()
@@ -75,6 +75,7 @@ def dashboard_check():
     return "PASS"
 
 
+@patch("live_dashboard.wall_seconds", new=lambda: 0.)
 def main():
     started = time.perf_counter()
     dashboard = dashboard_check()

@@ -19,6 +19,7 @@ def button(app, label):
     return next(w for w in app.button if w.label == label)
 
 
+@patch("live_dashboard.wall_seconds", new=lambda: 0.)
 def main():
     started = time.perf_counter()
     with patch.dict(os.environ, {"GROQ_API_KEY": ""}), patch("feedback_interpreter.Groq") as groq:
@@ -27,7 +28,7 @@ def main():
         button(app, "Start Live Simulation").click().run()
         state = app.session_state["v3_live_hospital"]
         app.number_input(key="v3_manual_delta").set_value(60.).run()
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert state.active_patients
         app.selectbox(key="v3_event_preset").set_value("Traffic Accident").run()
         button(app, "Load Preset").click().run()
@@ -44,7 +45,7 @@ def main():
         assert any("STALE" in w.value for w in app.warning)
         button(app, "Run Event Look-Ahead").click().run()
         assert not button(app, "Apply Event").disabled
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert button(app, "Apply Event").disabled
         button(app, "Prepare Proposed Event").click().run()
         button(app, "Run Event Look-Ahead").click().run()
@@ -55,7 +56,7 @@ def main():
         assert event_id in state.stress_events
         assert state._arrived == before_arrivals  # spread event, not immediate
         app.number_input(key="v3_manual_delta").set_value(20.).run()
-        button(app, "Advance Simulation").click().run()
+        button(app, "Fast Forward").click().run()
         assert state.event_metrics(event_id)["surge_patients_introduced"] == 12
         app.checkbox(key="v3_show_resources").set_value(True).run()
         app.selectbox(key="v3_filter_icu_beds").set_value("OUT_OF_SERVICE").run()

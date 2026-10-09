@@ -1,5 +1,6 @@
 """Groq scenario translation and deterministic validation; never applies events."""
 import json
+import logging
 import math
 import os
 from collections import deque
@@ -135,8 +136,12 @@ def interpret_scenario(text, hospital):
     except (ValueError, TypeError, KeyError) as exc:
         return dict(status="INVALID", message="Scenario validation failed. Edit the scenario and retry.",
             technical_reason=str(exc))
-    except Exception:
-        return dict(status="UNAVAILABLE", message="Natural-language interpretation is unavailable. Use Manual Event Builder.")
+    except Exception as exc:
+        # Do not expose provider request objects/headers or credentials. Keep a
+        # visible diagnostic category rather than silently losing the error.
+        logging.getLogger(__name__).warning("Scenario provider request failed (%s)", type(exc).__name__)
+        return dict(status="UNAVAILABLE", message="Natural-language interpretation is unavailable. Use Manual Event Builder.",
+            technical_reason=f"{type(exc).__name__}: scenario provider request failed.")
 
 
 def audit_entry(session, hospital, action, **details):

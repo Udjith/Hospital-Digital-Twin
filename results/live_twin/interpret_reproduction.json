@@ -1,0 +1,24 @@
+{
+  "before": {
+    "body_length": 3433,
+    "clock": "0.19",
+    "running": true,
+    "paused": false,
+    "autoplay": false,
+    "scenario": "A bus accident sends 40 patients over 20 minutes",
+    "preview": false,
+    "stale": false
+  },
+  "after": {
+    "body_length": 0,
+    "running": false,
+    "paused": false,
+    "preview": false,
+    "stale": false
+  },
+  "minimum_body_length": 0,
+  "browser_errors": [
+    "Error: Bad delta path index 3 (should be between [0, 2])\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6144)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6391)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6391)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.visitBlockNode (http://localhost:18521/static/js/index.CcFifQPt.js:14:6391)\n    at Ra.accept (http://localhost:18521/static/js/index.CcFifQPt.js:14:2742)\n    at e.setNodeAtPath (http://localhost:18521/static/js/index.CcFifQPt.js:14:6755)\n    at e.addElement (http://localhost:18521/static/js/index.CcFifQPt.js:14:9438)"
+  ],
+  "server_log": "SCENARIO_BOUNDARY {\"stage\": \"before\", \"clock\": 0.18794703332241625, \"hash\": \"b7048d0568af130c7b77a571691a131f50ab7114bc35439bc5bd7e741be61cd7\", \"checkpoint_hash\": \"b7048d0568af130c7b77a571691a131f50ab7114bc35439bc5bd7e741be61cd7\", \"status\": \"RUNNING\", \"autoplay\": false, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": null, \"fragment_run\": true}\nSCENARIO_BOUNDARY {\"stage\": \"after\", \"clock\": 0.18794703332241625, \"hash\": \"b7048d0568af130c7b77a571691a131f50ab7114bc35439bc5bd7e741be61cd7\", \"checkpoint_hash\": \"b7048d0568af130c7b77a571691a131f50ab7114bc35439bc5bd7e741be61cd7\", \"status\": \"RUNNING\", \"autoplay\": false, \"driver_enabled\": false, \"text\": \"A bus accident sends 40 patients over 20 minutes\", \"busy\": null, \"fragment_run\": true}\nSCENARIO_RESULT {\"status\": \"VALID\", \"original_text\": \"A bus accident sends 40 patients over 20 minutes\", \"parsed_events\": [{\"event_id\": \"EVT-000001\", \"event_type\": \"PATIENT_SURGE\", \"created_sim_time\": 0.18794703332241625, \"start_sim_time\": 0.18794703332241625, \"duration_minutes\": 20.0, \"parameters\": {\"count\": 40}, \"description\": \"Patient Surge\", \"source\": \"human-reviewed natural-language simulated scenario\"}], \"assumptions\": [\"PATIENT_SURGE starts at the current simulated time.\", \"High-risk proportion uses the normal RF-profile distribution (threshold 0.50 unchanged).\", \"No staffing shortage or bed outage specified.\"], \"warnings\": [], \"live_state_hash\": \"b7048d0568af130c7b77a571691a131f50ab7114bc35439bc5bd7e741be61cd7\", \"interpretation_hash\": \"d0b37692a780e91148af2b6beb0fda26c7bec33b3ef254aa48af6830cfe5ae57\"}"
+}
