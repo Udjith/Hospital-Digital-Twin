@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 from live_hospital_state import OperatingPolicy
-from live_canonical import canonical_hash, HASH_SCHEMA
+from live_canonical import canonical_hash, HASH_SCHEMA, plain
 from live_policy_diagnosis import diagnose_live_result, diagnosis_is_current
 from live_policy_control import GENES, POLICY_BOUNDS
 from live_lookahead import simulate_lookahead_from_current_state, target_values
@@ -96,6 +96,7 @@ def optimization_provenance(hospital, event, horizon, replications, targets, opt
     state_hash = hospital.state_hash()
     return dict(version="3.4-sustained-pressure-policy-ga", live_state_hash=state_hash,
         state_hash_schema=HASH_SCHEMA,
+        warm_start=plain(hospital.initial_state),
         live_state_context=dict(sim_time_minutes=hospital.sim_time_minutes, active_patient_count=len(hospital.active_patients),
             queue=len(hospital._waiting), base_arrival_rate=hospital.arrival_rate,
             effective_arrival_rate=hospital.effective_arrival_rate,

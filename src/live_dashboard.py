@@ -13,6 +13,7 @@ from scenario_evaluation import load_patient_profiles
 from live_policy_control import DEMO_CAPACITY, DEMO_ARRIVAL_RATE, NORMAL_POLICY_VALUES, SIMULATION_SPEEDS, MAX_MANUAL_MINUTES
 from live_hospital_state import OperatingPolicy
 from live_skip_control import LiveSkipDriver
+from live_initialization import WarmStartSettings
 
 LABELS = dict(icu_beds="ICU Beds", general_beds="General Beds", doctors="Doctors", nurses="Nurses")
 
@@ -31,6 +32,15 @@ def render_live_twin(data_path, model_path, targets=None):
     st.header("V3 Live Twin")
     st.caption("Simulated live hospital feed, not an EHR integration. Fixed physical capacities are separate from the V2 sidebar and GA recommendation. Operational queue priority is not a clinical triage protocol.")
     hospital = get_live_hospital(st.session_state)
+    if hospital is not None and not hasattr(hospital, "initial_state"):
+        st.warning("This retained session predates warm-start initialization. Reset it explicitly to use the new initialization settings.")
+        if st.button("Reset Legacy Live Session"):
+            for key in ("v3_live_hospital", "v3_clock_driver", "v3_skip_driver", "v3_proposed_event",
+                    "v3_lookahead_result", "v3_live_ga_result", "v3_live_xai", "v3_live_ai",
+                    "v3_scenario_interpretation", "v3_scenario_preview", "v3_snapshot_download"):
+                st.session_state.pop(key, None)
+            st.rerun()
+        return
     locked = hospital is not None and hospital.status != "READY"
     with st.container(border=True):
         st.subheader("Fixed Live Hospital Capacity")
@@ -52,6 +62,23 @@ def render_live_twin(data_path, model_path, targets=None):
             speed = st.selectbox("Simulation Speed", SIMULATION_SPEEDS, index=2,
                 format_func=lambda x: f"{x}x", key="v3_speed",
                 help="Automatic playback converts elapsed monotonic wall seconds to simulated minutes at this multiplier. Manual advances use the chosen minute step.")
+        with st.expander("Advanced Live Twin Initialization Settings"):
+            warm_enabled = st.checkbox("Enable Warm Start", value=True, key="v3_warm_enabled", disabled=locked,
+                help="Create a seeded simulated initial operating state using existing RF profiles. Reset before changing settings; these are not real hospital measurements.")
+            warm_values = {}
+            for col, (name, label, default) in zip(st.columns(4), (
+                    ("icu_occupancy_target", "ICU Initial Occupancy Target (%)", 55),
+                    ("general_occupancy_target", "General Bed Initial Occupancy Target (%)", 25),
+                    ("doctor_busy_target", "Doctor Initial Busy Target (%)", 20),
+                    ("nurse_busy_target", "Nurse Initial Busy Target (%)", 20))):
+                warm_values[name] = col.number_input(label, 0, 100, default, key="v3_warm_" + name,
+                    disabled=locked, help="Target percentage of fixed physical capacity. Treatment uses one doctor AND one nurse, so actual staff busy counts may be below target.") / 100.
+            queue_choice = st.selectbox("Initial Waiting Queue", ("Auto", 0, 1, 2, 3, 4, 5), key="v3_warm_queue", disabled=locked,
+                help="Auto uses zero when all resource types have free capacity, otherwise at most three. Explicit queued patients use existing RF profiles and seeded ages of up to 15 minutes.")
+            reset_mode = st.selectbox("Reset Initialization", ("Reset with Warm Start", "Reset Empty"), key="v3_reset_initialization",
+                help="Reset Empty is for debugging. Reset with Warm Start reproduces initialization for unchanged seed, capacities, settings and profile pool.")
+            warm_settings = WarmStartSettings(enabled=warm_enabled and reset_mode != "Reset Empty",
+                initial_queue=None if queue_choice == "Auto" else queue_choice, **warm_values)
         auto = st.toggle("Automatic Live Playback", key="v3_autoplay",
             help="Advance using elapsed wall time, with bounded catch-up steps. Turn off to use manual stepping. No infinite loop or background simulation thread.")
         # Accrue elapsed time exactly once, before processing control transitions.
@@ -83,7 +110,7 @@ def render_live_twin(data_path, model_path, targets=None):
                     # is performed once per source/model version, never per arrival.
                     profiles = load_patient_profiles(data_path, model_path)
                     hospital = LiveHospitalState(profiles, LiveCapacity(**capacity_values), float(rate), int(seed),
-                        operating_policy=OperatingPolicy(**NORMAL_POLICY_VALUES))
+                        operating_policy=OperatingPolicy(**NORMAL_POLICY_VALUES), warm_start=warm_settings)
                 hospital.start()
                 driver = LiveClockDriver(hospital)
                 driver.tick(time.monotonic(), speed=speed, enabled=auto)
@@ -109,6 +136,7 @@ def render_live_twin(data_path, model_path, targets=None):
                 if st.session_state.get("v3_skip_driver"):
                     st.session_state.v3_skip_driver.cancel()
             if reset:
+                hospital.warm_start_settings = warm_settings
                 hospital.reset()
                 for key in ("v3_proposed_event", "v3_lookahead_result", "v3_preview_audit", "v3_proposal_form", "v3_live_ga_result", "v3_live_xai", "v3_live_ai", "v3_policy_recommendations", "v3_manual_policy_reference", "v3_scenario_interpretation", "v3_scenario_preview", "v3_scenario_audit", "v3_applied_scenario_events", "v3_modify_retry", "v3_recommendation_decision"):
                     st.session_state.pop(key, None)
@@ -156,6 +184,19 @@ def render_live_twin(data_path, model_path, targets=None):
     st.caption(f"Elapsed {hospital.sim_time_minutes:.2f} simulated minutes ({format_duration(hospital.sim_time_minutes)} elapsed). Capacities stay fixed until reset. Automatic playback {'on' if auto else 'off'}.")
     if driver and driver.pending_minutes > .01:
         st.caption(f"Pending clock catch-up: {format_duration(driver.pending_minutes)}; no events are discarded.")
+    initial = hospital.initial_state
+    with st.container(border=True):
+        st.markdown("**INITIAL HOSPITAL STATE — simulated operating state**")
+        initial_columns = st.columns(5)
+        for col, kind in zip(initial_columns[:4], KINDS):
+            values = initial["resources"][kind]
+            col.metric("Initial " + LABELS[kind], f"{values['occupied_or_busy']} / {values['total']}")
+        initial_columns[4].metric("Initial Waiting", initial["waiting_patients"])
+        st.caption(f"Warm Start: {'Enabled' if initial['enabled'] else 'Disabled'} | Initial Active Patients: {initial['active_patients']} | Live arrivals are counted separately from these incumbents.")
+        with st.expander("Initial State Details"):
+            st.json(initial)
+            for warning in initial["warnings"]:
+                st.info(warning)
     summary = hospital.resource_summary()
     for col, kind in zip(st.columns(4), KINDS):
         resource = summary[kind]
@@ -169,6 +210,7 @@ def render_live_twin(data_path, model_path, targets=None):
         col.metric(label, metrics[key])
     with st.expander("Cumulative and Rolling Live Metrics"):
         st.write(f"Arrived: {metrics['total_patients_arrived']} | Active: {metrics['currently_active']} | Completed: {metrics['completed_patients']}")
+        st.caption(f"Completed during observation: {metrics['initial_patients_completed']} initial incumbents + {metrics['live_arrivals_completed']} live arrivals. Cumulative wait measures live arrivals only; look-ahead also includes current queued incumbents.")
         st.write(f"Cumulative observed mean wait: {format_duration(metrics['mean_wait_so_far'])} | High-risk mean: {format_duration(metrics['high_risk_mean_wait_so_far'])} | Throughput: {metrics['throughput_per_hour']:.2f}/hour")
         st.caption("Waiting patients contribute elapsed wait only; future waits are not counted. Current cards show instantaneous occupancy, while cumulative/rolling utilization integrates occupied minutes.")
         rolling = metrics["rolling_60_minutes"]
@@ -188,7 +230,7 @@ def render_live_twin(data_path, model_path, targets=None):
         frame["required_bed_type"] = frame["required_bed_type"].map({"icu_beds": "ICU", "general_beds": "General"})
         for name in ("arrival_time", "queue_entry_time", "treatment_start_time",
                      "expected_treatment_completion", "expected_discharge_time", "discharge_time"):
-            frame[name] = frame[name].map(format_timestamp)
+            frame[name] = frame[name].map(lambda value: "Before start: " + format_duration(-value) + " earlier" if pd.notna(value) and value < 0 else format_timestamp(value))
         frame["waiting_time_minutes"] = frame["waiting_time_minutes"].map(format_duration)
         frame = frame.rename(columns=dict(patient_id="Patient ID", risk_classification="Risk", risk_probability="RF Probability",
             required_bed_type="Bed Type", assigned_bed_id="Bed ID", assigned_doctor_id="Doctor ID", assigned_nurse_id="Nurse ID",

@@ -19,7 +19,7 @@ RUN_NUMERIC = set(CONDITIONS) | {"p95_wait", "additional_arrivals", "completed_p
     "queue_at_horizon_end", "unfinished_patients", "checkpoint_queue", "unresolved_event_waiting"}
 EVENT_METRICS = {"surge_patients_introduced", "surge_patients_completed", "event_mean_wait", "event_high_risk_mean_wait",
     "event_unfinished_patients", "event_waiting_patients"}
-PROVENANCE_FIELDS = {"version", "live_state_hash", "state_hash_schema", "live_state_context", "sim_time_minutes",
+PROVENANCE_FIELDS = {"version", "live_state_hash", "state_hash_schema", "live_state_context", "sim_time_minutes", "warm_start",
     "physical_capacity", "effective_capacity", "current_queue", "current_policy", "proposed_event", "profile_sha256",
     "horizon_minutes", "verification_replications", "targets", "ga_options", "gene_bounds", "seed_strategy", "live_seed", "policy_assumption"}
 LABELS = dict(mean_wait="Mean wait", high_risk_mean_wait="High-risk wait", icu_utilization="ICU utilization",

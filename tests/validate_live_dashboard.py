@@ -63,6 +63,7 @@ def main():
         button(app, "Stop Live Simulation").click().run()
         assert hospital.status == "STOPPED"
         assert app.number_input(key="v3_capacity_nurses").disabled
+        app.selectbox(key="v3_reset_initialization").set_value("Reset Empty").run()
         button(app, "Reset Live Twin").click().run()
         assert hospital.status == "READY"
         assert hospital.sim_time_minutes == 0

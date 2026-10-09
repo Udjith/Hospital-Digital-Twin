@@ -1,9 +1,9 @@
 {
   "browser": "PASS",
   "playback_speed": 10,
-  "playback_before_minutes": 134.35,
-  "playback_after_minutes": 134.81,
-  "pause_minutes": 134.87,
+  "playback_before_minutes": 123.3,
+  "playback_after_minutes": 123.61,
+  "pause_minutes": 123.85,
   "pause_freezes_clock": true,
   "reset_clock_minutes": 0,
   "capacity_lock": true,
@@ -16,5 +16,5 @@
   "explicit_policy_application": true,
   "stale_after_policy_change": true,
   "high_speed_pause": 3600,
-  "runtime_seconds": 38.66627419996075
+  "runtime_seconds": 47.01667090016417
 }

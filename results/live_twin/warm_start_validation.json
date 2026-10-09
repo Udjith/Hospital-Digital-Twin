@@ -1,0 +1,224 @@
+{
+  "A": {
+    "initial": {
+      "enabled": true,
+      "seed": 42,
+      "seed_strategy": "default_rng(SeedSequence([live_seed, 4004]))",
+      "settings": {
+        "enabled": true,
+        "icu_occupancy_target": 0.55,
+        "general_occupancy_target": 0.25,
+        "doctor_busy_target": 0.2,
+        "nurse_busy_target": 0.2,
+        "initial_queue": null
+      },
+      "profile_sha256": "76d000f611bc1b531c663997b61317b4fd9d38bad68196f187f4701848b8d931",
+      "active_patients": 259,
+      "waiting_patients": 0,
+      "in_treatment": 16,
+      "bed_stay": 243,
+      "resources": {
+        "icu_beds": {
+          "total": 220,
+          "occupied_or_busy": 121,
+          "available": 99,
+          "temporarily_unavailable": 0,
+          "pending_unavailable": 0,
+          "usable": 220,
+          "planned_usable": 220,
+          "current_utilization": 0.55
+        },
+        "general_beds": {
+          "total": 550,
+          "occupied_or_busy": 138,
+          "available": 412,
+          "temporarily_unavailable": 0,
+          "pending_unavailable": 0,
+          "usable": 550,
+          "planned_usable": 550,
+          "current_utilization": 0.2509090909090909
+        },
+        "doctors": {
+          "total": 80,
+          "occupied_or_busy": 16,
+          "available": 64,
+          "temporarily_unavailable": 0,
+          "pending_unavailable": 0,
+          "usable": 80,
+          "planned_usable": 80,
+          "current_utilization": 0.2
+        },
+        "nurses": {
+          "total": 140,
+          "occupied_or_busy": 16,
+          "available": 124,
+          "temporarily_unavailable": 0,
+          "pending_unavailable": 0,
+          "usable": 140,
+          "planned_usable": 140,
+          "current_utilization": 0.11428571428571428
+        }
+      },
+      "warnings": [
+        "Paired treatment assignments limited both staff busy counts to 16; requested doctors 16, nurses 28."
+      ]
+    },
+    "initial_live_arrivals": 0,
+    "earliest_discharge_minutes": 3.379119563388258,
+    "latest_discharge_minutes": 17436.7407479783,
+    "distinct_discharge_times": 259,
+    "initialization_seconds": 0.3568771998398006
+  },
+  "B": {
+    "metrics": {
+      "total_patients_arrived": 102,
+      "completed_patients": 160,
+      "initial_patients_completed": 148,
+      "live_arrivals_completed": 12,
+      "initial_active_patients": 259,
+      "initial_patients_remaining": 111,
+      "currently_waiting": 0,
+      "currently_active": 201,
+      "in_treatment": 14,
+      "bed_stay": 187,
+      "mean_wait_so_far": 0.0,
+      "high_risk_mean_wait_so_far": 0.0,
+      "throughput_per_hour": 6.666666666666667,
+      "cumulative_utilization": {
+        "icu_beds": 0.5272495078262899,
+        "general_beds": 0.20041316531153786,
+        "doctors": 0.16763888695359075,
+        "nurses": 0.09579364968776614
+      },
+      "rolling_60_minutes": {
+        "observed_minutes": 60.0,
+        "arrivals": 1,
+        "completions": 5,
+        "queue_length_now": 0,
+        "mean_queue_length": 0.0,
+        "mean_wait": 0.0,
+        "utilization": {
+          "icu_beds": 0.48569219337089536,
+          "general_beds": 0.17491330586637988,
+          "doctors": 0.18179256106188016,
+          "nurses": 0.10388146346393153
+        }
+      }
+    },
+    "resources": {
+      "icu_beds": {
+        "total": 220,
+        "occupied_or_busy": 106,
+        "available": 114,
+        "temporarily_unavailable": 0,
+        "pending_unavailable": 0,
+        "usable": 220,
+        "planned_usable": 220,
+        "current_utilization": 0.4818181818181818
+      },
+      "general_beds": {
+        "total": 550,
+        "occupied_or_busy": 95,
+        "available": 455,
+        "temporarily_unavailable": 0,
+        "pending_unavailable": 0,
+        "usable": 550,
+        "planned_usable": 550,
+        "current_utilization": 0.17272727272727273
+      },
+      "doctors": {
+        "total": 80,
+        "occupied_or_busy": 14,
+        "available": 66,
+        "temporarily_unavailable": 0,
+        "pending_unavailable": 0,
+        "usable": 80,
+        "planned_usable": 80,
+        "current_utilization": 0.175
+      },
+      "nurses": {
+        "total": 140,
+        "occupied_or_busy": 14,
+        "available": 126,
+        "temporarily_unavailable": 0,
+        "pending_unavailable": 0,
+        "usable": 140,
+        "planned_usable": 140,
+        "current_utilization": 0.1
+      }
+    }
+  },
+  "C": {
+    "verdict": "HANDLED",
+    "robustness": 100.0,
+    "mean_wait": 0.0,
+    "high_risk_mean_wait": 0.0,
+    "queue_peak": 0.0,
+    "queue_end": 0.0,
+    "recovery_minutes": 20.0
+  },
+  "D": {
+    "current": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "mean_wait": 85.12794990420957,
+      "high_risk_mean_wait": 81.52148602065482,
+      "queue_peak": 63.666666666666664,
+      "queue_end": 0.0,
+      "recovery_minutes": 132.99252999902455
+    },
+    "optimized": {
+      "verdict": "CANNOT HANDLE",
+      "robustness": 0.0,
+      "mean_wait": 113.9552641257128,
+      "high_risk_mean_wait": 80.21404452127177,
+      "queue_peak": 63.666666666666664,
+      "queue_end": 15.333333333333334,
+      "recovery_minutes": null
+    },
+    "outcome": "PARTIAL IMPROVEMENT",
+    "physical_capacity": {
+      "icu_beds": 220,
+      "general_beds": 550,
+      "doctors": 80,
+      "nurses": 140
+    },
+    "current_policy": {
+      "high_risk_priority_weight": 1.0,
+      "waiting_time_aging_weight": 0.1,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.0,
+      "nurse_reserve_percentage": 0.0,
+      "surge_priority_strength": 0.0
+    },
+    "optimized_policy": {
+      "high_risk_priority_weight": 5.0,
+      "waiting_time_aging_weight": 0.0,
+      "icu_reserve_percentage": 0.0,
+      "doctor_reserve_percentage": 0.25,
+      "nurse_reserve_percentage": 0.21,
+      "surge_priority_strength": 0.0
+    },
+    "ga_runtime_seconds": 7.674938699929044,
+    "checkpoint_unchanged": true
+  },
+  "E": {
+    "result": {
+      "verdict": "HANDLED",
+      "robustness": 100.0,
+      "mean_wait": 0.0,
+      "high_risk_mean_wait": 0.0,
+      "queue_peak": 0.0,
+      "queue_end": 0.0,
+      "recovery_minutes": 20.0
+    },
+    "provider": "mocked raw Groq-shaped JSON; no network",
+    "current_active_patients": 214
+  },
+  "F": {
+    "same_initial_state_hash": true,
+    "initial_active": 259,
+    "live_arrivals": 0
+  },
+  "runtime_seconds": 9.775937400059775
+}

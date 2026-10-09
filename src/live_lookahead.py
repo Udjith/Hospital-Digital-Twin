@@ -154,6 +154,7 @@ def simulate_lookahead_from_current_state(hospital, proposed_event, horizon_minu
             current_policy=asdict(hospital.current_policy), base_arrival_rate=hospital.arrival_rate,
             effective_arrival_rate=hospital.effective_arrival_rate,
             profile_sha256=hospital.profile_sha256, proposed_event=proposed_event.specification() if proposed_event is not None else None,
+            warm_start=copy.deepcopy(hospital.initial_state),
             evaluated_policy=asdict(policy_override) if policy_override is not None else asdict(hospital.current_policy),
             horizon_minutes=horizon_minutes, replications=replications, future_base_seed=future_seed,
             seed_strategy="SeedSequence([future_base_seed, 3002, replication_index]); independent streams 0..3; known pending events retained",

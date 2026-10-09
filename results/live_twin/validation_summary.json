@@ -2,7 +2,7 @@
   "dashboard": "PASS",
   "rf_inference_calls_across_two_starts": 1,
   "network_calls": 0,
-  "runtime_seconds": 11.205720599973574,
+  "runtime_seconds": 10.76458749989979,
   "demo_profile": {
     "risk_probability": 0.3932294066645887,
     "treatment_minutes": 19.7,
@@ -12,6 +12,10 @@
   "demo_metrics": {
     "total_patients_arrived": 61,
     "completed_patients": 1,
+    "initial_patients_completed": 0,
+    "live_arrivals_completed": 1,
+    "initial_active_patients": 0,
+    "initial_patients_remaining": 0,
     "currently_waiting": 59,
     "currently_active": 60,
     "in_treatment": 1,
@@ -147,7 +151,7 @@
     }
   ],
   "benchmark_24h": {
-    "runtime_seconds": 0.6325797000899911,
+    "runtime_seconds": 0.5582020999863744,
     "arrivals": 530,
     "completed": 51,
     "active": 479,

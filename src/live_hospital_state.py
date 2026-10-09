@@ -12,6 +12,7 @@ import numpy as np
 
 from live_events import LiveEventSupport
 from live_policy_control import LivePolicyControl, POLICY_BOUNDS, SIMULATION_SPEEDS
+from live_initialization import WarmStartSettings, initialize_hospital
 
 from scenario_evaluation import HospitalPolicy, prepare_profiles, validate_policy
 
@@ -80,6 +81,10 @@ class Patient:
     expected_discharge_time: float | None = None
     discharge_time: float | None = None
     source_event_id: str | None = None
+    initialized_patient: bool = False
+    pre_start_age_minutes: float = 0.0
+    initial_elapsed_treatment: float = 0.0
+    initial_elapsed_los: float = 0.0
 
     def observed_wait(self, now):
         return (now if self.treatment_start_time is None else self.treatment_start_time) - self.arrival_time
@@ -94,7 +99,7 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
     MAX_STEP_MINUTES = 60.0
 
     def __init__(self, patient_profiles, capacity=None, arrival_rate=22., seed=42,
-                 operating_policy=None, event_limit=1000, completed_limit=200):
+                 operating_policy=None, event_limit=1000, completed_limit=200, warm_start=None):
         self._capacity = capacity or LiveCapacity()
         self._capacity.validate()
         if not math.isfinite(arrival_rate) or not 0 <= arrival_rate <= 1000:
@@ -117,6 +122,9 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
         self.profile_sha256 = hashlib.sha256(json.dumps(self._profiles).encode()).hexdigest()
         self._arrival_rate, self._seed = float(arrival_rate), seed
         self._event_limit, self._completed_limit = event_limit, completed_limit
+        # Legacy API callers remain empty; normal dashboard explicitly enables defaults.
+        self.warm_start_settings = warm_start if warm_start is not None else WarmStartSettings(enabled=False)
+        self.warm_start_settings.validate()
         self.reset()
 
     @property
@@ -135,7 +143,11 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
     def seed(self):
         return self._seed
 
-    def reset(self):
+    def reset(self, warm_start=None):
+        if warm_start is not None:
+            from dataclasses import replace
+            self.warm_start_settings = replace(self.warm_start_settings, enabled=warm_start)
+        self.warm_start_settings.validate()
         self.sim_time_minutes = 0.0
         self.status = "READY"
         self.resources = {kind: {f"{PREFIXES[kind]}-{index:03d}": Resource(f"{PREFIXES[kind]}-{index:03d}", kind)
@@ -151,6 +163,8 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
         self._sequence = self._patient_sequence = 0
         self._arrived = self._completed = self._high_arrived = 0
         self._served_wait = self._high_served_wait = 0.0
+        self._initial_served_wait = self._initial_high_served_wait = 0.0
+        self._initial_completed = 0
         self._busy_minutes = dict.fromkeys(KINDS, 0.0)
         self._segments = deque()
         self._recent_arrivals, self._recent_completions = deque(), deque()
@@ -159,6 +173,7 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
         self._profile_rng = np.random.default_rng(np.random.SeedSequence([self.seed, 1]))
         self._reset_stress_events()
         self._reset_policy_control()
+        initialize_hospital(self)
 
     def _event(self, event_type, description, patient_id=None, resource_ids=None, event_id=None):
         self.events.append(dict(sim_time_minutes=self.sim_time_minutes, event_type=event_type,
@@ -237,9 +252,13 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
             patient.expected_treatment_completion = self.sim_time_minutes + patient.treatment_minutes
             patient.expected_discharge_time = self.sim_time_minutes + patient.stay_minutes
             wait = patient.observed_wait(self.sim_time_minutes)
-            self._served_wait += wait
-            if patient.high_risk:
-                self._high_served_wait += wait
+            if patient.initialized_patient:
+                self._initial_served_wait += wait
+                self._initial_high_served_wait += wait if patient.high_risk else 0.
+            else:
+                self._served_wait += wait
+                if patient.high_risk:
+                    self._high_served_wait += wait
             if patient.source_event_id:
                 stats = self.stress_events[patient.source_event_id].statistics
                 stats["served_wait"] = stats.get("served_wait", 0.) + wait
@@ -329,6 +348,7 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
                     patient.assigned_bed_id = None
                     patient.status, patient.discharge_time = "DISCHARGED", self.sim_time_minutes
                     self._completed += 1
+                    self._initial_completed += int(patient.initialized_patient)
                     if patient.source_event_id:
                         self.stress_events[patient.source_event_id].statistics["completed"] += 1
                     self._recent_completions.append(self.sim_time_minutes)
@@ -359,8 +379,9 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
     def metrics(self):
         now = self.sim_time_minutes
         waiting = list(self._waiting.values())
-        wait_sum = self._served_wait + sum(p.observed_wait(now) for p in waiting)
-        high_sum = self._high_served_wait + sum(p.observed_wait(now) for p in waiting if p.high_risk)
+        live_waiting = [p for p in waiting if not p.initialized_patient]
+        wait_sum = self._served_wait + sum(p.observed_wait(now) for p in live_waiting)
+        high_sum = self._high_served_wait + sum(p.observed_wait(now) for p in live_waiting if p.high_risk)
         duration = min(60., now)
         cutoff = now - duration
         rolling_busy = dict.fromkeys(KINDS, 0.)
@@ -372,6 +393,10 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
                 rolling_busy[kind] += overlap * busy[kind]
         recent = list(self._recent_arrivals)
         return dict(total_patients_arrived=self._arrived, completed_patients=self._completed,
+            initial_patients_completed=self._initial_completed,
+            live_arrivals_completed=self._completed - self._initial_completed,
+            initial_active_patients=self.initial_state["active_patients"],
+            initial_patients_remaining=sum(p.initialized_patient for p in self.active_patients.values()),
             currently_waiting=len(waiting), currently_active=len(self.active_patients),
             in_treatment=sum(p.status == "IN_TREATMENT" for p in self.active_patients.values()),
             bed_stay=sum(p.status == "BED_STAY" for p in self.active_patients.values()),
@@ -416,6 +441,7 @@ class LiveHospitalState(LivePolicyControl, LiveEventSupport):
             "active_patients": self.patient_rows(patient_limit),
             "active_patient_count": len(self.active_patients), "patient_rows_truncated": len(self.active_patients) > patient_limit,
             "metrics": self.metrics(), "current_policy": asdict(self.current_policy),
+            "initial_state": self.initial_state, "live_state_hash": self.state_hash(),
             "normal_policy": asdict(self.normal_policy), "policy_history": list(self.policy_history)[-20:],
             "recent_events": list(self.events)[-event_limit:] if event_limit else [],
             "event_history_limit": self._event_limit,
